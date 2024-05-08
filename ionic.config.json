@@ -1,0 +1,7 @@
+{
+  "name": "Pokemon Quiz",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
