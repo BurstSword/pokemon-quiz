@@ -1,0 +1,195 @@
+.textCentered {
+    text-align: center;
+
+}
+
+.heightCentered {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
+
+.bigText {
+    font-size: 2em;
+
+}
+
+.animate-img {
+    transition: background-image 0.8s ease-out; // Important for transition
+}
+
+
+#keyboard-cont {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-left: 0px;
+}
+
+#keyboard-cont div {
+    display: flex;
+}
+
+#pokemonName-cont {
+    margin-bottom: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-left: 0px;
+}
+
+.second-row {
+    margin: 0.3rem 0;
+}
+
+.numbers-row {
+    margin: 0.3rem 0;
+}
+
+
+.pokemonNameButton {
+    font-size: 1rem;
+    font-weight: 700;
+    padding: 0.5rem;
+    margin: 0 2px;
+    height: 46px;
+    width: 32px;
+    border-radius: 6px;
+    background: linear-gradient(90deg, rgba(191, 34, 34, 1) 0%, rgba(255, 124, 124, 1) 100%);
+    vertical-align: top;
+}
+
+button:disabled {
+    background-color: rgb(37, 37, 37);
+    color: white;
+}
+
+ion-content {
+    --background: rgb(191, 34, 34);
+    --background: linear-gradient(90deg, rgba(191, 34, 34, 1) 0%, rgba(255, 124, 124, 1) 100%);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: auto;
+}
+
+ion-toolbar {
+    --background: rgb(191, 34, 34);
+    --background: linear-gradient(90deg, rgba(191, 34, 34, 1) 0%, rgba(255, 124, 124, 1) 100%);
+}
+
+.containerQuiz {
+    flex-grow: 1;
+    border-radius: 40px 40px 0px 0px;
+    background-color: white;
+    overflow: auto;
+    height: 100%;
+    overflow-x: hidden;
+}
+
+.flex-grow-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.center-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.flex-grow-item {
+    flex-grow: 1;
+    overflow: auto;
+    width: 100%;
+    background-color: rgba(233, 233, 233, 0.5);
+    overflow-x: hidden;
+}
+
+.topMargin {
+    margin-top: 12%;
+}
+
+.fixedBottom {
+    position: fixed;
+    bottom: 75px;
+    width: 100%;
+    /* Full width */
+    left: 0;
+    /* Align to the left */
+    margin: auto;
+    /* Center the container */
+}
+
+#keyboard-cont {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    padding: 0;
+    /* Remove left and right padding */
+    width: 100%;
+    /* Ensure the container takes up the full width */
+    box-sizing: border-box;
+    /* Include padding and border in element's total width and height */
+}
+
+.keyboard-button {
+    font-weight: 700;
+    padding: 0.5rem;
+    margin: 0 2px;
+    text-transform: uppercase;
+    background-color: white;
+    border-radius: 6px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    color: #6b6b6b;
+    flex: 1 0 auto;
+    min-width: 24px;
+    /* This will allow the buttons to shrink if necessary */
+}
+
+/* Adjust the size for larger screens */
+@media (min-width: 768px) {
+    .keyboard-button {
+        font-size: 1.2rem;
+        padding: 0.6rem;
+    }
+}
+
+/* Adjust the size for even larger screens */
+@media (min-width: 1024px) {
+    .keyboard-button {
+        font-size: 1.4rem;
+        padding: 0.7rem;
+    }
+}
+
+.highlighted {
+    border: 2px solid black;
+}
+
+@keyframes fadeInOut {
+    0% {
+        opacity: 0;
+    }
+
+    50% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+    }
+}
+
+.animate-img {
+    animation: fadeInOut 1s ease-in-out;
+}
+
+#pokemon-image-tab-4{
+    display: block;
+    margin: 0 auto;
+}

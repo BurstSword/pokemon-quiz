@@ -1,0 +1,42 @@
+ion-content {
+    --background: rgb(191, 34, 34);
+    --background: linear-gradient(90deg, rgba(191, 34, 34, 1) 0%, rgba(255, 124, 124, 1) 100%);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: auto;
+}
+
+ion-toolbar {
+    --background: rgb(191, 34, 34);
+    --background: linear-gradient(90deg, rgba(191, 34, 34, 1) 0%, rgba(255, 124, 124, 1) 100%);
+}
+
+.container {
+    flex-grow: 1;
+    border-radius: 40px 40px 0px 0px;
+    background-color: white;
+    overflow: auto;
+    height: 100%;
+}
+
+ion-card-content {
+    background-color: gray;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    div {
+        display: flex;
+        align-items: center;
+    }
+}
+
+.typeImage {
+    width: 24px;
+    height: 24px;
+}
+
+.paginateButton{
+    color: red;
+}

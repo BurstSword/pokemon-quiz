@@ -1,0 +1,55 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar class="ion-no-border">
+    <ion-buttons slot="start">
+      <ion-button [routerLink]="['/lobby']" expand="block" fill="clear" shape="round">
+        <ion-icon slot="icon-only" name="arrow-back"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>pokedex</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <div class="container">
+
+    <ion-grid>
+      <ion-grid>
+        <ion-row style="align-items: center;">
+          <ion-col size="4">
+            <div style="display: flex;">
+              <ion-button shape="round" fill="clear" [disabled]="currentPage === 0"
+                (click)="currentPage = currentPage - 1">
+                <ion-icon slot="icon-only" name="chevron-back-outline"></ion-icon>
+              </ion-button>
+              <ion-button shape="round" fill="clear" [disabled]="currentPage === maxPage"
+                (click)="currentPage = currentPage + 1">
+                <ion-icon slot="icon-only" name="chevron-forward-outline" class="paginateButton"></ion-icon>
+              </ion-button>
+            </div>
+          </ion-col>
+          <ion-col size="8">
+            <ion-searchbar [(ngModel)]="searchTerm" (ngModelChange)="filterPokemons()"></ion-searchbar>
+           
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+      <ion-row>
+        <ion-col size="6" *ngFor="let pokemon of paginatedPokemons">
+          <ion-card [style.background-color]="getColor(pokemon.Type1)" (click)="showPokemonDetails(pokemon)">
+            <ion-card-header>
+              <img src="{{pokemon.Image}}" alt="">
+            </ion-card-header>
+            <ion-card-content style="display: flex; justify-content: space-between; align-items: center;">
+              <span style="color: white;">{{pokemon.Name}}</span>
+              <div style="display: flex; align-items: center;">
+                <span><img class="typeImage" [src]="getImageUrl(pokemon.Type1)" alt="{{pokemon.Type1}}"></span>
+                <span *ngIf="pokemon.Type2"><img class="typeImage" [src]="getImageUrl(pokemon.Type2)"
+                    alt="{{pokemon.Type2}}"></span>
+              </div>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </div>
+</ion-content>

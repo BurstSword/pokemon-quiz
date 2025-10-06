@@ -1,0 +1,40 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar class="ion-no-border">
+    <ion-title>{{ pokemon.Name }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="closeModal()">Close</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="container">
+    <ion-grid fixed>
+      <ion-row>
+        <ion-col size="6">
+          <img src="{{pokemon.Image}}" alt="">
+        </ion-col>
+        <ion-col size="6">
+          <h1 style="color: black;">Nº: {{pokemon.Number}}</h1>
+          <h1 style="color: black;">{{pokemon.Name}}</h1>
+          <ion-row>
+            <ion-col>
+              <ion-row>
+                <ion-col>
+                  <img class="typeImage" [src]="getImageUrl(pokemon.Type1)" alt="{{pokemon.Type1}}">
+                </ion-col>
+                <ion-col>
+                  <img class="typeImage" *ngIf="pokemon.Type2" [src]="getImageUrl(pokemon.Type2)" alt="{{pokemon.Type2}}">
+                </ion-col>
+              </ion-row>
+            </ion-col>
+
+          </ion-row>
+        </ion-col>
+      </ion-row>
+      <p style="color: black;">{{pokemon.Description}}</p>
+    </ion-grid>
+    
+
+  </div>
+</ion-content>

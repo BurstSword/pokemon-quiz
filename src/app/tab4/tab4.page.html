@@ -1,0 +1,60 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar class="ion-no-border">
+    <ion-buttons slot="start">
+      <ion-button [routerLink]="['/lobby']" expand="block" fill="clear" shape="round">
+        <ion-icon slot="icon-only" name="arrow-back"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>
+      Adivina el pokemito
+    </ion-title>
+    <ion-buttons id="main-content" slot="end">
+      <ion-button expand="block" (click)="fillOrCorrectOneLetter()" fill="clear" shape="round">
+        <ion-icon slot="icon-only" src="../../assets/icons/clues.svg"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <div class="heightCentered">
+    <div class="containerQuiz flex-grow-container">
+      <div class="pokemonSection">
+        <img id="pokemon-image-tab-4" class="animate-img" src="{{pokemon.Image}}" [@fadeInOut] />
+      </div>
+      <div class="buttonsSection flex-grow-item center-content">
+        <div id="pokemonName-cont">
+          <div class="pokemonRow">
+            <button [ngClass]="{'small-button': pokemonNameSplitted.length > 10}" (click)="changePosition(i)"
+              [class.highlighted]="i === highlightedIndex" *ngFor="let item of pokemonNameSplitted ; let i = index"
+              class="pokemonNameButton"></button>
+          </div>
+        </div>
+        <div id="keyboard-cont">
+          <div class="numbers-row">
+            <button (click)="selectLetter(item)" *ngFor="let item of numbersRowKeyboard"
+              class="keyboard-button">{{item}}</button>
+          </div>
+          <div class="first-row">
+            <button (click)="selectLetter(item)" *ngFor="let item of firstRowKeyboard"
+              class="keyboard-button">{{item}}</button>
+          </div>
+          <div class="second-row">
+            <button (click)="selectLetter(item)" *ngFor="let item of secondRowKeyboard"
+              class="keyboard-button">{{item}}</button>
+          </div>
+          <div class="third-row">
+            <button (click)="selectLetter(item)" *ngFor="let item of thirdRowKeyboard"
+              class="keyboard-button">{{item}}</button>
+          </div>
+        </div>
+      </div>
+
+      <hr style="background-color: black;">
+
+
+    </div>
+  </div>
+
+
+</ion-content>

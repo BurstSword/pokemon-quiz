@@ -1,0 +1,42 @@
+ion-content {
+    --background: rgb(191, 34, 34);
+    --background: linear-gradient(90deg, rgba(191, 34, 34, 1) 0%, rgba(255, 124, 124, 1) 100%);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: auto;
+}
+
+ion-toolbar {
+    --background: rgb(191, 34, 34);
+    --background: linear-gradient(90deg, rgba(191, 34, 34, 1) 0%, rgba(255, 124, 124, 1) 100%);
+}
+
+.containerQuiz {
+    flex-grow: 1;
+    border-radius: 40px 40px 0px 0px;
+    background-color: white;
+    overflow: auto;
+    height: 100%;
+}
+
+.roundCorner {
+    position: absolute;
+    left: -25px;
+    width: 63px;
+    height: 100px;
+    background: linear-gradient(90deg, rgba(191, 34, 34, 1) 0%, rgba(255, 124, 124, 1) 100%);
+}
+
+.roundIcon{
+    position: absolute;
+    left: 20px;
+    width: 32px;
+    height: 100px;
+}
+
+ion-button{
+    height: 90px;
+}
+
+

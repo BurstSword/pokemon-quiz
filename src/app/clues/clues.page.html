@@ -1,0 +1,42 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar class="ion-no-border">
+    <ion-buttons slot="start">
+      <ion-button [routerLink]="['/lobby']" expand="block" fill="clear" shape="round">
+        <ion-icon slot="icon-only" name="arrow-back"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Pistas</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="containerQuiz">
+    <div class="clueSection">
+      <ul>
+        <li style="color: black;" *ngFor="let clue of showingClues">
+          {{clue}}
+        </li>
+      </ul>
+      <ion-button (click)="addClue()" expand="block" fill="clear" shape="round">
+        Add clue
+      </ion-button>
+    </div>
+    <div class="searchSection">
+      <ion-searchbar [(ngModel)]="searchTerm" (ionInput)="search($event)"></ion-searchbar>
+      <ion-grid>
+        <ion-row>
+          <ion-col size="6" *ngFor="let item of searchResults.slice(0, 4)">
+            <ion-card (click)="checkIfCorrect(item)">
+              <img [src]="item.Image" />
+              <ion-card-content>
+                <ion-card-title>
+                  {{item.Name}}
+                </ion-card-title>
+              </ion-card-content>
+            </ion-card>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </div>
+  </div>
+</ion-content>

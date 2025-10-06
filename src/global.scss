@@ -35,3 +35,19 @@
 /* @import "@ionic/angular/css/palettes/dark.always.css"; */
 /* @import "@ionic/angular/css/palettes/dark.class.css"; */
 @import "@ionic/angular/css/palettes/dark.system.css";
+
+/* Theme variables */
+@import './theme/variables.scss';
+
+
+
+/* Custom CSS */
+ion-button[disabled] {
+    opacity: 1;
+}
+
+ion-modal.custom-modal {
+    --width: 90%; /* adjust to desired width */
+    --height: 80%; /* adjust to desired height */
+  }
+

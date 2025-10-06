@@ -1,0 +1,23 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar class="ion-no-border">
+    <ion-title>lobby</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <div class="containerQuiz">
+    <ion-grid fixed>
+      <ion-row style="margin-top: 8%;">
+        <ion-col *ngFor="let item of routes" size="12">
+          <ion-button routerLink="/{{item.path}}" expand="block" color="white" size="large" shape="round">
+            <div class="roundCorner">
+              <ion-icon class="roundIcon" slot="start" src="../../assets/icons/pokeball-1.svg">
+              </ion-icon>
+            </div>
+            {{item.name}}
+          </ion-button>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </div>
+</ion-content>
