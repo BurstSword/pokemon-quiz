@@ -1,200 +1,209 @@
-import { Component, OnInit, Renderer2, ElementRef } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Pokemon } from 'interfaces';
+import type { Pokemon } from 'interfaces';
+
+type Letter = string;
+type CellState = 'empty' | 'ok' | 'bad';
 
 @Component({
   selector: 'app-tab1',
   templateUrl: 'tab1.page.html',
-  styleUrls: ['tab1.page.scss']
+  styleUrls: ['tab1.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Tab1Page implements OnInit {
   pokemons: Pokemon[] = [];
-  pokemon: Pokemon = {} as Pokemon;
-  pokemonNameSplitted: string[] = [];
-  currentPositionName: number = 0;
-  pokemonLettersOptions: string[] = [];
-  lettersOptionsArrays: string[][] = [];
-  result: string = '';
-  highlightedIndex: number = 0;
-  usedLetters: string[] = [];
-  rowCount: number = 0;
+  pokemon!: Pokemon;
 
-  constructor(private renderer: Renderer2, private el: ElementRef, private http: HttpClient) { }
+  pokemonNameSplitted: string[] = [];
+  answer: string[] = [];                 // User input per cell
+  feedback: CellState[] = [];            // Visual state per cell
+
+  currentPositionName = 0;
+  highlightedIndex = 0;
+
+  lettersOptionsArrays: string[][] = [];
+  isLoadingImage = true;
+
+  // Preload next image to speed up navigation
+  private preloadImg?: HTMLImageElement;
+
+  constructor(private http: HttpClient, private cdr: ChangeDetectorRef) {}
 
   ngOnInit() {
     this.retrievePokemons();
   }
 
-  changePosition(index: number) {
-    this.currentPositionName = index;
-    this.highlightButton(index);
-  }
-
-  highlightButton(index: number) {
-    this.highlightedIndex = index;
-    const buttons = this.el.nativeElement.getElementsByClassName('pokemonNameButton');
-    Array.from(buttons).forEach((button, i) => {
-      this.renderer.removeClass(button, 'highlighted');
-      if (i === index) {
-        this.renderer.addClass(button, 'highlighted');
-      }
-    });
-  }
-
+  // ---------- Data ----------
   retrievePokemons() {
-    this.http.get<Pokemon[]>('./assets/pokemon.json').subscribe(pokemons => {
-      this.pokemons = pokemons;
+    this.http.get<Pokemon[]>('assets/pokemon.json').subscribe((pokemons) => {
+      this.pokemons = [...pokemons];
       this.selectRandomPokemon();
+      this.cdr.markForCheck(); // <- fuerza render tras la carga inicial
     });
+  }
+
+  private pickRandomPokemon(): Pokemon | undefined {
+    if (this.pokemons.length === 0) return undefined;
+    const idx = Math.floor(Math.random() * this.pokemons.length);
+    const picked = this.pokemons[idx];
+    this.pokemons.splice(idx, 1);
+    return picked;
+  }
+
+  // Rellena/corrige la primera casilla incorrecta o vacía.
+  // Si todo está correcto, pasa al siguiente Pokémon.
+  fillOrCorrectOneLetter() {
+    if (!this.pokemon || this.pokemonNameSplitted.length === 0) return;
+
+    const n = this.pokemonNameSplitted.length;
+
+    // 1) Busca la primera posición incorrecta (incluye vacías)
+    for (let i = 0; i < n; i++) {
+      const target = this.pokemonNameSplitted[i].toUpperCase();
+      const cur = (this.answer?.[i] || '').toUpperCase();
+
+      if (cur !== target) {
+        // Corrige esa casilla
+        this.answer[i] = target;
+        this.feedback[i] = 'ok';
+        // Mueve el foco a la siguiente vacía (o a la siguiente posición)
+        const nextEmpty = this.findNextEmpty(i + 1);
+        const next = nextEmpty !== null ? nextEmpty : Math.min(i + 1, n - 1);
+        this.currentPositionName = next;
+        this.highlightedIndex = next;
+        return;
+      }
+    }
+
+    // 2) Si llega aquí, todo coincide -> siguiente Pokémon
+    this.selectRandomPokemon();
   }
 
   selectRandomPokemon() {
-    const randomIndex = Math.floor(Math.random() * this.pokemons.length);
-    this.pokemons.splice(randomIndex, 1);
-    this.pokemon = this.pokemons[randomIndex];
-    this.pokemonNameSplitted = this.splitPokemonName(this.pokemon.Name);
-    this.changeImage(this.pokemon.Image);
-    this.highlightButton(0);
-    this.generatePokemonLettersOptions();
-  }
+    const p = this.pickRandomPokemon();
+    if (!p) return;
 
-  splitPokemonName(pokemonName: string) {
-    return pokemonName.split('');
-  }
-
-  cleanPokemonName() {
-    this.result = '';
+    this.pokemon = p;
+    this.pokemonNameSplitted = this.pokemon.Name.split('');
+    this.answer = Array(this.pokemonNameSplitted.length).fill('');
+    this.feedback = Array(this.pokemonNameSplitted.length).fill('empty');
     this.currentPositionName = 0;
-    const letters = this.el.nativeElement.getElementsByClassName('pokemonNameButton');
-    Array.from(letters).forEach(letter => {
-      this.renderer.setProperty(letter, 'textContent', '');
-    });
+    this.highlightedIndex = 0;
+    this.isLoadingImage = true;
+
+    this.generatePokemonLettersOptions();
+
+    // Preload next image in background (browser cache)
+    const next =
+      this.pokemons.length > 0
+        ? this.pokemons[Math.floor(Math.random() * this.pokemons.length)]
+        : null;
+    if (next?.Image) {
+      this.preloadImg = new Image();
+      this.preloadImg.decoding = 'async';
+      this.preloadImg.loading = 'lazy';
+      this.preloadImg.src = next.Image;
+    }
+
+    this.cdr.markForCheck(); // <- marcamos tras preparar todo el estado del nuevo Pokémon
   }
 
+  // ---------- UI State ----------
+  changePosition(index: number) {
+    this.currentPositionName = index;
+    this.highlightedIndex = index;
+  }
+
+  // Generate keyboard options (mix of correct letters + distractors), chunked 5/4/5/4...
   generatePokemonLettersOptions() {
     const letters = this.pokemonNameSplitted;
-    const lettersOptionsArrays: string[][] = [];
-    let lettersOptions = [];
+    const options: Letter[] = [];
+
     for (let i = 0; i < letters.length; i++) {
-      lettersOptions.push(letters[i].toUpperCase());
-      const randomNumber = Math.floor(Math.random() * 100) + 1;
-      if (randomNumber > 10) {
-        lettersOptions.push(String.fromCharCode(Math.floor(Math.random() * 26) + 65).toUpperCase());
+      options.push(letters[i].toUpperCase());
+      if (Math.random() > 0.1) {
+        options.push(String.fromCharCode(65 + Math.floor(Math.random() * 26)));
       }
     }
-    this.pokemonLettersOptions = lettersOptions;
-    this.lettersOptionsArrays = lettersOptionsArrays;
-    this.lettersOptionsArrays = this.chunkArray(this.pokemonLettersOptions);
+
+    // Shuffle (Fisher–Yates)
+    for (let i = options.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [options[i], options[j]] = [options[j], options[i]];
+    }
+
+    this.lettersOptionsArrays = this.chunkArray(options);
   }
 
+  chunkArray(arr: string[]) {
+    const out: string[][] = [];
+    let idx = 0;
+    while (idx < arr.length) {
+      const size = out.length % 2 === 0 ? 5 : 4;
+      out.push(arr.slice(idx, idx + size));
+      idx += size;
+    }
+    return out;
+  }
+
+  // ---------- Interactions ----------
   fillLetter(letter: string) {
-    const letters = this.el.nativeElement.getElementsByClassName('pokemonNameButton');
-    if (this.currentPositionName < this.pokemonNameSplitted.length) {
-      this.renderer.setProperty(letters[this.currentPositionName], 'textContent', letter);
-      this.result += letter;
-      this.renderer.removeClass(letters[this.currentPositionName], 'highlighted');
-      if (this.currentPositionName !== this.pokemonNameSplitted.length - 1) {
-        this.currentPositionName += 1;
-      }
-      if (this.currentPositionName < this.pokemonNameSplitted.length) {
-        this.renderer.addClass(letters[this.currentPositionName], 'highlighted');
+    const i = this.currentPositionName;
+    if (i >= this.pokemonNameSplitted.length) return;
+
+    const target = this.pokemonNameSplitted[i].toUpperCase();
+    const typed = letter.toUpperCase();
+
+    // Write/overwrite the selected cell
+    this.answer[i] = typed;
+    this.feedback[i] = typed === target ? 'ok' : 'bad';
+
+    // If correct, auto-move to next empty cell (quality of life)
+    if (this.feedback[i] === 'ok') {
+      const next = this.findNextEmpty(i + 1);
+      if (next !== null) {
+        this.currentPositionName = next;
+        this.highlightedIndex = next;
       }
     }
   }
 
-  chunkArray(myArray: string[]) {
-    let index = 0;
-    let arrayLength = myArray.length;
-    let tempArray: string[][] = [];
-    let chunk_size: number;
+  clearSelected() {
+    const i = this.currentPositionName;
+    if (i < 0 || i >= this.answer.length) return;
+    this.answer[i] = '';
+    this.feedback[i] = 'empty';
+  }
 
-    while (index < arrayLength) {
-      // Alternate between chunk sizes of 5 and 4
-      chunk_size = tempArray.length % 2 === 0 ? 5 : 4;
-
-      let myChunk = myArray.slice(index, index + chunk_size);
-      tempArray.push(myChunk);
-
-      index += chunk_size;
-    }
-
-    return tempArray;
+  private findNextEmpty(from: number): number | null {
+    for (let i = from; i < this.answer.length; i++) if (this.answer[i] === '') return i;
+    for (let i = 0; i < from; i++) if (this.answer[i] === '') return i;
+    return null;
   }
 
   checkIfCorrect() {
-    this.getPokemonNameButtons();
-    setTimeout(() => {
-      if (this.result.toLowerCase() === this.pokemon.Name.toLowerCase()) {
-        this.selectRandomPokemon();
-        this.cleanPokemonName();
-      } else {
-        this.checkWichLetterIsCorrect();
-      }
-    }, 1000);
+    const target = this.pokemon.Name.toUpperCase();
+    const guess = this.answer.join('').toUpperCase();
 
-  }
-
-  checkWichLetterIsCorrect() {
-    const letters = this.el.nativeElement.getElementsByClassName('pokemonNameButton');
-    Array.from(letters).forEach((letter, i) => {
-      if (this.result[i].toLowerCase() === this.pokemonNameSplitted[i].toLowerCase()) {
-        this.renderer.setStyle(letter, 'backgroundColor', 'green');
-      } else {
-        this.renderer.setStyle(letter, 'backgroundColor', 'red');
-      }
-    });
-  }
-
-  changeImage(newImageSrc: string) {
-    const imageElement = this.el.nativeElement.querySelector('#pokemon-image-tab-1');
-    this.renderer.setProperty(imageElement, 'src', newImageSrc);
-  }
-
-  getPokemonNameButtons(): void {
-    const elements = this.el.nativeElement.getElementsByClassName('pokemonNameButton');
-    this.result = '';
-    Array.from(elements).forEach((element: unknown) => {
-      const htmlElement = element as HTMLElement;
-      this.result += htmlElement.textContent;
-    });
-  }
-
-  fillOrCorrectOneLetter() {
-    const letters = this.el.nativeElement.getElementsByClassName('pokemonNameButton');
-    let corrected = Array.from(letters).some((letterElement, i) => {
-      const letter = letterElement as HTMLElement;
-      const letterText = letter.textContent?.trim().toLowerCase(); // Add null check here
-      if (letterText !== this.pokemonNameSplitted[i].toLowerCase()) {
-        // Remove highlight from the previous position
-        if (this.currentPositionName > 0) {
-          const previousLetter = letters[this.currentPositionName] as HTMLElement;
-          this.renderer.removeClass(previousLetter, 'highlighted');
-        }
-
-        this.renderer.setProperty(letter, 'textContent', this.pokemonNameSplitted[i].toUpperCase());
-        this.currentPositionName = i + 1;
-        this.renderer.removeClass(letter, 'highlighted');
-        if (this.currentPositionName < this.pokemonNameSplitted.length) {
-          const nextLetter = letters[this.currentPositionName] as HTMLElement;
-          this.renderer.addClass(nextLetter, 'highlighted');
-        }// Update the current position to the next letter
-        return true;
-      }
-      return false;
-    });
-
-    if (!corrected && this.currentPositionName < this.pokemonNameSplitted.length) {
-      const letter = letters[this.currentPositionName] as HTMLElement;
-      this.renderer.setProperty(letter, 'textContent', this.pokemonNameSplitted[this.currentPositionName].toUpperCase());
-      this.result += this.pokemonNameSplitted[this.currentPositionName];
-      this.renderer.removeClass(letter, 'highlighted');
-      if (this.currentPositionName !== this.pokemonNameSplitted.length - 1) {
-        this.currentPositionName += 1;
-      }
-      if (this.currentPositionName < this.pokemonNameSplitted.length) {
-        const nextLetter = letters[this.currentPositionName] as HTMLElement;
-        this.renderer.addClass(nextLetter, 'highlighted');
-      }
+    // Update feedback per cell
+    for (let i = 0; i < this.answer.length; i++) {
+      const cur = (this.answer[i] || '').toUpperCase();
+      const tar = (this.pokemonNameSplitted[i] || '').toUpperCase();
+      this.feedback[i] = cur === tar ? 'ok' : 'bad';
     }
+
+    // Single ENTER: if perfect match, move forward
+    if (guess === target) {
+      this.selectRandomPokemon();
+    }
+  }
+
+  // ---------- Helpers ----------
+  trackByIndex = (i: number) => i;
+
+  onImgLoaded() {
+    this.isLoadingImage = false;
+    this.cdr.markForCheck(); // <- si usas skeleton/estados de carga
   }
 }

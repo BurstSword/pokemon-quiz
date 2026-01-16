@@ -1,6 +1,8 @@
+/* ====== Fondo con gradiente rojo (igual que antes) ====== */
 ion-content {
-    --background: rgb(191, 34, 34);
-    --background: linear-gradient(90deg, rgba(191, 34, 34, 1) 0%, rgba(255, 124, 124, 1) 100%);
+    --background: linear-gradient(90deg,
+            rgba(191, 34, 34, 1) 0%,
+            rgba(255, 124, 124, 1) 100%);
     display: flex;
     flex-direction: column;
     height: 100%;
@@ -8,35 +10,113 @@ ion-content {
 }
 
 ion-toolbar {
-    --background: rgb(191, 34, 34);
-    --background: linear-gradient(90deg, rgba(191, 34, 34, 1) 0%, rgba(255, 124, 124, 1) 100%);
+    --background: linear-gradient(90deg,
+            rgba(191, 34, 34, 1) 0%,
+            rgba(255, 124, 124, 1) 100%);
 }
 
+/* ====== Hoja blanca redondeada (contenedor) ====== */
 .containerQuiz {
     flex-grow: 1;
-    border-radius: 40px 40px 0px 0px;
-    background-color: white;
+    border-radius: 40px 40px 0 0;
+    background-color: #fff;
     overflow: auto;
     height: 100%;
+    padding: clamp(12px, 2.5vw, 24px);
 }
 
-.roundCorner {
+/* Asegura separación superior adecuada en todas las alturas */
+ion-row {
+    margin-top: clamp(12px, 6vh, 64px);
+    row-gap: clamp(10px, 2vh, 18px);
+}
+
+.modeBtn {
+    /* Ajustes responsive */
+    --stripe-w: clamp(56px, 12vw, 72px);
+    --icon-size: clamp(26px, 6vw, 32px);
+
+    /* Estilo base del botón vía variables de Ionic */
+    --border-radius: 9999px;
+    --color: #111111;
+    --box-shadow: 0 10px 30px rgba(0, 0, 0, .15);
+
+    --padding-top: clamp(10px, 1.5vh, 18px);
+    --padding-bottom: clamp(10px, 1.5vh, 18px);
+    --padding-start: calc(var(--stripe-w) + 24px);
+    --padding-end: clamp(14px, 2.5vw, 20px);
+
+    /* 3 capas:
+     1) icono centrado dentro de la franja
+     2) franja degradada pegada a la izquierda
+     3) fondo blanco del botón
+  */
+    --background:
+        url('../../assets/icons/pokeball-1.svg') left calc(var(--stripe-w) / 2 - var(--icon-size) / 2) center / var(--icon-size) var(--icon-size) no-repeat,
+        linear-gradient(90deg, rgba(191, 34, 34, 1) 0%, rgba(255, 124, 124, 1) 100%) 0 0 / var(--stripe-w) 100% no-repeat,
+        #ffffff;
+
+    /* Estados visuales coherentes */
+    --background-hover:
+        url('../../assets/icons/pokeball-1.svg') left calc(var(--stripe-w) / 2 - var(--icon-size) / 2) center / var(--icon-size) var(--icon-size) no-repeat,
+        linear-gradient(90deg, rgba(191, 34, 34, .95) 0%, rgba(255, 124, 124, .95) 100%) 0 0 / var(--stripe-w) 100% no-repeat,
+        #f7f7f7;
+
+    --background-activated:
+        url('../../assets/icons/pokeball-1.svg') left calc(var(--stripe-w) / 2 - var(--icon-size) / 2) center / var(--icon-size) var(--icon-size) no-repeat,
+        linear-gradient(90deg, rgba(191, 34, 34, .9) 0%, rgba(255, 124, 124, .9) 100%) 0 0 / var(--stripe-w) 100% no-repeat,
+        #f0f0f0;
+
+    text-transform: none;
+    font-weight: 700;
+    letter-spacing: .2px;
+}
+
+
+/* El wrapper del icono se posiciona sobre la franja */
+.modeBtn .iconWrap {
     position: absolute;
-    left: -25px;
-    width: 63px;
-    height: 100px;
-    background: linear-gradient(90deg, rgba(191, 34, 34, 1) 0%, rgba(255, 124, 124, 1) 100%);
+    left: calc(var(--stripe-w) / 2);
+    top: 50%;
+    transform: translate(-50%, -50%);
+    /* centra exacto */
+    pointer-events: none;
+    /* no interfiere con el click */
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, .25));
 }
 
-.roundIcon{
-    position: absolute;
-    left: 20px;
-    width: 32px;
-    height: 100px;
-}
-
-ion-button{
-    height: 90px;
+/* Tamaño del icono */
+.modeBtn .modeIcon {
+    width: var(--icon-size);
+    height: var(--icon-size);
 }
 
 
+/* Icono colocado “encima” de la franja */
+.modeIcon {
+    width: clamp(26px, 6vw, 32px);
+    height: clamp(26px, 6vw, 32px);
+
+    /* desplaza el icono hacia la franja:
+     el slot start lo coloca tras el padding-start,
+     este margen negativo lo “mete” dentro de la franja */
+    margin-left: calc(-1 * var(--stripe-w) + 24px);
+
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, .25));
+}
+
+
+/* ====== Ajustes por puntos de corte ====== */
+@media (max-width: 480px) {
+    .containerQuiz {
+        border-radius: 28px 28px 0 0;
+    }
+}
+
+@media (min-width: 768px) {
+
+    /* En tablets, dos columnas (ya lo hace sizeMd="6"), sólo mejoramos percepción */
+    ion-col {
+        display: flex;
+    }
+}

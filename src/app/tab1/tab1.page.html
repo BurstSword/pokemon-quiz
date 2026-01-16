@@ -1,44 +1,76 @@
 <ion-header class="ion-no-border">
   <ion-toolbar class="ion-no-border">
     <ion-buttons slot="start">
-      <ion-button [routerLink]="['/lobby']" expand="block" fill="clear" shape="round">
+      <ion-button [routerLink]="['/lobby']" fill="clear" shape="round">
         <ion-icon slot="icon-only" name="arrow-back"></ion-icon>
       </ion-button>
     </ion-buttons>
-    <ion-title>
-      Adivina el pokemito
-    </ion-title>
+
+    <ion-title>Adivina el pokemito</ion-title>
+
     <ion-buttons id="main-content" slot="end">
-      <ion-button expand="block" (click)="fillOrCorrectOneLetter()" fill="clear" shape="round">
-        <ion-icon slot="icon-only" src="../../assets/icons/clues.svg"></ion-icon>
+      <ion-button (click)="fillOrCorrectOneLetter()" fill="clear" shape="round">
+        <ion-icon slot="icon-only" src="assets/icons/clues.svg"></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <div class="containerQuiz flex-grow-container">
+  <div class="containerQuiz">
+    <!-- Image with skeleton and fast loading -->
     <div class="pokemonSection">
-      <img id="pokemon-image-tab-1" class="animate-img" src="{{pokemon.Image}}" />
-    </div>
-    <div class="buttonsSection flex-grow-item">
-      <div id="pokemonName-cont">
-        <div class="pokemonRow">
-          <button [ngClass]="{'small-button': pokemonNameSplitted.length > 10}" (click)="changePosition(i)"
-            [class.highlighted]="i === highlightedIndex" *ngFor="let item of pokemonNameSplitted ; let i = index"
-            class="pokemonNameButton"></button>
-        </div>
-      </div>
-      <div id="keyboard-cont">
-        <div *ngFor="let lettersRow of lettersOptionsArrays" class="numbers-row">
-          <button (click)="fillLetter(item)" *ngFor="let item of lettersRow" class="keyboard-button"
-            [disabled]="usedLetters.includes(item)">
-            {{item}}
-          </button>
-        </div>
-        <button (click)="checkIfCorrect()" class="keyboard-button">ENTER</button>
+      <div class="imgFrame" [class.loading]="isLoadingImage">
+        <img
+          id="pokemon-image-tab-1"
+          class="pokeImg"
+          [src]="pokemon?.Image"
+          [attr.decoding]="'async'"
+          [attr.loading]="'lazy'"
+          [attr.fetchpriority]="'high'"
+          width="300"
+          height="300"
+          (load)="onImgLoaded()"
+          alt="Pokémon"
+        />
+        <ion-skeleton-text class="skeleton" *ngIf="isLoadingImage" animated></ion-skeleton-text>
       </div>
     </div>
 
+    <!-- Name cells -->
+    <div class="nameSection">
+      <div class="pokemonRow">
+        <button
+          *ngFor="let _ of pokemonNameSplitted; let i = index; trackBy: trackByIndex"
+          (click)="changePosition(i)"
+          class="pokemonNameButton"
+          [class.highlighted]="i === highlightedIndex"
+          [class.ok]="feedback[i] === 'ok'"
+          [class.bad]="feedback[i] === 'bad'"
+          [ngClass]="{'small-button': pokemonNameSplitted.length > 10}"
+        >
+          {{ answer[i] || '' }}
+        </button>
+      </div>
+    </div>
+
+    <!-- Keyboard -->
+    <div id="keyboard-cont">
+      <div class="numbers-row" *ngFor="let row of lettersOptionsArrays; trackBy: trackByIndex">
+        <button
+          *ngFor="let item of row; trackBy: trackByIndex"
+          class="keyboard-button"
+          (click)="fillLetter(item)"
+        >
+          {{ item }}
+        </button>
+      </div>
+
+      <!-- Actions -->
+      <div class="actions">
+        <button class="keyboard-button del" (click)="clearSelected()">⌫</button>
+        <button class="keyboard-button enter" (click)="checkIfCorrect()">ENTER</button>
+      </div>
+    </div>
   </div>
 </ion-content>

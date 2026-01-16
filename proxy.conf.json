@@ -1,0 +1,10 @@
+{
+  "/img-proxy": {
+    "target": "https://www.serebii.net",
+    "secure": true,
+    "changeOrigin": true,
+    "pathRewrite": { "^/img-proxy": "" },
+    "logLevel": "warn"
+  }
+}
+    

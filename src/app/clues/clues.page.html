@@ -1,7 +1,7 @@
 <ion-header class="ion-no-border">
   <ion-toolbar class="ion-no-border">
     <ion-buttons slot="start">
-      <ion-button [routerLink]="['/lobby']" expand="block" fill="clear" shape="round">
+      <ion-button [routerLink]="['/lobby']" fill="clear" shape="round">
         <ion-icon slot="icon-only" name="arrow-back"></ion-icon>
       </ion-button>
     </ion-buttons>
@@ -9,34 +9,39 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
+<ion-content [fullscreen]="true">
   <div class="containerQuiz">
-    <div class="clueSection">
-      <ul>
-        <li style="color: black;" *ngFor="let clue of showingClues">
-          {{clue}}
-        </li>
+    <!-- BLOQUE PISTAS -->
+    <section class="clueSection">
+      <ul class="clues">
+        <li *ngFor="let clue of showingClues">{{ clue }}</li>
       </ul>
-      <ion-button (click)="addClue()" expand="block" fill="clear" shape="round">
+
+      <ion-button class="clueBtn" expand="block" (click)="addClue()" [disabled]="showingClues.length >= clues.length">
         Add clue
       </ion-button>
-    </div>
-    <div class="searchSection">
-      <ion-searchbar [(ngModel)]="searchTerm" (ionInput)="search($event)"></ion-searchbar>
-      <ion-grid>
+    </section>
+
+    <!-- BLOQUE BÚSQUEDA -->
+    <section class="searchSection">
+      <ion-searchbar [(ngModel)]="searchTerm" [debounce]="200" (ionInput)="onSearch($event)"
+        placeholder="Search Pokémon"></ion-searchbar>
+
+      <ion-grid fixed>
         <ion-row>
-          <ion-col size="6" *ngFor="let item of searchResults.slice(0, 4)">
-            <ion-card (click)="checkIfCorrect(item)">
-              <img [src]="item.Image" />
-              <ion-card-content>
-                <ion-card-title>
-                  {{item.Name}}
-                </ion-card-title>
-              </ion-card-content>
+          <ion-col size="6" sizeMd="4" sizeLg="3"
+            *ngFor="let item of (searchResults | slice:0:4); trackBy: trackByPokemon">
+            <ion-card class="pokeCard" (click)="checkIfCorrect(item)">
+              <img [src]="item.Image" loading="lazy" decoding="async" width="160" height="160" alt="Pokémon" />
+
+              <!-- Pie con degradado rojo y nombre en blanco -->
+              <div class="pokeCard__footer">
+                <span class="pokeCard__title">{{ item.Name }}</span>
+              </div>
             </ion-card>
           </ion-col>
         </ion-row>
       </ion-grid>
-    </div>
+    </section>
   </div>
 </ion-content>

@@ -1,29 +1,133 @@
+/* ---- Fondo con el mismo gradiente rojo ---- */
 ion-content {
-    --background: rgb(191, 34, 34);
-    --background: linear-gradient(90deg, rgba(191, 34, 34, 1) 0%, rgba(255, 124, 124, 1) 100%);
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    overflow: auto;
+  --background: linear-gradient(
+    90deg,
+    rgba(191, 34, 34, 1) 0%,
+    rgba(255, 124, 124, 1) 100%
+  );
+  display: flex;
+  flex-direction: column;
 }
 
 ion-toolbar {
-    --background: rgb(191, 34, 34);
-    --background: linear-gradient(90deg, rgba(191, 34, 34, 1) 0%, rgba(255, 124, 124, 1) 100%);
+  --background: linear-gradient(
+    90deg,
+    rgba(191, 34, 34, 1) 0%,
+    rgba(255, 124, 124, 1) 100%
+  );
 }
 
+/* ---- Hoja blanca redondeada ---- */
 .containerQuiz {
-    flex-grow: 1;
-    border-radius: 40px 40px 0px 0px;
-    background-color: white;
-    overflow: auto;
-    height: 100%;
+  flex-grow: 1;
+  border-radius: 40px 40px 0 0;
+  background: #fff;
+  min-height: 100%;
+  padding: clamp(12px, 2.5vw, 24px);
+  display: grid;
+  grid-template-rows: auto 1fr;
+  row-gap: clamp(12px, 2vh, 20px);
+  padding-bottom: max(16px, env(safe-area-inset-bottom));
+  color: #000;
 }
 
-.clueSection{
-    height: 30%;
+/* ---- Pistas ---- */
+.clueSection {
+  display: grid;
+  row-gap: clamp(8px, 1.6vh, 12px);
 }
 
-.searchSection{
-    height: 70%;
+.clues {
+  margin: 0;
+  padding-left: 1.2rem;
+  display: grid;
+  row-gap: 6px;
+}
+.clues li {
+  font-size: clamp(0.95rem, 2.2vw, 1.05rem);
+  line-height: 1.35;
+}
+
+/* Botón "Add clue" con el gradiente de la app */
+.clueBtn {
+  --background: linear-gradient(
+    90deg,
+    rgba(191, 34, 34, 1) 0%,
+    rgba(255, 124, 124, 1) 100%
+  );
+  --color: #fff;
+  --border-radius: 9999px;
+  --padding-top: 12px;
+  --padding-bottom: 12px;
+  --box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+  text-transform: none;
+  font-weight: 700;
+}
+
+/* ---- Búsqueda ---- */
+.searchSection {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  row-gap: clamp(10px, 2vh, 16px);
+}
+
+ion-searchbar {
+  --background: #f6f6f6;
+  --color: #111;
+  --placeholder-color: #777;
+  --clear-button-color: #777;
+  border-radius: 12px;
+}
+
+/* Tarjetas de resultado */
+/* Tarjeta: cuerpo blanco, esquinas redondeadas y sombra */
+.pokeCard {
+  --background: #fff;           /* por si el theme de Ionic pisa */
+  background: #fff;
+  border-radius: 16px;
+  overflow: hidden;             /* recorta el gradiente del pie */
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Imagen sobre fondo blanco, cuadrada (sin saltos) */
+.pokeCard img {
+  width: 100%;
+  height: auto;
+  display: block;
+  background: #fff;
+  object-fit: contain;
+  aspect-ratio: 1 / 1;          /* mantiene formato cuadrado responsive */
+}
+
+/* Pie con el gradiente rojo de la app */
+.pokeCard__footer {
+  background: linear-gradient(90deg, #bf2222 0%, #ff7c7c 100%);
+  padding: clamp(10px, 1.8vh, 14px) clamp(8px, 2vw, 12px);
+}
+
+/* Nombre en blanco, fuerte, sin desbordar */
+.pokeCard__title {
+  color: #fff;
+  font-weight: 800;
+  font-size: clamp(0.95rem, 2.2vw, 1.05rem);
+  line-height: 1.25;
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+ion-card-title {
+  font-weight: 800;
+  color: #111;
+}
+
+/* Ajustes responsive */
+@media (max-width: 480px) {
+  .containerQuiz {
+    border-radius: 28px 28px 0 0;
+  }
 }

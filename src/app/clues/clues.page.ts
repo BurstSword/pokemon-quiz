@@ -1,77 +1,118 @@
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Component, ElementRef, OnInit, Renderer2 } from '@angular/core';
-import { Pokemon } from 'interfaces';
+import type { Pokemon } from 'interfaces';
 
 @Component({
   selector: 'app-clues',
   templateUrl: './clues.page.html',
   styleUrls: ['./clues.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CluesPage implements OnInit {
-  clues: string[] = []
   pokemons: Pokemon[] = [];
-  pokemon: Pokemon = {} as Pokemon;
+  pokemon!: Pokemon;
+
+  clues: string[] = [];
   showingClues: string[] = [];
-  searchTerm: string = '';
+
+  searchTerm = '';
   searchResults: Pokemon[] = [];
 
+  // Pre-carga de la siguiente imagen para mejorar percepción al avanzar
+  private preloadImg?: HTMLImageElement;
 
-  constructor(private renderer: Renderer2, private el: ElementRef, private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   ngOnInit() {
     this.retrievePokemons();
   }
 
+  // -------- Data --------
   retrievePokemons() {
-    this.http.get<Pokemon[]>('./assets/pokemon.json').subscribe(pokemons => {
-      this.pokemons = pokemons;
+    this.http.get<Pokemon[]>('assets/pokemon.json').subscribe((list) => {
+      this.pokemons = [...list];
       this.selectRandomPokemon();
     });
   }
 
+  private pickRandomPokemon(): Pokemon | undefined {
+    if (this.pokemons.length === 0) return undefined;
+    const idx = Math.floor(Math.random() * this.pokemons.length);
+    const picked = this.pokemons[idx];
+    this.pokemons.splice(idx, 1); // quitar del pool tras elegirlo
+    return picked;
+  }
+
   selectRandomPokemon() {
-    const randomIndex = Math.floor(Math.random() * this.pokemons.length);
-    this.pokemons.splice(randomIndex, 1);
-    this.pokemon = this.pokemons[randomIndex];
+    const p = this.pickRandomPokemon();
+    if (!p) return;
+
+    this.pokemon = p;
     this.generateClues();
     this.cleanSearch();
-    this.changeImage(this.pokemon.Image);
-  }
 
-  changeImage(newImageSrc: string) {
-    const imageElement = this.el.nativeElement.querySelector('#pokemon-image-tab-1');
-    this.renderer.setProperty(imageElement, 'src', newImageSrc);
-  }
-
-  generateClues() {
-    this.showingClues = [];
-    this.clues = [];
-    this.clues.push("Belongs to the " + this.pokemon.Generation + "th generation");
-    if (this.pokemon.Type2) {
-      this.clues.push("Its types are " + this.pokemon.Type1 + " and " + this.pokemon.Type2);
-    } else {
-      this.clues.push("Its type is " + this.pokemon.Type1);
+    // Preload de la siguiente imagen (queda en caché)
+    const next =
+      this.pokemons.length > 0
+        ? this.pokemons[Math.floor(Math.random() * this.pokemons.length)]
+        : null;
+    if (next?.Image) {
+      this.preloadImg = new Image();
+      this.preloadImg.decoding = 'async';
+      this.preloadImg.loading = 'lazy';
+      this.preloadImg.src = next.Image;
     }
-    this.clues.push(this.pokemon.Legendary ? "It's not legendary" : "It's legendary");
-    this.clues.push("Its Pokédex number is " + this.pokemon.Number);
-    const description = this.pokemon.Description.replace(this.pokemon.Name, "______");
-    this.clues.push("Its description is: " + description);
-    this.showingClues.push(this.clues[0]);
-}
+  }
+
+  // -------- Lógica de pistas --------
+  generateClues() {
+    const p = this.pokemon;
+    const list: string[] = [];
+
+    list.push(`Belongs to the ${p.Generation}th generation`);
+    if (p.Type2) list.push(`Its types are ${p.Type1} and ${p.Type2}`);
+    else list.push(`Its type is ${p.Type1}`);
+
+    // estaba invertido en tu versión
+    list.push(p.Legendary ? `It's legendary` : `It's not legendary`);
+    list.push(`Its Pokédex number is ${p.Number}`);
+
+    const nameRx = new RegExp(p.Name, 'gi');
+    const description = (p.Description || '').replace(nameRx, '______');
+    list.push(`Its description is: ${description}`);
+
+    this.clues = list;
+    this.showingClues = [list[0]]; // empezamos mostrando 1
+  }
 
   addClue() {
-    if(this.clues.length > this.showingClues.length){
-      this.showingClues.push(this.clues[this.showingClues.length]);
+    const nextIndex = this.showingClues.length;
+    if (nextIndex < this.clues.length) {
+      this.showingClues = [...this.showingClues, this.clues[nextIndex]];
     }
   }
 
-  search(event: any) {
-    const searchTerm = event.target.value.toLowerCase();
-    this.searchResults = this.pokemons.filter(item => item.Name.toLowerCase().includes(searchTerm));
+  // -------- Búsqueda --------
+  onSearch(ev: any) {
+    const value = (ev?.detail?.value ?? this.searchTerm ?? '')
+      .toString()
+      .trim()
+      .toLowerCase();
+
+    this.searchTerm = value;
+
+    if (!value) {
+      this.searchResults = [];
+      return;
+    }
+
+    this.searchResults = this.pokemons.filter((pk) =>
+      pk.Name.toLowerCase().includes(value),
+    );
   }
 
-  checkIfCorrect(pokemon: Pokemon) {
-    if (pokemon.Name === this.pokemon.Name) {
+  checkIfCorrect(choice: Pokemon) {
+    if (choice.Name === this.pokemon.Name) {
       alert('Correct!');
       this.selectRandomPokemon();
     } else {
@@ -83,6 +124,6 @@ export class CluesPage implements OnInit {
     this.searchTerm = '';
     this.searchResults = [];
   }
+
+  trackByPokemon = (_: number, p: Pokemon) => p.Number ?? p.Name;
 }
-
-

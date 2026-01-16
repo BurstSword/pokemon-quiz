@@ -1,46 +1,72 @@
+<!-- Hints (Tipos) en un menú lateral opcional -->
 <ion-menu class="menuClues" side="end" contentId="main-content">
   <ion-content class="ion-padding">
-    Pistas
-    <ion-button class="buttonClues" (click)="showPokemonTypes()" expand="block" fill="clear" shape="round">
-      <ion-icon color="black" slot="start" src="../../assets/icons/remove-options.svg"></ion-icon>
+    <h2 class="cluesTitle">Pistas</h2>
+    <ion-button class="buttonClues" (click)="toggleTypes()" expand="block" fill="clear" shape="round">
+      <ion-icon color="black" slot="start" src="assets/icons/remove-options.svg"></ion-icon>
       Tipos
     </ion-button>
-    <hr>
-    <hr>
   </ion-content>
 </ion-menu>
 
 <ion-header class="ion-no-border">
   <ion-toolbar class="ion-no-border">
     <ion-buttons slot="start">
-      <ion-button [routerLink]="['/lobby']" expand="block" fill="clear" shape="round">
+      <ion-button [routerLink]="['/lobby']" fill="clear" shape="round">
         <ion-icon slot="icon-only" name="arrow-back"></ion-icon>
       </ion-button>
     </ion-buttons>
-    <ion-title>
-      Adivina el pokemito por colore
-    </ion-title>
+    <ion-title>Adivina por colores</ion-title>
+    <ion-buttons slot="end">
+      <ion-menu-button><ion-icon src="assets/icons/clues.svg"></ion-icon></ion-menu-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <div class="heightCentered">
-    <div class="containerQuiz">
-      <div class="imageSection">
-        <img id="pokemon-image-tab-2" class="animate-img" [ngClass]="{blackImage: !visible}" src="{{pokemon.Image}}" />
+<ion-content [fullscreen]="true" id="main-content">
+  <div class="containerQuiz">
+    <!-- Paleta -->
+    <section class="paletteSection">
+      <ion-skeleton-text *ngIf="isLoadingPalette" class="skeleton" animated></ion-skeleton-text>
+
+      <ul class="swatches" *ngIf="!isLoadingPalette">
+        <li *ngFor="let c of palette; trackBy: trackByIndex" [style.--color]="c" [title]="c"></li>
+      </ul>
+
+      <!-- Tipos (pista) -->
+      <div class="types" *ngIf="pokemonTypes">
+        <img class="typeImage" [src]="getTypeImage(pokemon.Type1)" [alt]="pokemon.Type1" />
+        <img class="typeImage" *ngIf="pokemon.Type2" [src]="getTypeImage(pokemon.Type2!)" [alt]="pokemon.Type2!" />
       </div>
-      <div style="padding: 10px;" *ngIf="pokemonTypes">
-        <div class="typeDiv" style="color: black;">
-          <img class="typeImage" [src]="getImageUrl(pokemon.Type1)" alt="{{pokemon.Type1}}">
-        </div>
-        <div class="typeDiv" *ngIf="pokemon.Type2" style="color: black;">
-          <img class="typeImage" [src]="getImageUrl(pokemon.Type2)" alt="{{pokemon.Type2}}">
-        </div>
-      </div>
-      <div class="quizMargin quizSection">
-        <hr style="background-color: black;">
-        <div class="heightCentered"></div>
-      </div>
-    </div>
+    </section>
+
+    <!-- Opciones -->
+    <section class="quizSection">
+      <ion-grid fixed>
+        <ion-row>
+          <ion-col size="12" *ngFor="let option of options; trackBy: trackByOption">
+            <ion-button
+              class="buttons"
+              [ngClass]="{
+                normalOption: option.state === 'normal',
+                correctOption: option.state === 'correct',
+                incorrectOption: option.state === 'incorrect'
+              }"
+              expand="block"
+              size="large"
+              shape="round"
+              (click)="resolveOption(option)"
+              [disabled]="optionsLocked"
+              [attr.id]="'option' + option.Correct"
+            >
+              <span class="circle" aria-hidden="true">
+                <ion-icon class="iconPokeball" src="assets/icons/pokeball-1.svg"></ion-icon>
+              </span>
+              <span class="optionText">{{ option.Name }}</span>
+            </ion-button>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </section>
   </div>
 </ion-content>

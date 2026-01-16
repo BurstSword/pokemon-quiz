@@ -1,188 +1,159 @@
-import { Component, ElementRef, OnInit, Renderer2 } from '@angular/core';
-import { Pokemon } from 'interfaces';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import type { Pokemon } from 'interfaces';
 import { trigger, transition, style, animate } from '@angular/animations';
 
+type CellState = 'empty' | 'ok' | 'bad';
 
 @Component({
   selector: 'app-tab4',
   templateUrl: './tab4.page.html',
   styleUrls: ['./tab4.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   animations: [
     trigger('fadeInOut', [
-      transition(':enter', [
-        style({ opacity: 0 }),
-        animate('0.5s ease-in-out', style({ opacity: 1 }))
-      ]),
-      transition(':leave', [
-        animate('0.5s ease-in-out', style({ opacity: 0 }))
-      ])
+      transition(':enter', [ style({ opacity: 0 }), animate('250ms ease-out', style({ opacity: 1 })) ]),
+      transition(':leave', [ animate('200ms ease-in', style({ opacity: 0 })) ])
     ])
   ]
 })
-export class Tab4Page {
+export class Tab4Page implements OnInit {
+  // Teclado (const → no cambia entre renders)
+  readonly firstRowKeyboard = ['Q','W','E','R','T','Y','U','I','O','P'];
+  readonly secondRowKeyboard = ['A','S','D','F','G','H','J','K','L'];
+  readonly thirdRowKeyboard  = ['DEL','Z','X','C','V','B','N','M','ENTER'];
+  readonly numbersRowKeyboard = ["'",'1','2','3','4','5','6','7','8','9','0','-'];
+
   pokemons: Pokemon[] = [];
-  pokemon: Pokemon = {} as Pokemon;
-  firstRowKeyboard: string[] = ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'];
-  secondRowKeyboard: string[] = ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L'];
-  thirdRowKeyboard: string[] = ['DEL', 'Z', 'X', 'C', 'V', 'B', 'N', 'M', 'ENTER'];
-  numbersRowKeyboard: string[] = ['\'', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-'];
+  pokemon!: Pokemon;
+
   pokemonNameSplitted: string[] = [];
-  result: string = '';
-  currentPositionName: number = 0;
-  highlightedIndex: number = 0;
+  answer: string[] = [];       // contenido por casilla
+  feedback: CellState[] = [];  // estado visual por casilla
+  currentPositionName = 0;
+  highlightedIndex = 0;
 
-  constructor(private renderer: Renderer2, private el: ElementRef) {
-    this.retrievePokemons();
+  isLoadingImage = true;
+  private preloadImg?: HTMLImageElement;
+
+  constructor(private http: HttpClient) {}
+
+  ngOnInit(): void {
+    this.retrievePokemons();        // ← sólo esto
   }
 
-  ionViewWillEnter() {
-    this.cleanPokemonName();
-  }
-
+  // -------- Data --------
   retrievePokemons() {
-    this.cleanPokemonName();
-    getPokemons().then(pokemons => {
-      this.pokemons = pokemons;
-    }).finally(() => {
+    this.http.get<Pokemon[]>('assets/pokemon.json').subscribe((list) => {
+      this.pokemons = [...list];
       this.selectRandomPokemon();
     });
   }
 
-  changePosition(index: number) {
-    this.currentPositionName = index;
-    this.highlightButton(index);
-  }
-
-  highlightButton(index: number) {
-    this.highlightedIndex = index;
-    console.log(this.highlightedIndex);
-    const buttons = this.el.nativeElement.getElementsByClassName('pokemonNameButton');
-    Array.from(buttons).forEach((button, i) => {
-      this.renderer.removeClass(button, 'highlighted');
-      if (i === index) {
-        this.renderer.addClass(button, 'highlighted');
-      }
-    });
+  private pickRandomPokemon(): Pokemon | undefined {
+    if (this.pokemons.length === 0) return undefined;
+    const idx = Math.floor(Math.random() * this.pokemons.length);
+    const picked = this.pokemons[idx];
+    this.pokemons.splice(idx, 1);   // quítalo del pool después de leerlo
+    return picked;
   }
 
   selectRandomPokemon() {
-    const randomIndex = Math.floor(Math.random() * this.pokemons.length);
-    this.pokemons.splice(randomIndex, 1);
-    setTimeout(() => {
-      this.pokemon = this.pokemons[randomIndex];
-      this.changeImageSrc(this.pokemon.Image);
-      this.highlightButton(0);
-      this.pokemonNameSplitted = this.splitPokemonName(this.pokemon.Name);
-    }, 300);
+    const p = this.pickRandomPokemon();
+    if (!p) return;
+
+    this.pokemon = p;
+    this.pokemonNameSplitted = this.pokemon.Name.split('');
+    this.answer = Array(this.pokemonNameSplitted.length).fill('');
+    this.feedback = Array(this.pokemonNameSplitted.length).fill('empty');
+    this.currentPositionName = 0;
+    this.highlightedIndex = 0;
+    this.isLoadingImage = true;
+
+    // Pre-carga de la siguiente imagen (queda en caché del navegador)
+    const next =
+      this.pokemons.length > 0
+        ? this.pokemons[Math.floor(Math.random() * this.pokemons.length)]
+        : null;
+    if (next?.Image) {
+      this.preloadImg = new Image();
+      this.preloadImg.decoding = 'async';
+      this.preloadImg.loading = 'lazy';
+      this.preloadImg.src = next.Image;
+    }
   }
 
-  getPokemonNameButtons(): void {
-    const elements = this.el.nativeElement.getElementsByClassName('pokemonNameButton');
-    this.result = '';
-    Array.from(elements).forEach((element: unknown) => {
-      const htmlElement = element as HTMLElement;
-      this.result += htmlElement.textContent;
-    });
+  // -------- Interacciones --------
+  changePosition(index: number) {
+    this.currentPositionName = index;
+    this.highlightedIndex = index;
   }
 
   selectLetter(letter: string) {
-    const letters = document.getElementsByClassName('pokemonNameButton');
-    if (letter === 'DEL' && this.currentPositionName > 0) {
-      this.currentPositionName -= 1;
-      letters[this.currentPositionName].textContent = '';
-      this.result = this.result.slice(0, -1);
-      this.highlightButton(this.currentPositionName);
-    } else if (letter === 'ENTER') {
+    const i = this.currentPositionName;
+    const n = this.pokemonNameSplitted.length;
 
-      this.getPokemonNameButtons();
-      if (this.result.toLowerCase() === this.pokemon.Name.toLowerCase()) {
+    if (letter === 'DEL') {
+      // Si la casilla actual está vacía, retrocede una
+      const target = this.answer[i] ? i : Math.max(i - 1, 0);
+      this.answer[target] = '';
+      this.feedback[target] = 'empty';
+      this.currentPositionName = target;
+      this.highlightedIndex = target;
+      return;
+    }
 
-        setTimeout(() => {
-          this.cleanPokemonName();
-          this.selectRandomPokemon();
-        }, 1000);
-      } else {
-        // Mark that the result is incorrect
-      }
+    if (letter === 'ENTER') {
+      this.checkAndAdvance();
+      return;
+    }
+
+    if (i >= n) return;
+
+    const typed  = letter.toUpperCase();
+    const target = this.pokemonNameSplitted[i].toUpperCase();
+
+    this.answer[i]   = typed;
+    this.feedback[i] = typed === target ? 'ok' : 'bad';
+
+    // Avanza si acierta; si no, se queda para sobrescribir
+    if (this.feedback[i] === 'ok' && i < n - 1) {
+      this.currentPositionName = i + 1;
+      this.highlightedIndex = i + 1;
+    }
+  }
+
+  // ENTER: valida y avanza inmediatamente si todo es correcto
+  checkAndAdvance() {
+    const n = this.pokemonNameSplitted.length;
+
+    // Actualiza feedback por casilla
+    let allCorrect = true;
+    for (let i = 0; i < n; i++) {
+      const cur = (this.answer[i] || '').toUpperCase();
+      const tar = (this.pokemonNameSplitted[i] || '').toUpperCase();
+      const ok = cur !== '' && cur === tar;
+      this.feedback[i] = cur === '' ? 'empty' : (ok ? 'ok' : 'bad');
+      if (!ok) allCorrect = false;
+    }
+
+    if (allCorrect) {
+      // Avanza YA (sin doble pulsación)
+      this.selectRandomPokemon();
     } else {
-      if (letter !== 'DEL' && letter !== 'ENTER' && this.currentPositionName < this.pokemonNameSplitted.length) {
-        letters[this.currentPositionName].textContent = letter;
-        this.result += letter;
-        this.currentPositionName += 1;
-        this.highlightButton(this.currentPositionName);
-      }
+      // Lleva el foco a la primera incorrecta o vacía
+      const firstBad = this.answer.findIndex((c, i) => (c || '').toUpperCase() !== (this.pokemonNameSplitted[i] || '').toUpperCase());
+      const firstEmpty = this.answer.findIndex((c) => !c);
+      const nextIndex = firstBad >= 0 ? firstBad : (firstEmpty >= 0 ? firstEmpty : 0);
+      this.currentPositionName = nextIndex;
+      this.highlightedIndex = nextIndex;
     }
   }
 
-  splitPokemonName(pokemonName: string) {
-    return pokemonName.split('');
+  // -------- Template helpers --------
+  trackByIndex = (i: number) => i;
+
+  onImgLoaded() {
+    this.isLoadingImage = false;
   }
-
-  cleanPokemonName() {
-    this.result = '';
-    this.currentPositionName = 0;
-    const letters = document.getElementsByClassName('pokemonNameButton');
-    for (let i = 0; i < letters.length; i++) {
-      letters[i].textContent = ' ';
-    }
-  }
-
-  fillOrCorrectOneLetter() {
-    const letters = this.el.nativeElement.getElementsByClassName('pokemonNameButton');
-    let corrected = Array.from(letters).some((letterElement, i) => {
-      const letter = letterElement as HTMLElement;
-      const letterText = letter.textContent?.trim().toLowerCase(); // Add null check here
-      if (letterText !== this.pokemonNameSplitted[i].toLowerCase()) {
-        // Remove highlight from the previous position
-        if (this.currentPositionName > 0 && this.currentPositionName < letters.length) {
-          const previousLetter = letters[this.currentPositionName] as HTMLElement;
-          if (previousLetter) {
-            this.renderer.removeClass(previousLetter, 'highlighted');
-          }
-        }
-
-        this.renderer.setProperty(letter, 'textContent', this.pokemonNameSplitted[i].toUpperCase());
-        this.currentPositionName = i + 1;
-        this.renderer.removeClass(letter, 'highlighted');
-        if (this.currentPositionName < this.pokemonNameSplitted.length && this.currentPositionName < letters.length) {
-          const nextLetter = letters[this.currentPositionName] as HTMLElement;
-          if (nextLetter) {
-            this.renderer.addClass(nextLetter, 'highlighted');
-          }
-        }
-        return true;
-      }
-      return false;
-    });
-
-    if (!corrected && this.currentPositionName < this.pokemonNameSplitted.length && this.currentPositionName < letters.length) {
-      const letter = letters[this.currentPositionName] as HTMLElement;
-      if (letter) {
-        this.renderer.setProperty(letter, 'textContent', this.pokemonNameSplitted[this.currentPositionName].toUpperCase());
-        this.result += this.pokemonNameSplitted[this.currentPositionName];
-        this.renderer.removeClass(letter, 'highlighted');
-        if (this.currentPositionName !== this.pokemonNameSplitted.length - 1) {
-          this.currentPositionName += 1;
-        }
-      }
-      if (this.currentPositionName < this.pokemonNameSplitted.length) {
-        const nextLetter = letters[this.currentPositionName] as HTMLElement;
-        this.renderer.addClass(nextLetter, 'highlighted');
-      }
-    }
-  }
-
-  changeImageSrc(newSrc: string) {
-    this.pokemon.Image = '';
-    setTimeout(() => {
-      this.pokemon.Image = newSrc;
-    }, 100);
-  }
-
-}
-
-export async function getPokemons(): Promise<Pokemon[]> {
-  const request = await fetch('./assets/pokemon.json')
-  const data = await request.json()
-  return data
 }
