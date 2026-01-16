@@ -86,6 +86,7 @@ export class Tab3Page implements OnInit {
 
     setTimeout(() => {
       this.selectRandomPokemon();
+      this.cdr.markForCheck();
     }, 2000);
   }
 

@@ -88,6 +88,7 @@ export class Tab2Page implements OnInit {
 
     setTimeout(() => {
       this.selectRandomPokemon();
+      this.cdr.markForCheck();
     }, 800);
   }
 
