@@ -6,7 +6,7 @@
       50% Opciones
     </ion-button>
     <hr>
-    <ion-button class="buttonClues" (click)="showPokemonTypes()" expand="block" fill="clear" shape="round">
+    <ion-button class="buttonClues" (click)="togglePokemonTypes()" expand="block" fill="clear" shape="round">
       <ion-icon color="black" slot="start" src="../../assets/icons/remove-options.svg"></ion-icon>
       Tipos
     </ion-button>
@@ -38,8 +38,15 @@
   <div class="heightCentered">
     <div class="containerQuiz">
       <div class="imageSection" >
-        <img id="pokemon-image-tab-2" class="animate-img" [ngClass]="{blackImage: !visible}" 
-          src="{{pokemon.Image}}" />
+        <img
+          id="pokemon-image-tab-2"
+          class="animate-img"
+          [ngClass]="{blackImage: !visible}"
+          [src]="pokemon.Image"
+          [alt]="pokemon.Name"
+          loading="lazy"
+          decoding="async"
+        />
       </div>
       <div style="padding: 10px;" *ngIf="pokemonTypes">
         <div class="typeDiv" style="color: black;">
@@ -54,9 +61,16 @@
         <div class="heightCentered">
           <ion-grid fixed>
             <ion-row>
-              <ion-col *ngFor="let item of options" class="textCentered" size="12">
-                <ion-button class="buttons normalOption" expand="block" (click)="resolveOptions(item, $event)"
-                  id="option{{item.Correct}}" size="large" shape="round">
+              <ion-col *ngFor="let item of options; trackBy: trackByOption" class="textCentered" size="12">
+                <ion-button
+                  class="buttons"
+                  [ngClass]="getOptionClass(item)"
+                  [disabled]="optionsLocked || item.state === 'disabled'"
+                  expand="block"
+                  (click)="resolveOptions(item)"
+                  size="large"
+                  shape="round"
+                >
                   <div class="circle nonClickable">
                     <ion-icon class="iconPokeball nonClickable" slot="start" src="../../assets/icons/pokeball-1.svg">
                     </ion-icon>

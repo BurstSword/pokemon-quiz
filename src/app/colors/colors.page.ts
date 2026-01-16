@@ -1,6 +1,8 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import type { Pokemon } from 'interfaces';
+import { PokemonService } from '../services/pokemon.service';
+import { PokemonTypeService } from '../services/pokemon-type.service';
+import { pickRandomItem, sampleUnique, shuffleArray } from '../shared/pokemon-utils';
 
 type OptionState = 'normal' | 'correct' | 'incorrect' | 'disabled';
 type OptionVM = { Name: string; Correct: boolean; state: OptionState };
@@ -22,35 +24,16 @@ export class ColorsPage implements OnInit {
   options: OptionVM[] = [];
   optionsLocked = false;
 
-  // Tipos → icono
-  private readonly typeImages: Record<string, string> = {
-    Normal:   'assets/pokemontypes/normal.webp',
-    Fire:     'assets/pokemontypes/fire.webp',
-    Water:    'assets/pokemontypes/water.webp',
-    Electric: 'assets/pokemontypes/electric.webp',
-    Grass:    'assets/pokemontypes/grass.webp',
-    Ice:      'assets/pokemontypes/ice.webp',
-    Fighting: 'assets/pokemontypes/fighting.webp',
-    Poison:   'assets/pokemontypes/poison.webp',
-    Ground:   'assets/pokemontypes/ground.webp',
-    Flying:   'assets/pokemontypes/flying.webp',
-    Psychic:  'assets/pokemontypes/psychic.webp',
-    Bug:      'assets/pokemontypes/bug.webp',
-    Rock:     'assets/pokemontypes/rock.webp',
-    Ghost:    'assets/pokemontypes/ghost.webp',
-    Dragon:   'assets/pokemontypes/dragon.webp',
-    Dark:     'assets/pokemontypes/dark.webp',
-    Steel:    'assets/pokemontypes/steel.webp',
-    Fairy:    'assets/pokemontypes/fairy.webp',
-  };
-
   // Preload
   private preloadImg?: HTMLImageElement;
 
-  constructor(private http: HttpClient) {}
+  constructor(
+    private pokemonService: PokemonService,
+    private pokemonTypeService: PokemonTypeService,
+  ) {}
 
   ngOnInit(): void {
-    this.http.get<Pokemon[]>('assets/pokemon.json').subscribe(list => {
+    this.pokemonService.getPokemons().subscribe((list) => {
       this.pokemons = [...list];
       this.selectRandomPokemon();
     });
@@ -58,11 +41,7 @@ export class ColorsPage implements OnInit {
 
   // ---------- Juego ----------
   private pickRandomPokemon(): Pokemon | undefined {
-    if (this.pokemons.length === 0) return undefined;
-    const idx = Math.floor(Math.random() * this.pokemons.length);
-    const picked = this.pokemons[idx];
-    this.pokemons.splice(idx, 1);
-    return picked;
+    return pickRandomItem(this.pokemons);
   }
 
   selectRandomPokemon() {
@@ -94,23 +73,18 @@ export class ColorsPage implements OnInit {
 
   generateOptions() {
     const correct: OptionVM = { Name: this.pokemon.Name, Correct: true, state: 'normal' };
+    const wrongs = sampleUnique(
+      this.pokemons,
+      3,
+      (candidate) => candidate.Name === this.pokemon.Name,
+    );
+    const wrongOptions: OptionVM[] = wrongs.map((p) => ({
+      Name: p.Name,
+      Correct: false,
+      state: 'normal',
+    }));
 
-    const pool = this.pokemons.filter(x => x.Name !== this.pokemon.Name);
-    const wrongsSet = new Set<string>();
-    while (wrongsSet.size < 3 && pool.length > 0) {
-      const idx = Math.floor(Math.random() * pool.length);
-      wrongsSet.add(pool[idx].Name);
-    }
-
-    const wrongs: OptionVM[] = Array.from(wrongsSet).map(n => ({ Name: n, Correct: false, state: 'normal' }));
-    const all = [correct, ...wrongs];
-
-    // shuffle
-    for (let i = all.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [all[i], all[j]] = [all[j], all[i]];
-    }
-    this.options = all;
+    this.options = shuffleArray([correct, ...wrongOptions]);
   }
 
   resolveOption(option: OptionVM) {
@@ -133,7 +107,7 @@ export class ColorsPage implements OnInit {
   }
 
   getTypeImage(type: string) {
-    return this.typeImages[type] ?? '';
+    return this.pokemonTypeService.getTypeImage(type);
   }
 
   trackByIndex = (i: number) => i;

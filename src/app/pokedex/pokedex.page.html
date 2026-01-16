@@ -34,10 +34,10 @@
         </ion-row>
       </ion-grid>
       <ion-row>
-        <ion-col size="6" *ngFor="let pokemon of paginatedPokemons">
+        <ion-col size="6" *ngFor="let pokemon of paginatedPokemons; trackBy: trackByPokemon">
           <ion-card [style.background-color]="getColor(pokemon.Type1)" (click)="showPokemonDetails(pokemon)">
             <ion-card-header>
-              <img src="{{pokemon.Image}}" alt="">
+              <img [src]="pokemon.Image" [alt]="pokemon.Name" loading="lazy" decoding="async">
             </ion-card-header>
             <ion-card-content style="display: flex; justify-content: space-between; align-items: center;">
               <span style="color: white;">{{pokemon.Name}}</span>
