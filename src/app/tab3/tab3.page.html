@@ -9,7 +9,7 @@
       Adivina el pokemito pero borroso
     </ion-title>
     <ion-buttons id="main-content" slot="end">
-      <ion-button expand="block" fill="clear" shape="round">
+      <ion-button expand="block" fill="clear" shape="round" (click)="disableTwoIncorrectOptions()">
         <ion-icon slot="icon-only" src="../../assets/icons/filter.svg"></ion-icon>
       </ion-button>
       <ion-button (click)="clarifyImage()"> <ion-icon src="../../assets/icons/clues.svg"></ion-icon></ion-button>
@@ -21,7 +21,15 @@
   <div class="heightCentered">
     <div class="containerQuiz">
       <div class="imageSection">
-        <img id="pokemon-image-blur" class="animate-img blurred0" src="{{pokemon.Image}}" />
+        <img
+          id="pokemon-image-blur"
+          class="animate-img"
+          [ngClass]="isRevealed ? '' : 'blurred' + blurState"
+          [src]="pokemon.Image"
+          [alt]="pokemon.Name"
+          loading="lazy"
+          decoding="async"
+        />
       </div>
       <div style="padding: 10px;" *ngIf="pokemonTypes">
         <div class="typeDiv" style="color: black;">
@@ -36,9 +44,16 @@
         <div class="heightCentered">
           <ion-grid fixed>
             <ion-row>
-              <ion-col *ngFor="let item of options" class="textCentered" size="12">
-                <ion-button class="buttons normalOption" expand="block" (click)="resolveOptions(item, $event)"
-                  id="option{{item.Correct}}" size="large" shape="round">
+              <ion-col *ngFor="let item of options; trackBy: trackByOption" class="textCentered" size="12">
+                <ion-button
+                  class="buttons"
+                  [ngClass]="getOptionClass(item)"
+                  [disabled]="optionsLocked || item.state === 'disabled'"
+                  expand="block"
+                  (click)="resolveOptions(item)"
+                  size="large"
+                  shape="round"
+                >
                   <div class="circle nonClickable">
                     <ion-icon class="iconPokeball nonClickable" slot="start" src="../../assets/icons/pokeball-1.svg">
                     </ion-icon>
