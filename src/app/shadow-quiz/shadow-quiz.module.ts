@@ -2,16 +2,16 @@ import { IonicModule } from '@ionic/angular';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Tab2Page } from './tab2.page';
-import { Tab2PageRoutingModule } from './tab2-routing.module';
+import { ShadowQuizPage } from './shadow-quiz.page';
+import { ShadowQuizPageRoutingModule } from './shadow-quiz-routing.module';
 
 @NgModule({
   imports: [
     IonicModule,
     CommonModule,
     FormsModule,
-    Tab2PageRoutingModule
+    ShadowQuizPageRoutingModule
   ],
-  declarations: [Tab2Page]
+  declarations: [ShadowQuizPage]
 })
-export class Tab2PageModule {}
+export class ShadowQuizPageModule {}
