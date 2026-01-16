@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import type { Pokemon } from 'interfaces';
 import { PokemonService } from '../services/pokemon.service';
 import { PokemonTypeService } from '../services/pokemon-type.service';
@@ -24,7 +24,6 @@ export class Tab2Page implements OnInit {
   constructor(
     private pokemonService: PokemonService,
     private pokemonTypeService: PokemonTypeService,
-    private cdr: ChangeDetectorRef,
   ) {}
 
   ngOnInit(): void {
@@ -47,7 +46,6 @@ export class Tab2Page implements OnInit {
     this.pokemonTypes = false;
     this.optionsLocked = false;
     this.generateOptions();
-    this.cdr.markForCheck();
   }
 
   revealPokemon() {
