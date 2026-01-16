@@ -32,10 +32,6 @@
     transition: background-image 0.8s ease-out; // Important for transition
 }
 
-.buttonsBlur {
-    filter: grayscale(0) drop-shadow(2px 2px 2px gray);
-}
-
 .blurred0 {
     filter: blur(30px) grayscale(100%) drop-shadow(2px 2px 2px gray);
 }
@@ -50,6 +46,10 @@
 
 .blurred3 {
     filter: blur(10px) grayscale(40%) drop-shadow(2px 2px 2px gray);
+}
+
+.blurred4 {
+    filter: blur(5px) grayscale(20%) drop-shadow(2px 2px 2px gray);
 }
 
 @keyframes shake {

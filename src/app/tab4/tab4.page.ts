@@ -1,7 +1,8 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import type { Pokemon } from 'interfaces';
 import { trigger, transition, style, animate } from '@angular/animations';
+import { PokemonService } from '../services/pokemon.service';
+import { pickRandomItem } from '../shared/pokemon-utils';
 
 type CellState = 'empty' | 'ok' | 'bad';
 
@@ -36,7 +37,7 @@ export class Tab4Page implements OnInit {
   isLoadingImage = true;
   private preloadImg?: HTMLImageElement;
 
-  constructor(private http: HttpClient) {}
+  constructor(private pokemonService: PokemonService) {}
 
   ngOnInit(): void {
     this.retrievePokemons();        // ← sólo esto
@@ -44,18 +45,14 @@ export class Tab4Page implements OnInit {
 
   // -------- Data --------
   retrievePokemons() {
-    this.http.get<Pokemon[]>('assets/pokemon.json').subscribe((list) => {
+    this.pokemonService.getPokemons().subscribe((list) => {
       this.pokemons = [...list];
       this.selectRandomPokemon();
     });
   }
 
   private pickRandomPokemon(): Pokemon | undefined {
-    if (this.pokemons.length === 0) return undefined;
-    const idx = Math.floor(Math.random() * this.pokemons.length);
-    const picked = this.pokemons[idx];
-    this.pokemons.splice(idx, 1);   // quítalo del pool después de leerlo
-    return picked;
+    return pickRandomItem(this.pokemons);
   }
 
   selectRandomPokemon() {

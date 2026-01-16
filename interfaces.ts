@@ -5,8 +5,8 @@ export interface Pokemon {
   Legendary: boolean
   Image: string
   Type1: string
-  Type2: string
-  Description: string
+  Type2?: string
+  Description?: string
 }
 
 export interface Option {
