@@ -2,8 +2,8 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 
 type RoutePath =
   | 'tab1'
-  | 'tab2'
-  | 'tab3'
+  | 'shadow-quiz'
+  | 'blur-quiz'
   | 'tab4'
   | 'clues'
   | 'colors';
@@ -24,8 +24,8 @@ export class LobbyPage {
   // NOTE: prefer absolute asset path for Angular templates
   readonly routes: ReadonlyArray<LobbyRoute> = [
     { path: 'tab1',  name: 'Juego 1', icon: 'assets/icons/pokeball-1.svg' },
-    { path: 'tab2',  name: 'Juego 2', icon: 'assets/icons/pokeball-1.svg' },
-    { path: 'tab3',  name: 'Juego 3', icon: 'assets/icons/pokeball-1.svg' },
+    { path: 'shadow-quiz',  name: 'Juego Sombra', icon: 'assets/icons/pokeball-1.svg' },
+    { path: 'blur-quiz',  name: 'Juego Borroso', icon: 'assets/icons/pokeball-1.svg' },
     { path: 'tab4',  name: 'Juego 4', icon: 'assets/icons/pokeball-1.svg' },
     { path: 'clues', name: 'Juego 5', icon: 'assets/icons/pokeball-1.svg' }
   ];

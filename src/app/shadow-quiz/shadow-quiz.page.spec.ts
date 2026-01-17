@@ -1,20 +1,19 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
-import { RouterTestingModule } from '@angular/router/testing';
 
-import { Tab3Page } from './tab3.page';
+import { ShadowQuizPage } from './shadow-quiz.page';
 
-describe('Tab3Page', () => {
-  let component: Tab3Page;
-  let fixture: ComponentFixture<Tab3Page>;
+describe('ShadowQuizPage', () => {
+  let component: ShadowQuizPage;
+  let fixture: ComponentFixture<ShadowQuizPage>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [Tab3Page],
-      imports: [IonicModule.forRoot(), RouterTestingModule],
+      declarations: [ShadowQuizPage],
+      imports: [IonicModule.forRoot()]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(Tab3Page);
+    fixture = TestBed.createComponent(ShadowQuizPage);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
