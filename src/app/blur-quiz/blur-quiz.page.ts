@@ -14,6 +14,7 @@ type OptionVM = { Name: string; Correct: boolean; state: OptionState };
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BlurQuizPage implements OnInit {
+  private allPokemons: Pokemon[] = [];
   pokemons: Pokemon[] = [];
   pokemon!: Pokemon;
   options: OptionVM[] = [];
@@ -33,12 +34,16 @@ export class BlurQuizPage implements OnInit {
 
   retrievePokemons() {
     this.pokemonService.getPokemons().subscribe((pokemons) => {
+      this.allPokemons = [...pokemons];
       this.pokemons = [...pokemons];
       this.selectRandomPokemon();
     });
   }
 
   selectRandomPokemon() {
+    if (this.pokemons.length === 0) {
+      this.pokemons = [...this.allPokemons];
+    }
     const picked = pickRandomItem(this.pokemons);
     if (!picked) return;
 
