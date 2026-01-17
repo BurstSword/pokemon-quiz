@@ -1,20 +1,19 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
-import { RouterTestingModule } from '@angular/router/testing';
 
-import { Tab3Page } from './tab3.page';
+import { BlurQuizPage } from './blur-quiz.page';
 
-describe('Tab3Page', () => {
-  let component: Tab3Page;
-  let fixture: ComponentFixture<Tab3Page>;
+describe('BlurQuizPage', () => {
+  let component: BlurQuizPage;
+  let fixture: ComponentFixture<BlurQuizPage>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [Tab3Page],
-      imports: [IonicModule.forRoot(), RouterTestingModule],
+      declarations: [BlurQuizPage],
+      imports: [IonicModule.forRoot()]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(Tab3Page);
+    fixture = TestBed.createComponent(BlurQuizPage);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

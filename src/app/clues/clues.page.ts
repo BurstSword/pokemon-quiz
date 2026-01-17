@@ -1,6 +1,8 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { ToastController } from '@ionic/angular';
 import type { Pokemon } from 'interfaces';
+import { PokemonService } from '../services/pokemon.service';
+import { pickRandomItem } from '../shared/pokemon-utils';
 
 @Component({
   selector: 'app-clues',
@@ -21,7 +23,10 @@ export class CluesPage implements OnInit {
   // Pre-carga de la siguiente imagen para mejorar percepción al avanzar
   private preloadImg?: HTMLImageElement;
 
-  constructor(private http: HttpClient) {}
+  constructor(
+    private pokemonService: PokemonService,
+    private toastController: ToastController,
+  ) {}
 
   ngOnInit() {
     this.retrievePokemons();
@@ -29,18 +34,14 @@ export class CluesPage implements OnInit {
 
   // -------- Data --------
   retrievePokemons() {
-    this.http.get<Pokemon[]>('assets/pokemon.json').subscribe((list) => {
+    this.pokemonService.getPokemons().subscribe((list) => {
       this.pokemons = [...list];
       this.selectRandomPokemon();
     });
   }
 
   private pickRandomPokemon(): Pokemon | undefined {
-    if (this.pokemons.length === 0) return undefined;
-    const idx = Math.floor(Math.random() * this.pokemons.length);
-    const picked = this.pokemons[idx];
-    this.pokemons.splice(idx, 1); // quitar del pool tras elegirlo
-    return picked;
+    return pickRandomItem(this.pokemons);
   }
 
   selectRandomPokemon() {
@@ -93,30 +94,34 @@ export class CluesPage implements OnInit {
   }
 
   // -------- Búsqueda --------
-  onSearch(ev: any) {
-    const value = (ev?.detail?.value ?? this.searchTerm ?? '')
-      .toString()
-      .trim()
-      .toLowerCase();
+  onSearch(ev: CustomEvent) {
+    const value = (ev.detail as { value?: string })?.value ?? this.searchTerm ?? '';
+    const normalized = value.toString().trim().toLowerCase();
 
-    this.searchTerm = value;
+    this.searchTerm = normalized;
 
-    if (!value) {
+    if (!normalized) {
       this.searchResults = [];
       return;
     }
 
     this.searchResults = this.pokemons.filter((pk) =>
-      pk.Name.toLowerCase().includes(value),
+      pk.Name.toLowerCase().includes(normalized),
     );
   }
 
-  checkIfCorrect(choice: Pokemon) {
-    if (choice.Name === this.pokemon.Name) {
-      alert('Correct!');
+  async checkIfCorrect(choice: Pokemon) {
+    const isCorrect = choice.Name === this.pokemon.Name;
+    const toast = await this.toastController.create({
+      message: isCorrect ? 'Correct!' : 'Incorrect! Try again!',
+      duration: 1200,
+      color: isCorrect ? 'success' : 'danger',
+      position: 'top',
+    });
+    await toast.present();
+
+    if (isCorrect) {
       this.selectRandomPokemon();
-    } else {
-      alert('Incorrect! Try again!');
     }
   }
 

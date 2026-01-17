@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import type { Pokemon } from 'interfaces';
+import { PokemonService } from '../services/pokemon.service';
+import { pickRandomItem } from '../shared/pokemon-utils';
 
 type Letter = string;
 type CellState = 'empty' | 'ok' | 'bad';
@@ -28,7 +29,10 @@ export class Tab1Page implements OnInit {
   // Preload next image to speed up navigation
   private preloadImg?: HTMLImageElement;
 
-  constructor(private http: HttpClient, private cdr: ChangeDetectorRef) {}
+  constructor(
+    private pokemonService: PokemonService,
+    private cdr: ChangeDetectorRef,
+  ) {}
 
   ngOnInit() {
     this.retrievePokemons();
@@ -36,7 +40,7 @@ export class Tab1Page implements OnInit {
 
   // ---------- Data ----------
   retrievePokemons() {
-    this.http.get<Pokemon[]>('assets/pokemon.json').subscribe((pokemons) => {
+    this.pokemonService.getPokemons().subscribe((pokemons) => {
       this.pokemons = [...pokemons];
       this.selectRandomPokemon();
       this.cdr.markForCheck(); // <- fuerza render tras la carga inicial
@@ -44,11 +48,7 @@ export class Tab1Page implements OnInit {
   }
 
   private pickRandomPokemon(): Pokemon | undefined {
-    if (this.pokemons.length === 0) return undefined;
-    const idx = Math.floor(Math.random() * this.pokemons.length);
-    const picked = this.pokemons[idx];
-    this.pokemons.splice(idx, 1);
-    return picked;
+    return pickRandomItem(this.pokemons);
   }
 
   // Rellena/corrige la primera casilla incorrecta o vacía.
