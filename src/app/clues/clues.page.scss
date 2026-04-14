@@ -1,20 +1,12 @@
 /* ---- Fondo con el mismo gradiente rojo ---- */
 ion-content {
-  --background: linear-gradient(
-    90deg,
-    rgba(191, 34, 34, 1) 0%,
-    rgba(255, 124, 124, 1) 100%
-  );
+  --background: var(--poke-gradient);
   display: flex;
   flex-direction: column;
 }
 
 ion-toolbar {
-  --background: linear-gradient(
-    90deg,
-    rgba(191, 34, 34, 1) 0%,
-    rgba(255, 124, 124, 1) 100%
-  );
+  --background: var(--poke-gradient);
 }
 
 /* ---- Hoja blanca redondeada ---- */
@@ -50,11 +42,7 @@ ion-toolbar {
 
 /* Botón "Add clue" con el gradiente de la app */
 .clueBtn {
-  --background: linear-gradient(
-    90deg,
-    rgba(191, 34, 34, 1) 0%,
-    rgba(255, 124, 124, 1) 100%
-  );
+  --background: var(--poke-gradient);
   --color: #fff;
   --border-radius: 9999px;
   --padding-top: 12px;

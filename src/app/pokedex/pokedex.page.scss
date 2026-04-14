@@ -1,6 +1,6 @@
 ion-content {
     --background: rgb(191, 34, 34);
-    --background: linear-gradient(90deg, rgba(191, 34, 34, 1) 0%, rgba(255, 124, 124, 1) 100%);
+    --background: var(--poke-gradient);
     display: flex;
     flex-direction: column;
     height: 100%;
@@ -9,7 +9,7 @@ ion-content {
 
 ion-toolbar {
     --background: rgb(191, 34, 34);
-    --background: linear-gradient(90deg, rgba(191, 34, 34, 1) 0%, rgba(255, 124, 124, 1) 100%);
+    --background: var(--poke-gradient);
 }
 
 .container {

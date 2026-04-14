@@ -1,8 +1,6 @@
 /* ====== Fondo con gradiente rojo (igual que antes) ====== */
 ion-content {
-    --background: linear-gradient(90deg,
-            rgba(191, 34, 34, 1) 0%,
-            rgba(255, 124, 124, 1) 100%);
+    --background: var(--poke-gradient);
     display: flex;
     flex-direction: column;
     height: 100%;
@@ -10,9 +8,7 @@ ion-content {
 }
 
 ion-toolbar {
-    --background: linear-gradient(90deg,
-            rgba(191, 34, 34, 1) 0%,
-            rgba(255, 124, 124, 1) 100%);
+    --background: var(--poke-gradient);
 }
 
 /* ====== Hoja blanca redondeada (contenedor) ====== */
@@ -53,18 +49,18 @@ ion-row {
   */
     --background:
         url('../../assets/icons/pokeball-1.svg') left calc(var(--stripe-w) / 2 - var(--icon-size) / 2) center / var(--icon-size) var(--icon-size) no-repeat,
-        linear-gradient(90deg, rgba(191, 34, 34, 1) 0%, rgba(255, 124, 124, 1) 100%) 0 0 / var(--stripe-w) 100% no-repeat,
+        var(--poke-gradient) 0 0 / var(--stripe-w) 100% no-repeat,
         #ffffff;
 
     /* Estados visuales coherentes */
     --background-hover:
         url('../../assets/icons/pokeball-1.svg') left calc(var(--stripe-w) / 2 - var(--icon-size) / 2) center / var(--icon-size) var(--icon-size) no-repeat,
-        linear-gradient(90deg, rgba(191, 34, 34, .95) 0%, rgba(255, 124, 124, .95) 100%) 0 0 / var(--stripe-w) 100% no-repeat,
+        linear-gradient(90deg, color-mix(in srgb, var(--poke-red-start) 95%, transparent) 0%, color-mix(in srgb, var(--poke-red-end) 95%, transparent) 100%) 0 0 / var(--stripe-w) 100% no-repeat,
         #f7f7f7;
 
     --background-activated:
         url('../../assets/icons/pokeball-1.svg') left calc(var(--stripe-w) / 2 - var(--icon-size) / 2) center / var(--icon-size) var(--icon-size) no-repeat,
-        linear-gradient(90deg, rgba(191, 34, 34, .9) 0%, rgba(255, 124, 124, .9) 100%) 0 0 / var(--stripe-w) 100% no-repeat,
+        linear-gradient(90deg, color-mix(in srgb, var(--poke-red-start) 90%, transparent) 0%, color-mix(in srgb, var(--poke-red-end) 90%, transparent) 100%) 0 0 / var(--stripe-w) 100% no-repeat,
         #f0f0f0;
 
     text-transform: none;

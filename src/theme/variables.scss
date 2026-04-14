@@ -68,6 +68,7 @@
 
     --poke-red-start: #bf2222;
     --poke-red-end: #ff7c7c;
+    --poke-gradient: linear-gradient(135deg, var(--poke-red-start) 0%, var(--poke-red-end) 100%);
     --poke-surface: #ffffff;
     --poke-text: #111111;
 }

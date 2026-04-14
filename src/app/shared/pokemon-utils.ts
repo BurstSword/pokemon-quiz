@@ -1,7 +1,7 @@
 export const pickRandomItem = <T>(items: T[]): T | undefined => {
   if (items.length === 0) return undefined;
   const idx = Math.floor(Math.random() * items.length);
-  return items.splice(idx, 1)[0];
+  return items[idx];
 };
 
 export const shuffleArray = <T>(items: T[]): T[] => {

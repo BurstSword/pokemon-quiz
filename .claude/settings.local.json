@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(grep -E \"\\\\.ts$|^d\")",
+      "Bash(npx tsc:*)"
+    ]
+  }
+}

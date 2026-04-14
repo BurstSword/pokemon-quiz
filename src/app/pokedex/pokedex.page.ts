@@ -1,6 +1,5 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import type { Pokemon } from 'interfaces';
-import { PageEvent } from '@angular/material/paginator';
 import { ModalController } from '@ionic/angular';
 import { PokemonModalComponent } from '../pokemon-modal/pokemon-modal.component';
 import { PokemonService } from '../services/pokemon.service';
@@ -12,23 +11,38 @@ import { PokemonTypeService } from '../services/pokemon-type.service';
   styleUrls: ['./pokedex.page.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class PokedexPage {
-  pageEvent: PageEvent = new PageEvent();
+export class PokedexPage implements OnInit {
   pageSize = 10;
   currentPage = 0;
   pokemons: Pokemon[] = [];
   filteredPokemons: Pokemon[] = [];
   searchTerm = '';
 
+  constructor(
+    private pokemonService: PokemonService,
+    private pokemonTypeService: PokemonTypeService,
+    private modalController: ModalController,
+    private cdr: ChangeDetectorRef,
+  ) {}
+
+  ngOnInit(): void {
+    this.pokemonService.getPokemons().subscribe((pokemons) => {
+      this.pokemons = [...pokemons];
+      this.filteredPokemons = [...pokemons];
+      this.cdr.markForCheck();
+    });
+  }
+
   filterPokemons() {
     if (this.searchTerm) {
-      this.filteredPokemons = this.pokemons.filter(pokemon =>
-        pokemon.Name.toLowerCase().includes(this.searchTerm.toLowerCase())
+      this.filteredPokemons = this.pokemons.filter((pokemon) =>
+        pokemon.Name.toLowerCase().includes(this.searchTerm.toLowerCase()),
       );
     } else {
       this.filteredPokemons = [...this.pokemons];
     }
-    this.currentPage = 0; // Reset pagination
+    this.currentPage = 0;
+    this.cdr.markForCheck();
   }
 
   get maxPage() {
@@ -38,25 +52,6 @@ export class PokedexPage {
   get paginatedPokemons() {
     const startIndex = this.currentPage * this.pageSize;
     return this.filteredPokemons.slice(startIndex, startIndex + this.pageSize);
-  }
-
-  onPageChange(event: PageEvent) {
-    this.currentPage = event.pageIndex;
-    this.pageSize = event.pageSize;
-  }
-  constructor(
-    private pokemonService: PokemonService,
-    private pokemonTypeService: PokemonTypeService,
-    private modalController: ModalController,
-  ) {
-    this.retrievePokemons();
-  }
-
-  retrievePokemons() {
-    this.pokemonService.getPokemons().subscribe((pokemons) => {
-      this.pokemons = [...pokemons];
-      this.filteredPokemons = [...pokemons];
-    });
   }
 
   getImageUrl(type: string) {
@@ -72,12 +67,10 @@ export class PokedexPage {
   async showPokemonDetails(pokemon: Pokemon) {
     const modal = await this.modalController.create({
       component: PokemonModalComponent,
-      cssClass: 'custom-modal', // Add this line
-      animated: true, // This line adds animation
-      componentProps: {
-        pokemon: pokemon
-      }
+      cssClass: 'custom-modal',
+      animated: true,
+      componentProps: { pokemon },
     });
-    return await modal.present();
+    return modal.present();
   }
 }

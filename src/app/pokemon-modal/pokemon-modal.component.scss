@@ -1,32 +1,56 @@
-/* pokemon-modal.component.css */
-.custom-modal {
-    --width: 90%; /* adjust to desired width */
-    --height: 80%; /* adjust to desired height */
-}
-
 ion-content {
-    --background: rgb(191, 34, 34);
-    --background: linear-gradient(90deg, rgba(191, 34, 34, 1) 0%, rgba(255, 124, 124, 1) 100%);
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    overflow: auto;
+  --background: var(--poke-gradient);
 }
 
 ion-toolbar {
-    --background: rgb(191, 34, 34);
-    --background: linear-gradient(90deg, rgba(191, 34, 34, 1) 0%, rgba(255, 124, 124, 1) 100%);
+  --background: var(--poke-gradient);
+  --color: #fff;
 }
 
 .container {
-    flex-grow: 1;
-    border-radius: 40px 40px 0px 0px;
-    background-color: white;
-    overflow: auto;
-    height: 100%;
+  border-radius: 32px 32px 0 0;
+  background-color: #fff;
+  overflow: auto;
+  height: 100%;
+  padding: clamp(12px, 3vw, 20px);
+}
+
+.infoCol {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  color: #111827;
+}
+
+.pokemonNumber {
+  margin: 0 0 4px;
+  font-size: clamp(12px, 2.5vw, 15px);
+  color: #6b7280;
+  font-weight: 600;
+}
+
+.pokemonName {
+  margin: 0 0 12px;
+  font-size: clamp(16px, 4vw, 22px);
+  font-weight: 800;
+  color: #111827;
+}
+
+.typeRow {
+  display: flex;
+  gap: 8px;
+  align-items: center;
 }
 
 .typeImage {
-    width: 40px;
-    height: 40px;
+  width: 36px;
+  height: 36px;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+}
+
+.description {
+  color: #374151;
+  font-size: clamp(13px, 2.5vw, 15px);
+  line-height: 1.6;
+  padding: 0 4px;
 }

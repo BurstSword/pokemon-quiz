@@ -1,173 +1,253 @@
-/* ---- Background gradient (same style as lobby) ---- */
-ion-content {
-    --background: linear-gradient(90deg, rgba(191, 34, 34, 1) 0%, rgba(255, 124, 124, 1) 100%);
-    display: flex;
-    flex-direction: column;
+/* ================================
+   IMPORTANT: Ionic "scoping" fix
+================================ */
+:host {
+  display: block;
 }
 
-ion-toolbar {
-    --background: linear-gradient(90deg, rgba(191, 34, 34, 1) 0%, rgba(255, 124, 124, 1) 100%);
+/* Header gradient (FORCED) */
+:host ion-header ion-toolbar {
+  --background: var(--poke-gradient) !important;
+  --color: #fff;
 }
 
-/* ---- White rounded sheet ---- */
+/* Content gradient (FORCED) */
+:host ion-content {
+  --background: var(--poke-gradient) !important;
+}
+
+/* ================================
+   WHITE SHEET (layout stable)
+================================ */
 .containerQuiz {
-    flex: 1;
-    border-radius: 40px 40px 0 0;
-    background: #fff;
-    min-height: 100%;
-    padding: clamp(12px, 2.5vw, 24px);
-    display: grid;
-    grid-template-rows: auto auto 1fr;
-    row-gap: clamp(8px, 2vh, 16px);
+  /* En vez de grid, usamos flex-column para asegurar teclado abajo */
+  min-height: 100%;
+  width: 100%;
+  max-width: 820px;
+  margin: 0 auto;
+
+  border-radius: 40px 40px 0 0;
+  background: #fff;
+
+  padding: clamp(12px, 2.5vw, 24px);
+
+  display: flex;
+  flex-direction: column;
+  gap: clamp(10px, 2vh, 16px);
+
+  /* iOS safe area */
+  padding-bottom: calc(clamp(12px, 2.5vw, 24px) + env(safe-area-inset-bottom));
 }
 
-/* ---- Image ---- */
+/* ================================
+   IMAGE
+================================ */
 .pokemonSection {
-    display: grid;
-    place-items: center;
-    padding-top: clamp(8px, 2vh, 16px);
+  display: grid;
+  place-items: center;
+  padding-top: clamp(6px, 2vh, 14px);
 }
 
 .imgFrame {
-    position: relative;
-    width: clamp(180px, 50vw, 320px);
-    height: clamp(180px, 50vw, 320px);
+  position: relative;
+  width: clamp(170px, 46vw, 320px);
+  height: clamp(170px, 46vw, 320px);
+  border-radius: 18px;
+  display: grid;
+  place-items: center;
+  background: #fff;
+
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.08);
 }
 
 .pokeImg {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    filter: drop-shadow(2px 2px 2px gray);
-    transition: opacity .2s ease;
+  width: 92%;
+  height: 92%;
+  object-fit: contain;
+  filter: drop-shadow(2px 2px 2px rgba(0, 0, 0, 0.35));
+  transition: opacity 0.18s ease, transform 0.18s ease;
 }
 
 .imgFrame .skeleton {
-    position: absolute;
-    inset: 0;
-    border-radius: 16px;
-    --background-rgb: 240, 240, 240;
+  position: absolute;
+  inset: 0;
+  border-radius: 18px;
+  --background-rgb: 240, 240, 240;
 }
 
 .imgFrame.loading .pokeImg {
-    opacity: 0;
+  opacity: 0;
+  transform: scale(0.98);
 }
-
 .imgFrame:not(.loading) .pokeImg {
-    opacity: 1;
+  opacity: 1;
+  transform: scale(1);
 }
 
-/* ---- Name cells ---- */
+/* ================================
+   NAME CELLS
+================================ */
 .nameSection {
-    display: grid;
-    place-items: center;
+  display: grid;
+  place-items: center;
 }
 
 .pokemonRow {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: clamp(4px, 1vw, 8px);
-    margin: 0.5rem 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: clamp(6px, 1vw, 10px);
+  margin-top: 0.2rem;
 }
 
 .pokemonNameButton {
-    font-size: clamp(0.9rem, 1.8vw, 1rem);
-    font-weight: 700;
-    height: clamp(38px, 6vh, 46px);
-    width: clamp(28px, 4.5vw, 36px);
-    border-radius: 6px;
-    background: linear-gradient(90deg, rgba(191, 34, 34, 1) 0%, rgba(255, 124, 124, 1) 100%);
-    color: #111;
-    border: none;
+  font-size: clamp(0.92rem, 1.6vw, 1rem);
+  font-weight: 800;
+  height: clamp(38px, 6vh, 46px);
+  width: clamp(30px, 4.6vw, 38px);
+  border-radius: 8px;
+  border: none;
+
+  background: var(--poke-gradient);
+  color: #111;
+
+  transition: transform 0.08s ease, filter 0.12s ease, outline 0.12s ease;
+}
+
+.pokemonNameButton:active {
+  transform: scale(0.96);
 }
 
 .small-button {
-    height: clamp(30px, 5vh, 32px) !important;
-    width: clamp(22px, 3.8vw, 24px) !important;
+  height: clamp(30px, 5vh, 34px) !important;
+  width: clamp(22px, 3.8vw, 26px) !important;
+  font-size: clamp(0.78rem, 1.2vw, 0.88rem) !important;
 }
 
 .highlighted {
-    outline: 2px solid #000;
+  outline: 2px solid #111;
+  outline-offset: 2px;
 }
 
-/* Per-cell feedback */
 .pokemonNameButton.ok {
-    background: #27ae60;
-    color: #fff;
+  background: #27ae60;
+  color: #fff;
 }
 
 .pokemonNameButton.bad {
-    background: #e74c3c;
-    color: #fff;
+  background: #e74c3c;
+  color: #fff;
 }
 
-/* ---- Keyboard ---- */
+/* ================================
+   KEYBOARD (stick to bottom)
+================================ */
 #keyboard-cont {
-    width: 100%;
-    margin: 1rem 0;
-    display: grid;
-    row-gap: clamp(8px, 1.6vh, 12px);
-    justify-items: center;
+  /* Antes: margin-top: auto; -> crea un hueco enorme en pantallas altas */
+  margin-top: clamp(14px, 3vh, 28px);
+
+  width: 100%;
+  display: grid;
+  row-gap: clamp(8px, 1.6vh, 12px);
+  justify-items: center;
 }
 
+/* Filas consistentes */
 .numbers-row {
-    display: grid;
-    grid-auto-flow: column;
-    grid-auto-columns: minmax(clamp(36px, 7vw, 56px), max-content);
-    column-gap: clamp(4px, 0.9vw, 6px);
-    justify-content: center;
+  width: 100%;
+  max-width: 520px;
+
+  display: flex;
+  justify-content: center;
+  gap: clamp(6px, 1vw, 10px);
+
+  /* Muy importante: evita saltos raros */
+  flex-wrap: nowrap;
 }
 
+/* Teclas del teclado: tamaño auto-ajustable */
 .keyboard-button {
-    font-size: clamp(0.85rem, 1.6vw, 0.95rem);
-    font-weight: 700;
-    line-height: 1;
-    padding: 0.35rem 0.5rem;
-    text-transform: uppercase;
-    background: #fff;
-    min-height: clamp(34px, 5.2vh, 40px);
-    min-width: clamp(36px, 7vw, 56px);
-    border-radius: 6px;
-    border: 1px solid #6b6b6b;
-    color: #6b6b6b;
+  font-size: clamp(0.82rem, 1.4vw, 0.95rem);
+  font-weight: 800;
+  line-height: 1;
+  text-transform: uppercase;
+
+  /* Aquí está la clave: botones elásticos */
+  flex: 0 0 clamp(46px, 14vw, 64px);
+
+  min-height: clamp(38px, 5.5vh, 44px);
+  padding: 0.55rem 0.5rem;
+
+  background: #fff;
+  border-radius: 10px;
+  border: 1px solid #6b6b6b;
+  color: #6b6b6b;
+
+  transition: transform 0.08s ease;
 }
 
-/* Actions: delete + enter */
+.keyboard-button:active {
+  transform: scale(0.96);
+}
+
+/* Actions */
 .actions {
-    width: 100%;
-    display: grid;
-    row-gap: clamp(8px, 1.6vh, 12px);
-    justify-items: stretch;
-    margin-top: clamp(8px, 2vh, 12px);
+  width: 100%;
+  max-width: 520px;
+
+  display: grid;
+  grid-template-columns: 1fr auto; /* ENTER ocupa y DEL se queda a la derecha */
+  gap: clamp(10px, 1.8vh, 14px);
+
+  margin-top: clamp(10px, 2vh, 14px);
+  align-items: center;
 }
 
 .actions .del {
-    justify-self: end;
-    min-width: clamp(64px, 16vw, 88px);
-    min-height: clamp(34px, 5.2vh, 40px);
+  min-width: clamp(72px, 16vw, 94px);
+  min-height: clamp(38px, 5.5vh, 44px);
+  justify-self: end;
 }
 
-/* ENTER full width */
 .actions .enter {
-    width: 100%;
-    max-width: none;
-    min-height: clamp(38px, 6vh, 48px);
-    background: linear-gradient(90deg, rgba(191, 34, 34, 1) 0%, rgba(255, 124, 124, 1) 100%);
-    color: #fff;
-    border-color: transparent;
+  grid-column: 1 / -1; /* ENTER en fila completa */
+  width: 100%;
+  min-height: clamp(42px, 6.2vh, 52px);
 
+  background: var(--poke-gradient);
+  color: #fff;
+  border: none;
 }
+
 
 /* Disabled */
 button:disabled {
-    background-color: rgb(37, 37, 37);
-    color: white;
+  background-color: rgb(37, 37, 37);
+  color: white;
+  opacity: 0.9;
 }
 
-/* Small screens */
+/* Pantallas pequeñas */
 @media (max-width: 480px) {
-    .containerQuiz {
-        border-radius: 28px 28px 0 0;
-    }
+  .containerQuiz {
+    border-radius: 28px 28px 0 0;
+  }
+}
+
+/* Pantallas bajas (evita que se coma el teclado) */
+@media (max-height: 700px) {
+  .pokemonSection {
+    padding-top: 6px;
+  }
+}
+
+@media (max-width: 360px) {
+  .keyboard-button {
+    flex: 0 0 clamp(40px, 16vw, 58px);
+    padding: 0.5rem 0.4rem;
+  }
+
+  .pokemonNameButton {
+    width: clamp(28px, 4.2vw, 36px);
+  }
 }
