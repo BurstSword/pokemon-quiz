@@ -1,0 +1,18 @@
+@if (status) {
+  <section class="resultBanner" [class.correct]="status === 'correct'" [class.incorrect]="status === 'incorrect'" role="status" aria-live="polite">
+    <div class="resultCopy">
+      <span class="eyebrow">{{ status === 'correct' ? 'Correcto' : 'No era ese' }}</span>
+      <h2>{{ title || (status === 'correct' ? 'Correcto!' : 'No era ese') }}</h2>
+      @if (message) {
+        <p>{{ message }}</p>
+      }
+      @if (answer) {
+        <p class="answer">Era <strong>{{ answer }}</strong></p>
+      }
+    </div>
+
+    <button type="button" class="nextButton" (click)="next.emit()">
+      {{ nextLabel }}
+    </button>
+  </section>
+}

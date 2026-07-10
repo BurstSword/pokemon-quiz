@@ -1,0 +1,7 @@
+@if (toastService.toast(); as toast) {
+  <div class="toastShell">
+    <div class="toast" [ngClass]="toast.tone">
+      {{ toast.message }}
+    </div>
+  </div>
+}

@@ -1,0 +1,19 @@
+<header class="pageHeader">
+  <div class="toolbar">
+    <div class="slot start">
+      @if (backLink) {
+        <a class="iconButton" [routerLink]="backLink" aria-label="Volver">
+          <span aria-hidden="true">&larr;</span>
+        </a>
+      } @else {
+        <span class="iconButton placeholder" aria-hidden="true"></span>
+      }
+    </div>
+
+    <h1>{{ title }}</h1>
+
+    <div class="slot end">
+      <ng-content select="[header-actions]"></ng-content>
+    </div>
+  </div>
+</header>

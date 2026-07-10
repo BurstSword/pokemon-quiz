@@ -1,0 +1,339 @@
+:host {
+  display: block;
+}
+
+.pageContent {
+  min-height: calc(100dvh - var(--app-header-height));
+  background: var(--poke-gradient);
+}
+
+.pageWrap {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  min-height: 100%;
+}
+
+.containerQuiz {
+  width: 100%;
+  max-width: 980px;
+  padding: clamp(10px, 1.8vw, 16px);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(10px, 1.4vh, 14px);
+  border-radius: 32px 32px 0 0;
+  background:
+    radial-gradient(circle at top right, rgba(255, 124, 124, 0.18), transparent 28%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(248, 250, 252, 0.94) 100%);
+  box-shadow: 0 -18px 32px rgba(15, 23, 42, 0.12);
+  overflow: hidden;
+  min-height: 100%;
+}
+
+.heroSection {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(220px, 290px);
+  gap: clamp(12px, 1.8vw, 18px);
+  align-items: center;
+}
+
+.heroCopy h1 {
+  margin: 8px 0;
+  color: #111827;
+  font-size: clamp(1.3rem, 2.8vw, 1.8rem);
+  line-height: 1.05;
+  max-width: 10ch;
+}
+
+.heroCopy p {
+  margin: 0;
+  color: #4b5563;
+  font-size: clamp(0.88rem, 1.4vw, 0.96rem);
+  line-height: 1.35;
+  max-width: 38ch;
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.35rem 0.8rem;
+  border-radius: 999px;
+  background: rgba(191, 34, 34, 0.1);
+  color: #991b1b;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.imgFrame {
+  position: relative;
+  width: min(100%, clamp(178px, 22vh, 236px));
+  aspect-ratio: 1 / 1;
+  display: grid;
+  place-items: center;
+  justify-self: center;
+  border-radius: 28px;
+  background:
+    radial-gradient(circle at 30% 25%, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.45) 55%, rgba(255, 255, 255, 0.2) 100%),
+    linear-gradient(135deg, rgba(191, 34, 34, 0.1), rgba(255, 124, 124, 0.18));
+  border: 1px solid rgba(255, 255, 255, 0.65);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.55), 0 18px 35px rgba(191, 34, 34, 0.14);
+  overflow: hidden;
+}
+
+.pokeImg {
+  width: 88%;
+  height: 88%;
+  object-fit: contain;
+  filter: drop-shadow(0 16px 18px rgba(15, 23, 42, 0.22));
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.skeleton {
+  position: absolute;
+  inset: 0;
+}
+
+.imgFrame.loading .pokeImg {
+  opacity: 0;
+  transform: scale(0.97);
+}
+
+.imgFrame:not(.loading) .pokeImg {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.answerSection {
+  display: grid;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 22px;
+  background: rgba(15, 23, 42, 0.04);
+}
+
+.sectionHeader {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  color: #475569;
+  font-size: 0.88rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.pokemonRow {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: clamp(8px, 1vw, 12px);
+}
+
+.pokemonNameButton {
+  width: clamp(30px, 3.6vw, 38px);
+  height: clamp(36px, 4.3vh, 42px);
+  border: none;
+  border-radius: 12px;
+  background: linear-gradient(180deg, #f8fafc 0%, #e2e8f0 100%);
+  color: #111827;
+  font-size: clamp(0.94rem, 1.4vw, 1.02rem);
+  font-weight: 800;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  transition: transform 0.08s ease, box-shadow 0.12s ease, border-color 0.12s ease;
+}
+
+.pokemonNameButton:active {
+  transform: scale(0.96);
+}
+
+.pokemonNameButton.highlighted {
+  box-shadow: 0 0 0 3px rgba(191, 34, 34, 0.18);
+  border: 1px solid rgba(191, 34, 34, 0.45);
+}
+
+.pokemonNameButton.ok {
+  background: linear-gradient(180deg, #34d399 0%, #059669 100%);
+  color: #fff;
+}
+
+.pokemonNameButton.bad {
+  background: linear-gradient(180deg, #fb7185 0%, #dc2626 100%);
+  color: #fff;
+}
+
+.small-button {
+  width: clamp(24px, 2.6vw, 30px);
+  height: clamp(30px, 3.6vh, 36px);
+  font-size: clamp(0.76rem, 1vw, 0.9rem);
+}
+
+#keyboard-cont {
+  width: min(100%, 760px);
+  align-self: center;
+  display: grid;
+  gap: clamp(6px, 0.9vh, 8px);
+}
+
+.keyboardRow {
+  width: min(100%, 720px);
+  display: grid;
+  gap: clamp(6px, 0.8vw, 8px);
+  margin: 0 auto;
+}
+
+.row-12 {
+  grid-template-columns: repeat(12, minmax(24px, 1fr));
+}
+
+.row-10 {
+  grid-template-columns: repeat(10, minmax(24px, 1fr));
+}
+
+.row-9 {
+  grid-template-columns: repeat(9, minmax(24px, 1fr));
+}
+
+.keyboard-button {
+  min-width: 0;
+  width: 100%;
+  min-height: clamp(36px, 4.1vh, 40px);
+  padding: 0.46rem 0.2rem;
+  border: none;
+  border-radius: 12px;
+  background: #fff;
+  color: #1f2937;
+  font-size: clamp(0.8rem, 1.25vw, 0.92rem);
+  font-weight: 800;
+  text-transform: uppercase;
+  line-height: 1;
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
+  transition: transform 0.08s ease, box-shadow 0.12s ease, background 0.12s ease;
+  white-space: nowrap;
+}
+
+.keyboard-button:hover {
+  box-shadow: 0 14px 28px rgba(15, 23, 42, 0.12);
+}
+
+.keyboard-button:active {
+  transform: scale(0.96);
+}
+
+.keyboard-button:disabled {
+  opacity: 0.58;
+}
+
+.keyboard-button.secondary {
+  background: rgba(248, 250, 252, 0.8);
+  color: #64748b;
+}
+
+.keyboard-button.action {
+  background: var(--poke-gradient);
+  color: #fff;
+}
+
+.keyboard-button.wide {
+  grid-column: span 2;
+}
+
+@media (max-height: 760px) {
+  .containerQuiz {
+    gap: 8px;
+  }
+
+  .heroSection {
+    grid-template-columns: minmax(0, 1fr) minmax(160px, 210px);
+  }
+}
+
+@media (max-width: 720px) {
+  .heroSection {
+    grid-template-columns: 1fr;
+  }
+
+  .heroCopy {
+    text-align: center;
+  }
+
+  .heroCopy h1,
+  .heroCopy p {
+    max-width: none;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .containerQuiz {
+    overflow: visible;
+  }
+}
+
+@media (max-width: 560px) {
+  .containerQuiz {
+    border-radius: 28px 28px 0 0;
+  }
+
+  #keyboard-cont {
+    width: 100%;
+  }
+
+  .keyboardRow {
+    gap: 5px;
+  }
+
+  .keyboard-button {
+    min-height: 36px;
+    font-size: clamp(0.6rem, 1.95vw, 0.8rem);
+    padding-inline: 0.1rem;
+  }
+
+  .keyboard-button.wide {
+    font-size: clamp(0.56rem, 1.8vw, 0.74rem);
+  }
+}
+
+@media (max-width: 480px) {
+  .row-12 {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+
+  .row-10,
+  .row-9 {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+
+  .keyboard-button.wide {
+    grid-column: span 1;
+  }
+
+  .keyboard-button {
+    min-height: 38px;
+    font-size: 0.7rem;
+    padding-inline: 0.16rem;
+  }
+}
+
+@media (max-width: 390px), (max-height: 620px) {
+  .containerQuiz {
+    padding-inline: 12px;
+    overflow: hidden;
+  }
+
+  .keyboardRow {
+    gap: 4px;
+  }
+
+  .keyboard-button {
+    min-height: 36px;
+    font-size: 0.64rem;
+    letter-spacing: -0.01em;
+  }
+
+  .keyboard-button.wide {
+    font-size: 0.64rem;
+  }
+}

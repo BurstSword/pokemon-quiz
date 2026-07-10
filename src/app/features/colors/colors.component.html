@@ -1,0 +1,112 @@
+<app-page-header title="Quiz colores">
+  <button type="button" header-actions class="headerIconButton" (click)="toggleTypes()" aria-label="Mostrar tipos">
+    <img src="assets/icons/clues.svg" alt="" />
+  </button>
+  <button type="button" header-actions class="headerIconButton textIcon" (click)="toggleHelp()" aria-label="Abrir ayuda">
+    <span aria-hidden="true">?</span>
+  </button>
+</app-page-header>
+
+<app-help-panel
+  [open]="helpOpen"
+  title="Cómo se juega"
+  description="Lee los colores dominantes y elige qué Pokémon crees que se esconde detrás. No verás la imagen hasta responder."
+  (closed)="closeHelp()"
+></app-help-panel>
+
+<main class="pageContent">
+  <div class="pageWrap">
+    <div class="containerQuiz">
+      <section class="quizCard">
+        <div class="poolErrorState" *ngIf="poolErrorMessage">
+          <strong>No hay suficientes Pokémon activos</strong>
+          <span>{{ poolErrorMessage }}</span>
+        </div>
+
+        <ng-container *ngIf="!poolErrorMessage">
+        <div class="quizTopBar">
+          <div class="titleBlock">
+            <span class="panelEyebrow">Quiz colores</span>
+            <h2>Quien tiene esta paleta?</h2>
+          </div>
+
+          <span class="statusChip">{{ isLoadingPalette ? 'Preparando...' : '4 opciones' }}</span>
+        </div>
+
+        <div class="paletteStrip loading" *ngIf="isLoadingPalette">
+          <app-skeleton-block
+            *ngFor="let slot of loadingSlots; trackBy: trackByIndex"
+            class="swatchSkeleton"
+            [radius]="20"
+          ></app-skeleton-block>
+        </div>
+
+        <p class="loadingNote" *ngIf="isLoadingPalette">Preparando paleta...</p>
+
+        <div class="paletteStrip" *ngIf="!isLoadingPalette">
+          <span class="swatch" *ngFor="let color of palette; trackBy: trackByColor" [style.--color]="color"></span>
+        </div>
+
+        <div class="paletteError" *ngIf="paletteError">
+          {{ paletteError }}
+        </div>
+
+        <div class="hintBar" *ngIf="pokemonTypes && pokemon?.Type1">
+          <div class="types">
+            <img class="typeImage" [src]="getTypeImage(pokemon?.Type1 || '')" [alt]="pokemon?.Type1 || 'Type 1'" />
+            <img
+              class="typeImage"
+              *ngIf="pokemon?.Type2"
+              [src]="getTypeImage(pokemon?.Type2 || '')"
+              [alt]="pokemon?.Type2 || 'Type 2'"
+            />
+          </div>
+          <span class="hintLabel">Pista activa</span>
+        </div>
+
+        <div class="optionsGrid">
+          <button
+            type="button"
+            class="optionCard"
+            *ngFor="let option of options; trackBy: trackByOption"
+            [ngClass]="{
+              normalOption: option.state === 'normal',
+              correctOption: option.state === 'correct',
+              incorrectOption: option.state === 'incorrect',
+              disabledOption: option.state === 'disabled'
+            }"
+            (click)="resolveOption(option)"
+            [disabled]="optionsLocked"
+          >
+            <strong>{{ option.label }}</strong>
+          </button>
+        </div>
+
+        <section class="revealCard" *ngIf="resultStatus && pokemon">
+          <div class="revealArtwork" *ngIf="getRevealImage(pokemon) as revealImage">
+            <img [src]="revealImage" [alt]="getPokemonLabel(pokemon)" loading="lazy" decoding="async" />
+          </div>
+
+          <div class="revealCopy">
+            <span class="revealEyebrow">Pokémon correcto</span>
+            <strong>{{ getRevealCopy() }}</strong>
+
+            <div class="revealTypes" *ngIf="pokemon.Type1">
+              <img class="typeImage" [src]="getTypeImage(pokemon.Type1)" [alt]="pokemon.Type1" />
+              <img class="typeImage" *ngIf="pokemon.Type2" [src]="getTypeImage(pokemon.Type2)" [alt]="pokemon.Type2" />
+            </div>
+          </div>
+        </section>
+
+        <app-result-banner
+          [status]="resultStatus"
+          [title]="resultTitle"
+          [message]="resultMessage"
+          [answer]="revealedAnswer"
+          (next)="nextRound()"
+        ></app-result-banner>
+        </ng-container>
+      </section>
+    </div>
+  </div>
+</main>

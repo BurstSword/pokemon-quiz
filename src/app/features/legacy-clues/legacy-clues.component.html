@@ -1,0 +1,44 @@
+<app-page-header title="Legacy pistas"></app-page-header>
+
+<main class="pageContent">
+  <div class="containerQuiz">
+    <section class="clueSection">
+      <ul class="clues">
+        <li *ngFor="let clue of showingClues">{{ clue }}</li>
+      </ul>
+
+      <button
+        type="button"
+        class="clueBtn"
+        (click)="addClue()"
+        [disabled]="showingClues.length >= clues.length"
+      >
+        Add clue
+      </button>
+    </section>
+
+    <section class="searchSection">
+      <input
+        class="searchInput"
+        type="search"
+        [(ngModel)]="searchTerm"
+        (ngModelChange)="onSearch($event)"
+        placeholder="Search Pokemon"
+      />
+
+      <div class="resultsGrid">
+        <button
+          type="button"
+          class="pokeCard"
+          *ngFor="let item of visibleResults; trackBy: trackByPokemon"
+          (click)="checkIfCorrect(item)"
+        >
+          <img [src]="item.Image" loading="lazy" decoding="async" width="160" height="160" alt="Pokemon" />
+          <div class="pokeCard__footer">
+            <span class="pokeCard__title">{{ item.Name }}</span>
+          </div>
+        </button>
+      </div>
+    </section>
+  </div>
+</main>

@@ -1,53 +1,133 @@
-/*
- * App Global CSS
- * ----------------------------------------------------------------------------
- * Put style rules here that you want to apply globally. These styles are for
- * the entire app and not just one component. Additionally, this file can be
- * used as an entry point to import other CSS/Sass files to be included in the
- * output CSS.
- * For more information on global stylesheets, visit the documentation:
- * https://ionicframework.com/docs/layout/global-stylesheets
- */
-
-/* Core CSS required for Ionic components to work properly */
-@import "@ionic/angular/css/core.css";
-
-/* Basic CSS for apps built with Ionic */
-@import "@ionic/angular/css/normalize.css";
-@import "@ionic/angular/css/structure.css";
-@import "@ionic/angular/css/typography.css";
-@import "@ionic/angular/css/display.css";
-
-/* Optional CSS utils that can be commented out */
-@import "@ionic/angular/css/padding.css";
-@import "@ionic/angular/css/float-elements.css";
-@import "@ionic/angular/css/text-alignment.css";
-@import "@ionic/angular/css/text-transformation.css";
-@import "@ionic/angular/css/flex-utils.css";
-
-/**
- * Ionic Dark Mode
- * -----------------------------------------------------
- * For more info, please see:
- * https://ionicframework.com/docs/theming/dark-mode
- */
-
-/* @import "@ionic/angular/css/palettes/dark.always.css"; */
-/* @import "@ionic/angular/css/palettes/dark.class.css"; */
-@import "@ionic/angular/css/palettes/dark.system.css";
-
-/* Theme variables */
-@import './theme/variables.scss';
-
-
-
-/* Custom CSS */
-ion-button[disabled] {
-    opacity: 1;
+:root {
+  --poke-red-start: #bf2222;
+  --poke-red-end: #ff7c7c;
+  --poke-gradient: linear-gradient(135deg, var(--poke-red-start) 0%, var(--poke-red-end) 100%);
+  --poke-surface: #ffffff;
+  --poke-text: #111111;
+  --app-header-height: 64px;
+  --app-page-gutter: clamp(10px, 2vw, 18px);
 }
 
-ion-modal.custom-modal {
-    --width: 90%; /* adjust to desired width */
-    --height: 80%; /* adjust to desired height */
-  }
+html,
+body {
+  min-height: 100%;
+  height: 100%;
+  margin: 0;
+  background: var(--poke-gradient);
+  overflow-x: hidden;
+}
 
+body {
+  font-family: 'Roboto', sans-serif;
+  color: var(--poke-text);
+  line-height: 1.4;
+}
+
+app-root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+img {
+  max-width: 100%;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+}
+
+a {
+  color: inherit;
+}
+
+.pageContent {
+  min-height: calc(100dvh - var(--app-header-height));
+  display: flex;
+  flex-direction: column;
+  background: var(--poke-gradient);
+}
+
+.pageWrap {
+  flex: 1 1 auto;
+  width: 100%;
+  min-height: 0;
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+}
+
+.pageWrap > .containerQuiz,
+.pageWrap > .container {
+  flex: 1 1 auto;
+  min-height: 100%;
+}
+
+.headerIconButton {
+  width: 40px;
+  height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.12);
+  color: inherit;
+  font-weight: 800;
+  text-decoration: none;
+  transition: transform 0.14s ease, background 0.14s ease, border-color 0.14s ease;
+}
+
+.headerIconButton:hover {
+  transform: translateY(-1px);
+  background: rgba(255, 255, 255, 0.18);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.headerIconButton img {
+  width: 18px;
+  height: 18px;
+}
+
+.headerIconButton.textIcon {
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}

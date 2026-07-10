@@ -1,0 +1,83 @@
+<app-page-header title="Quiz clasico">
+  <button type="button" header-actions class="headerIconButton" (click)="fillOrCorrectOneLetter()" aria-label="Revelar una letra" [disabled]="roundResolved">
+    <img src="assets/icons/clues.svg" alt="" />
+  </button>
+  <button type="button" header-actions class="headerIconButton textIcon" (click)="toggleHelp()" aria-label="Abrir ayuda">
+    <span aria-hidden="true">?</span>
+  </button>
+</app-page-header>
+
+<app-help-panel
+  [open]="helpOpen"
+  title="Como se juega"
+  description="Pulsa letras para completar el nombre, usa la pista para revelar una casilla y valida con ENTER cuando quieras cerrar la ronda."
+  (closed)="closeHelp()"
+></app-help-panel>
+
+<main class="pageContent">
+  <div class="pageWrap">
+    <div class="containerQuiz">
+      <div class="pokemonSection">
+        <div class="imgFrame" [class.loading]="isLoadingImage">
+          <img
+            id="pokemon-image-tab-1"
+            class="pokeImg"
+            [src]="pokemon?.Image || ''"
+            decoding="async"
+            loading="lazy"
+            fetchpriority="high"
+            width="300"
+            height="300"
+            (load)="onImgLoaded()"
+            alt="Pokemon misterioso"
+          />
+          <app-skeleton-block *ngIf="isLoadingImage" class="skeleton" [radius]="22"></app-skeleton-block>
+        </div>
+      </div>
+
+      <div class="nameSection">
+        <div class="pokemonRow">
+          <button
+            *ngFor="let _ of pokemonNameSplitted; let i = index; trackBy: trackByIndex"
+            type="button"
+            (click)="changePosition(i)"
+            class="pokemonNameButton"
+            [class.highlighted]="i === highlightedIndex"
+            [class.ok]="feedback[i] === 'ok'"
+            [class.bad]="feedback[i] === 'bad'"
+            [ngClass]="{ 'small-button': pokemonNameSplitted.length > 10 }"
+          >
+            {{ answer[i] || '' }}
+          </button>
+        </div>
+      </div>
+
+      <app-result-banner
+        [status]="resultStatus"
+        [title]="resultTitle"
+        [message]="resultMessage"
+        [answer]="revealedAnswer"
+        (next)="nextRound()"
+      ></app-result-banner>
+
+      <div id="keyboard-cont">
+        <div class="numbers-row" *ngFor="let row of lettersOptionsArrays; trackBy: trackByIndex">
+          <button
+            *ngFor="let item of row; trackBy: trackByIndex"
+            type="button"
+            class="keyboard-button"
+            [disabled]="roundResolved"
+            (click)="fillLetter(item)"
+          >
+            {{ item }}
+          </button>
+        </div>
+
+        <div class="actions">
+          <button type="button" class="keyboard-button del" (click)="clearSelected()" [disabled]="roundResolved">DEL</button>
+          <button type="button" class="keyboard-button enter" (click)="checkIfCorrect()" [disabled]="roundResolved">ENTER</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>

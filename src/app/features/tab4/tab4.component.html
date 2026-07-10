@@ -1,0 +1,124 @@
+<app-page-header title="Quiz teclado">
+  <button type="button" header-actions class="headerIconButton textIcon" (click)="toggleHelp()" aria-label="Abrir ayuda">
+    <span aria-hidden="true">?</span>
+  </button>
+</app-page-header>
+
+<app-help-panel
+  [open]="helpOpen"
+  title="Como se juega"
+  description="Escribe con el teclado completo, toca una casilla para mover el foco y usa ENTER para validar la ronda."
+  (closed)="closeHelp()"
+></app-help-panel>
+
+<main class="pageContent">
+  <div class="pageWrap">
+    <div class="containerQuiz">
+      <section class="heroSection">
+        <div class="heroCopy">
+          <span class="eyebrow">Quiz teclado</span>
+          <h1>Completa el nombre</h1>
+          <p>Casillas compactas, teclado QWERTY y validacion manual.</p>
+        </div>
+
+        <div class="imgFrame" [class.loading]="isLoadingImage">
+          <img
+            id="pokemon-image-tab-4"
+            class="pokeImg"
+            [src]="pokemon?.Image || ''"
+            decoding="async"
+            loading="eager"
+            fetchpriority="high"
+            width="300"
+            height="300"
+            (load)="onImgLoaded()"
+            alt="Pokemon misterioso"
+          />
+          <app-skeleton-block *ngIf="isLoadingImage" class="skeleton" [radius]="28"></app-skeleton-block>
+        </div>
+      </section>
+
+      <section class="answerSection">
+        <div class="sectionHeader">
+          <span>Nombre</span>
+          <span>{{ completedEditableCount }}/{{ editableCharacterCount }}</span>
+        </div>
+
+        <div class="pokemonRow">
+          <button
+            *ngFor="let _ of pokemonNameSplitted; let i = index; trackBy: trackByIndex"
+            type="button"
+            class="pokemonNameButton"
+            [class.highlighted]="i === highlightedIndex"
+            [class.ok]="feedback[i] === 'ok'"
+            [class.bad]="feedback[i] === 'bad'"
+            [ngClass]="{ 'small-button': pokemonNameSplitted.length > 10 }"
+            (click)="changePosition(i)"
+          >
+            {{ answer[i] || '' }}
+          </button>
+        </div>
+      </section>
+
+      <app-result-banner
+        [status]="resultStatus"
+        [title]="resultTitle"
+        [message]="resultMessage"
+        [answer]="revealedAnswer"
+        (next)="nextRound()"
+      ></app-result-banner>
+
+      <section id="keyboard-cont">
+        <div class="keyboardRow row-12">
+          <button
+            *ngFor="let item of numbersRowKeyboard; trackBy: trackByIndex"
+            type="button"
+            class="keyboard-button secondary"
+            [disabled]="roundResolved"
+            (click)="selectLetter(item)"
+          >
+            {{ item }}
+          </button>
+        </div>
+
+        <div class="keyboardRow row-10">
+          <button
+            *ngFor="let item of firstRowKeyboard; trackBy: trackByIndex"
+            type="button"
+            class="keyboard-button"
+            [disabled]="roundResolved"
+            (click)="selectLetter(item)"
+          >
+            {{ item }}
+          </button>
+        </div>
+
+        <div class="keyboardRow row-9">
+          <button
+            *ngFor="let item of secondRowKeyboard; trackBy: trackByIndex"
+            type="button"
+            class="keyboard-button"
+            [disabled]="roundResolved"
+            (click)="selectLetter(item)"
+          >
+            {{ item }}
+          </button>
+        </div>
+
+        <div class="keyboardRow row-9">
+          <button
+            *ngFor="let item of thirdRowKeyboard; trackBy: trackByIndex"
+            type="button"
+            class="keyboard-button"
+            [class.action]="item === 'ENTER' || item === 'DEL'"
+            [class.wide]="item === 'ENTER' || item === 'DEL'"
+            [disabled]="roundResolved"
+            (click)="selectLetter(item)"
+          >
+            {{ item }}
+          </button>
+        </div>
+      </section>
+    </div>
+  </div>
+</main>

@@ -1,0 +1,125 @@
+:host {
+  position: fixed;
+  inset: 0;
+  z-index: 1080;
+  pointer-events: none;
+}
+
+.helpOverlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.34);
+  pointer-events: auto;
+}
+
+.helpPanel {
+  position: absolute;
+  top: calc(var(--app-header-height) + 10px);
+  right: clamp(10px, 2vw, 18px);
+  width: min(360px, calc(100vw - 20px));
+  display: grid;
+  gap: 14px;
+  padding: 18px;
+  border-radius: 26px;
+  background:
+    radial-gradient(circle at top right, rgba(255, 124, 124, 0.18), transparent 28%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.995) 0%, rgba(248, 250, 252, 0.98) 100%);
+  box-shadow: 0 26px 56px rgba(15, 23, 42, 0.24);
+  pointer-events: auto;
+  animation: helpPanelIn 180ms ease;
+}
+
+.helpHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.helpCopy {
+  display: grid;
+  gap: 6px;
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  padding: 0.28rem 0.72rem;
+  border-radius: 999px;
+  background: rgba(191, 34, 34, 0.1);
+  color: #991b1b;
+  font-size: 0.74rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.helpCopy h2,
+.helpCopy p {
+  margin: 0;
+}
+
+.helpCopy h2 {
+  color: #111827;
+  font-size: 1.08rem;
+}
+
+.helpCopy p {
+  color: #475569;
+  line-height: 1.5;
+}
+
+.closeButton {
+  width: 42px;
+  height: 42px;
+  min-width: 42px;
+  border: none;
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.06);
+  color: #111827;
+  font-size: 1.5rem;
+  line-height: 1;
+}
+
+.helpBody {
+  display: grid;
+  gap: 10px;
+}
+
+@media (max-width: 520px) {
+  .helpPanel {
+    top: auto;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    width: auto;
+    padding: 16px;
+    border-radius: 28px 28px 0 0;
+    max-height: min(60dvh, 420px);
+    overflow: auto;
+    animation: helpSheetIn 220ms ease;
+  }
+}
+
+@keyframes helpPanelIn {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes helpSheetIn {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

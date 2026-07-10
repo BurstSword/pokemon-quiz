@@ -1,0 +1,111 @@
+:host {
+  display: block;
+}
+
+.pageContent {
+  min-height: calc(100dvh - var(--app-header-height));
+  background: var(--poke-gradient);
+}
+
+.containerQuiz {
+  min-height: 100%;
+  border-radius: 40px 40px 0 0;
+  background: #fff;
+  padding: clamp(12px, 2.5vw, 24px);
+  display: grid;
+  grid-template-rows: auto 1fr;
+  row-gap: clamp(12px, 2vh, 20px);
+  color: #000;
+}
+
+.clueSection {
+  display: grid;
+  row-gap: clamp(8px, 1.6vh, 12px);
+}
+
+.clues {
+  margin: 0;
+  padding-left: 1.2rem;
+  display: grid;
+  row-gap: 6px;
+}
+
+.clues li {
+  font-size: clamp(0.95rem, 2.2vw, 1.05rem);
+  line-height: 1.35;
+}
+
+.clueBtn {
+  min-height: 48px;
+  border: none;
+  border-radius: 9999px;
+  background: var(--poke-gradient);
+  color: #fff;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+  text-transform: none;
+  font-weight: 700;
+}
+
+.searchSection {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  row-gap: clamp(10px, 2vh, 16px);
+}
+
+.searchInput {
+  min-height: 50px;
+  padding: 0.85rem 1rem;
+  border-radius: 12px;
+  border: 1px solid rgba(148, 163, 184, 0.32);
+  background: #f6f6f6;
+  color: #111;
+}
+
+.resultsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 16px;
+}
+
+.pokeCard {
+  border: none;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  padding: 0;
+}
+
+.pokeCard img {
+  width: 100%;
+  height: auto;
+  display: block;
+  background: #fff;
+  object-fit: contain;
+  aspect-ratio: 1 / 1;
+}
+
+.pokeCard__footer {
+  background: linear-gradient(90deg, #bf2222 0%, #ff7c7c 100%);
+  padding: clamp(10px, 1.8vh, 14px) clamp(8px, 2vw, 12px);
+}
+
+.pokeCard__title {
+  color: #fff;
+  font-weight: 800;
+  font-size: clamp(0.95rem, 2.2vw, 1.05rem);
+  line-height: 1.25;
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@media (max-width: 480px) {
+  .containerQuiz {
+    border-radius: 28px 28px 0 0;
+  }
+}

@@ -1,0 +1,387 @@
+:host {
+  display: block;
+}
+
+.pageContent {
+  min-height: calc(100dvh - var(--app-header-height));
+  background: var(--poke-gradient);
+}
+
+.pageWrap {
+  display: flex;
+  justify-content: center;
+  min-height: 100%;
+}
+
+.containerQuiz {
+  width: min(880px, 100%);
+  min-height: 100%;
+  padding: clamp(10px, 1.6vw, 16px);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.985) 0%, rgba(248, 250, 252, 0.97) 100%);
+  display: flex;
+  justify-content: center;
+}
+
+.boardShell {
+  width: min(760px, 100%);
+  display: grid;
+  gap: 10px;
+  padding: 12px;
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.82);
+  border: 1px solid rgba(226, 232, 240, 0.94);
+  box-shadow: 0 18px 34px rgba(15, 23, 42, 0.08);
+  align-content: start;
+}
+
+.boardTopBar {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  gap: 10px;
+  align-items: center;
+}
+
+.attemptsRow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.statusLabel {
+  color: #64748b;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.attemptDots {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.attemptDot {
+  width: 12px;
+  height: 12px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #ef4444 0%, #b91c1c 100%);
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.12);
+}
+
+.attemptDot.off {
+  background: #cbd5e1;
+  box-shadow: none;
+}
+
+.selectionChip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 60px;
+  min-height: 38px;
+  padding: 0.38rem 0.75rem;
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.06);
+  color: #334155;
+  font-weight: 900;
+}
+
+.groupButton,
+.retryButton {
+  min-height: 42px;
+  padding: 0.75rem 1rem;
+  border: none;
+  border-radius: 16px;
+  background: var(--poke-gradient);
+  color: #fff;
+  font-weight: 900;
+  box-shadow: 0 12px 20px rgba(191, 34, 34, 0.22);
+}
+
+.groupButton:disabled {
+  background: #cbd5e1;
+  color: #475569;
+  box-shadow: none;
+}
+
+.loadingState,
+.errorState {
+  display: grid;
+  gap: 6px;
+  padding: 14px;
+  border-radius: 18px;
+  background: rgba(15, 23, 42, 0.05);
+}
+
+.loadingTitle {
+  color: #111827;
+  font-weight: 900;
+}
+
+.loadingState p,
+.errorState p {
+  margin: 0;
+  color: #475569;
+}
+
+.errorState {
+  background: rgba(254, 226, 226, 0.9);
+}
+
+.solvedRows {
+  display: grid;
+  gap: 8px;
+}
+
+.solvedRow {
+  display: grid;
+  gap: 8px;
+  padding: 10px 12px;
+  border-radius: 18px;
+  color: #fff;
+}
+
+.solvedRow.tone-0 {
+  background: linear-gradient(135deg, #92400e 0%, #d97706 100%);
+}
+
+.solvedRow.tone-1 {
+  background: linear-gradient(135deg, #1d4ed8 0%, #38bdf8 100%);
+}
+
+.solvedRow.tone-2 {
+  background: linear-gradient(135deg, #7c3aed 0%, #c084fc 100%);
+}
+
+.solvedRow.tone-3 {
+  background: linear-gradient(135deg, #047857 0%, #34d399 100%);
+}
+
+.solvedHeading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.solvedHeading strong {
+  font-size: 0.95rem;
+}
+
+.solvedHeading span {
+  color: rgba(255, 255, 255, 0.86);
+  font-size: 0.76rem;
+  font-weight: 700;
+}
+
+.miniTeam {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.miniPokemon {
+  display: grid;
+  justify-items: center;
+  gap: 4px;
+  min-width: 0;
+}
+
+.miniSpriteWrap,
+.tileSprite {
+  position: relative;
+  display: grid;
+  place-items: center;
+}
+
+.miniSpriteWrap {
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+}
+
+.miniPokemon img {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+  image-rendering: pixelated;
+}
+
+.miniPokemon span {
+  min-width: 0;
+  font-size: 0.67rem;
+  font-weight: 700;
+  text-align: center;
+  line-height: 1.1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.boardGrid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.tileCard {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  gap: 7px;
+  min-width: 0;
+  aspect-ratio: 0.9;
+  padding: 8px 6px;
+  border-radius: 18px;
+  border: 1px solid rgba(226, 232, 240, 0.96);
+  background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+  box-shadow: 0 10px 18px rgba(15, 23, 42, 0.07);
+  transition: transform 0.14s ease, border-color 0.14s ease, box-shadow 0.14s ease;
+}
+
+.tileCard:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 14px 22px rgba(15, 23, 42, 0.1);
+}
+
+.tileCard.selected {
+  border-color: rgba(191, 34, 34, 0.48);
+  background: linear-gradient(180deg, #fff7f8 0%, #ffe4e6 100%);
+  box-shadow: 0 14px 24px rgba(191, 34, 34, 0.16);
+}
+
+.tileCard.is-shiny {
+  border-color: rgba(245, 158, 11, 0.3);
+  box-shadow: 0 10px 20px rgba(245, 158, 11, 0.12);
+}
+
+.tileCard.selected.is-shiny {
+  border-color: rgba(245, 158, 11, 0.52);
+  box-shadow: 0 14px 24px rgba(245, 158, 11, 0.18);
+}
+
+.tileCard.shake {
+  animation: shakeTile 320ms ease;
+}
+
+.tileSprite {
+  width: clamp(42px, 12vw, 64px);
+  height: clamp(42px, 12vw, 64px);
+}
+
+.tileCard img {
+  width: clamp(42px, 12vw, 64px);
+  height: clamp(42px, 12vw, 64px);
+  object-fit: contain;
+  image-rendering: pixelated;
+}
+
+.tileCard span {
+  min-width: 0;
+  color: #111827;
+  font-size: clamp(0.68rem, 1.8vw, 0.78rem);
+  font-weight: 800;
+  line-height: 1.15;
+  text-align: center;
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.shinyBadge {
+  position: absolute;
+  top: -5px;
+  right: -3px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  min-height: 18px;
+  padding: 0 4px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.88);
+  color: #f59e0b;
+  font-size: 0.72rem;
+  line-height: 1;
+  box-shadow: 0 6px 14px rgba(245, 158, 11, 0.18);
+}
+
+.miniPokemon.is-shiny .miniSpriteWrap {
+  box-shadow: inset 0 0 0 1px rgba(255, 231, 138, 0.44);
+  background: radial-gradient(circle at top, rgba(255, 244, 180, 0.26), rgba(255, 255, 255, 0));
+}
+
+@media (max-width: 560px) {
+  .containerQuiz {
+    padding: 10px;
+  }
+
+  .boardShell {
+    padding: 10px;
+    border-radius: 20px;
+  }
+
+  .boardTopBar {
+    grid-template-columns: 1fr auto;
+  }
+
+  .groupButton {
+    grid-column: 1 / -1;
+  }
+
+  .selectionChip {
+    justify-self: end;
+  }
+}
+
+@media (max-width: 390px) {
+  .attemptsRow {
+    gap: 8px;
+  }
+
+  .attemptDot {
+    width: 10px;
+    height: 10px;
+  }
+
+  .tileCard {
+    border-radius: 16px;
+    padding: 7px 4px;
+  }
+
+  .tileCard span {
+    font-size: 0.66rem;
+  }
+
+  .miniPokemon img {
+    width: 28px;
+    height: 28px;
+  }
+
+  .miniPokemon span {
+    font-size: 0.62rem;
+  }
+}
+
+@keyframes shakeTile {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  20% {
+    transform: translateX(-4px);
+  }
+  40% {
+    transform: translateX(4px);
+  }
+  60% {
+    transform: translateX(-3px);
+  }
+  80% {
+    transform: translateX(3px);
+  }
+}

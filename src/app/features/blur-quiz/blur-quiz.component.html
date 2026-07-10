@@ -1,0 +1,97 @@
+<app-page-header title="Quiz blur">
+  <button type="button" header-actions class="headerIconButton textIcon" (click)="toggleHelp()" aria-label="Abrir ayuda">
+    <span aria-hidden="true">?</span>
+  </button>
+</app-page-header>
+
+<app-help-panel
+  [open]="helpOpen"
+  title="Como se juega"
+  description="Observa la imagen borrosa, usa ayudas si quieres y elige una unica respuesta antes de pasar de ronda."
+  (closed)="closeHelp()"
+>
+  <button type="button" class="helpAction" (click)="useHelpClarify()">
+    <img src="assets/icons/clues.svg" alt="" />
+    Reducir el blur
+  </button>
+
+  <button type="button" class="helpAction" (click)="useHelpDisableOptions()">
+    <img src="assets/icons/remove-options.svg" alt="" />
+    Quitar dos opciones
+  </button>
+</app-help-panel>
+
+<main class="pageContent">
+  <div class="pageWrap">
+    <div class="containerQuiz">
+      <section class="poolErrorState" *ngIf="poolErrorMessage">
+        <strong>No hay suficientes Pokémon activos</strong>
+        <p>{{ poolErrorMessage }}</p>
+      </section>
+
+      <section class="imageSection">
+        <div class="imageFrame">
+          <img
+            id="pokemon-image-blur"
+            class="animate-img"
+            [ngClass]="isRevealed ? '' : 'blurred' + blurState"
+            [src]="pokemon?.Image || ''"
+            [alt]="pokemon?.Name || 'Pokemon'"
+            loading="lazy"
+            decoding="async"
+          />
+        </div>
+      </section>
+
+      <section class="statusBar">
+        <div class="statusCopy">
+          <span class="eyebrow">Nivel de enfoque</span>
+          <strong>{{ isRevealed ? 'Revelado' : blurState + 1 + '/5' }}</strong>
+        </div>
+        <div class="progressDots" aria-hidden="true">
+          <span *ngFor="let dot of [0, 1, 2, 3, 4]" [class.active]="dot <= blurState || isRevealed"></span>
+        </div>
+      </section>
+
+      <div class="typeRow" *ngIf="pokemonTypes && pokemon?.Type1">
+        <img class="typeImage" [src]="getImageUrl(pokemon?.Type1 || '')" [alt]="pokemon?.Type1 || 'Type 1'" />
+        <img
+          class="typeImage"
+          *ngIf="pokemon?.Type2"
+          [src]="getImageUrl(pokemon?.Type2 || '')"
+          [alt]="pokemon?.Type2 || 'Type 2'"
+        />
+      </div>
+
+      <section class="quizSection">
+        <div class="heightCentered">
+          <div class="optionsList">
+            <button
+              *ngFor="let item of options; trackBy: trackByOption"
+              type="button"
+              class="buttons"
+              [ngClass]="getOptionClass(item)"
+              [disabled]="optionsLocked || item.state === 'disabled'"
+              (click)="resolveOption(item)"
+            >
+              <span class="optionContent">
+                <span class="circle">
+                  <img class="iconPokeball" src="assets/icons/pokeball-1.svg" alt="" />
+                </span>
+                <span class="optionText">{{ item.Label || item.Name }}</span>
+              </span>
+            </button>
+          </div>
+        </div>
+
+        <app-result-banner
+          [status]="resultStatus"
+          [title]="resultTitle"
+          [message]="resultMessage"
+          [answer]="revealedAnswer"
+          (next)="nextRound()"
+        ></app-result-banner>
+      </section>
+    </div>
+  </div>
+</main>

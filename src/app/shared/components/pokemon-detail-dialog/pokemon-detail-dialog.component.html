@@ -1,0 +1,58 @@
+<div class="dialogBackdrop" (click)="close.emit()">
+  <section
+    class="dialogPanel"
+    role="dialog"
+    aria-modal="true"
+    [attr.aria-label]="displayName"
+    (click)="$event.stopPropagation()"
+  >
+    <header class="dialogHeader">
+      <div>
+        <span class="eyebrow">Pokédex</span>
+        <h2>{{ displayName }}</h2>
+      </div>
+
+      <button type="button" class="closeButton" (click)="close.emit()" aria-label="Cerrar">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </header>
+
+    <div class="dialogBody">
+      <div class="artPanel">
+        <img [src]="pokemon.Image" [alt]="displayName" loading="lazy" decoding="async" />
+      </div>
+
+      <div class="infoPanel">
+        <p class="pokemonNumber">N.&ordm; {{ pokemon.Number }}</p>
+        <h3 class="pokemonName">{{ displayName }}</h3>
+        <p class="pokemonGenus" *ngIf="genus">{{ genus }}</p>
+
+        <div class="typeRow">
+          <img class="typeImage" [src]="getImageUrl(pokemon.Type1)" [alt]="pokemon.Type1" />
+          <img
+            class="typeImage"
+            *ngIf="pokemon.Type2"
+            [src]="getImageUrl(pokemon.Type2)"
+            [alt]="pokemon.Type2"
+          />
+        </div>
+
+        <dl class="facts">
+          <div>
+            <dt>Generación</dt>
+            <dd>{{ pokemon.Generation }}</dd>
+          </div>
+          <div>
+            <dt>Legendario</dt>
+            <dd>{{ isLegendary ? 'Sí' : 'No' }}</dd>
+          </div>
+        </dl>
+      </div>
+    </div>
+
+    <section class="descriptionPanel">
+      <span class="eyebrow soft">Descripción</span>
+      <p>{{ description }}</p>
+    </section>
+  </section>
+</div>

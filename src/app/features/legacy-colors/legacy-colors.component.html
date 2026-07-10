@@ -1,0 +1,49 @@
+<app-page-header title="Legacy colores">
+  <button type="button" header-actions class="headerIconButton" (click)="toggleTypes()" aria-label="Tipos">
+    <img src="assets/icons/remove-options.svg" alt="" />
+  </button>
+</app-page-header>
+
+<main class="pageContent">
+  <div class="containerQuiz">
+    <section class="paletteSection">
+      <app-skeleton-block *ngIf="isLoadingPalette" class="skeleton" [radius]="999"></app-skeleton-block>
+
+      <ul class="swatches" *ngIf="!isLoadingPalette">
+        <li *ngFor="let color of palette; trackBy: trackByIndex" [style.--color]="color" [title]="color"></li>
+      </ul>
+
+      <div class="types" *ngIf="pokemonTypes && pokemon?.Type1">
+        <img class="typeImage" [src]="getTypeImage(pokemon?.Type1 || '')" [alt]="pokemon?.Type1 || 'Type 1'" />
+        <img
+          class="typeImage"
+          *ngIf="pokemon?.Type2"
+          [src]="getTypeImage(pokemon?.Type2 || '')"
+          [alt]="pokemon?.Type2 || 'Type 2'"
+        />
+      </div>
+    </section>
+
+    <section class="quizSection">
+      <div class="optionsList">
+        <button
+          type="button"
+          class="buttons"
+          *ngFor="let option of options; trackBy: trackByOption"
+          [ngClass]="{
+            normalOption: option.state === 'normal',
+            correctOption: option.state === 'correct',
+            incorrectOption: option.state === 'incorrect'
+          }"
+          (click)="resolveOption(option)"
+          [disabled]="optionsLocked"
+        >
+          <span class="circle" aria-hidden="true">
+            <img class="iconPokeball" src="assets/icons/pokeball-1.svg" alt="" />
+          </span>
+          <span class="optionText">{{ option.Name }}</span>
+        </button>
+      </div>
+    </section>
+  </div>
+</main>

@@ -1,0 +1,632 @@
+[
+  {
+    "key": "final-evolution",
+    "label": "Evolución final",
+    "count": 568
+  },
+  {
+    "key": "evolution-stage:1",
+    "label": "Primera fase evolutiva",
+    "count": 541
+  },
+  {
+    "key": "height:small",
+    "label": "Pokémon pequeños",
+    "count": 395
+  },
+  {
+    "key": "evolution-stage:2",
+    "label": "Segunda fase evolutiva",
+    "count": 363
+  },
+  {
+    "key": "weight:light",
+    "label": "Pokémon ligeros",
+    "count": 288
+  },
+  {
+    "key": "egg-group:ground",
+    "label": "Grupo huevo campo",
+    "count": 278
+  },
+  {
+    "key": "shape:upright",
+    "label": "Forma erguida",
+    "count": 216
+  },
+  {
+    "key": "shape:quadruped",
+    "label": "Forma cuadrúpeda",
+    "count": 200
+  },
+  {
+    "key": "stat:high-defense",
+    "label": "Defensa alta",
+    "count": 181
+  },
+  {
+    "key": "weight:heavy",
+    "label": "Pokémon pesados",
+    "count": 178
+  },
+  {
+    "key": "stat:high-attack",
+    "label": "Ataque alto",
+    "count": 176
+  },
+  {
+    "key": "color:blue",
+    "label": "Color azul",
+    "count": 170
+  },
+  {
+    "key": "generation:5",
+    "label": "Generación 5",
+    "count": 156
+  },
+  {
+    "key": "shape:humanoid",
+    "label": "Forma humanoide",
+    "count": 155
+  },
+  {
+    "key": "stat:fast",
+    "label": "Pokémon rápidos",
+    "count": 154
+  },
+  {
+    "key": "type:any:water",
+    "label": "Tipo Agua",
+    "count": 154
+  },
+  {
+    "key": "generation:1",
+    "label": "Generación 1",
+    "count": 151
+  },
+  {
+    "key": "egg-group:no-eggs",
+    "label": "Grupo huevo sin huevos",
+    "count": 151
+  },
+  {
+    "key": "color:brown",
+    "label": "Color marrón",
+    "count": 147
+  },
+  {
+    "key": "generation:3",
+    "label": "Generación 3",
+    "count": 135
+  },
+  {
+    "key": "type1:water",
+    "label": "Tipo principal Agua",
+    "count": 134
+  },
+  {
+    "key": "type:any:normal",
+    "label": "Tipo Normal",
+    "count": 131
+  },
+  {
+    "key": "color:green",
+    "label": "Color verde",
+    "count": 130
+  },
+  {
+    "key": "height:tall",
+    "label": "Pokémon grandes",
+    "count": 129
+  },
+  {
+    "key": "type:any:grass",
+    "label": "Tipo Planta",
+    "count": 127
+  },
+  {
+    "key": "stat:high-special-attack",
+    "label": "Ataque especial alto",
+    "count": 122
+  },
+  {
+    "key": "evolution-stage:3",
+    "label": "Tercera fase evolutiva",
+    "count": 121
+  },
+  {
+    "key": "generation:9",
+    "label": "Generación 9",
+    "count": 120
+  },
+  {
+    "key": "type1:normal",
+    "label": "Tipo principal Normal",
+    "count": 118
+  },
+  {
+    "key": "egg-group:water1",
+    "label": "Grupo huevo agua 1",
+    "count": 114
+  },
+  {
+    "key": "type:any:flying",
+    "label": "Tipo Volador",
+    "count": 109
+  },
+  {
+    "key": "color:gray",
+    "label": "Color gris",
+    "count": 107
+  },
+  {
+    "key": "generation:4",
+    "label": "Generación 4",
+    "count": 107
+  },
+  {
+    "key": "type1:grass",
+    "label": "Tipo principal Planta",
+    "count": 103
+  },
+  {
+    "key": "type:any:psychic",
+    "label": "Tipo Psíquico",
+    "count": 102
+  },
+  {
+    "key": "generation:2",
+    "label": "Generación 2",
+    "count": 100
+  },
+  {
+    "key": "type2:flying",
+    "label": "Tipo secundario Volador",
+    "count": 100
+  },
+  {
+    "key": "color:red",
+    "label": "Color rojo",
+    "count": 97
+  },
+  {
+    "key": "generation:8",
+    "label": "Generación 8",
+    "count": 96
+  },
+  {
+    "key": "type:any:bug",
+    "label": "Tipo Bicho",
+    "count": 92
+  },
+  {
+    "key": "egg-group:bug",
+    "label": "Grupo huevo bicho",
+    "count": 91
+  },
+  {
+    "key": "egg-group:plant",
+    "label": "Grupo huevo planta",
+    "count": 89
+  },
+  {
+    "key": "color:yellow",
+    "label": "Color amarillo",
+    "count": 88
+  },
+  {
+    "key": "color:white",
+    "label": "Color blanco",
+    "count": 88
+  },
+  {
+    "key": "generation:7",
+    "label": "Generación 7",
+    "count": 88
+  },
+  {
+    "key": "color:purple",
+    "label": "Color morado",
+    "count": 87
+  },
+  {
+    "key": "shape:wings",
+    "label": "Forma con alas",
+    "count": 87
+  },
+  {
+    "key": "stat:high-special-defense",
+    "label": "Defensa especial alta",
+    "count": 85
+  },
+  {
+    "key": "egg-group:mineral",
+    "label": "Grupo huevo mineral",
+    "count": 84
+  },
+  {
+    "key": "type1:bug",
+    "label": "Tipo principal Bicho",
+    "count": 83
+  },
+  {
+    "key": "type:any:poison",
+    "label": "Tipo Veneno",
+    "count": 83
+  },
+  {
+    "key": "egg-group:monster",
+    "label": "Grupo huevo monstruo",
+    "count": 81
+  },
+  {
+    "key": "type:any:fire",
+    "label": "Tipo Fuego",
+    "count": 81
+  },
+  {
+    "key": "habitat:grassland",
+    "label": "Hábitat pradera",
+    "count": 80
+  },
+  {
+    "key": "type:any:ground",
+    "label": "Tipo Tierra",
+    "count": 75
+  },
+  {
+    "key": "type:any:rock",
+    "label": "Tipo Roca",
+    "count": 74
+  },
+  {
+    "key": "egg-group:flying",
+    "label": "Grupo huevo volador",
+    "count": 73
+  },
+  {
+    "key": "type:any:fighting",
+    "label": "Tipo Lucha",
+    "count": 73
+  },
+  {
+    "key": "generation:6",
+    "label": "Generación 6",
+    "count": 72
+  },
+  {
+    "key": "egg-group:dragon",
+    "label": "Grupo huevo dragón",
+    "count": 72
+  },
+  {
+    "key": "habitat:forest",
+    "label": "Hábitat bosque",
+    "count": 71
+  },
+  {
+    "key": "legendary",
+    "label": "Legendarios",
+    "count": 71
+  },
+  {
+    "key": "egg-group:humanshape",
+    "label": "Grupo huevo humanoide",
+    "count": 70
+  },
+  {
+    "key": "type:any:dragon",
+    "label": "Tipo Dragón",
+    "count": 70
+  },
+  {
+    "key": "type:any:electric",
+    "label": "Tipo Eléctrico",
+    "count": 69
+  },
+  {
+    "key": "type:any:dark",
+    "label": "Tipo Siniestro",
+    "count": 69
+  },
+  {
+    "key": "egg-group:fairy",
+    "label": "Grupo huevo hada",
+    "count": 66
+  },
+  {
+    "key": "type1:fire",
+    "label": "Tipo principal Fuego",
+    "count": 66
+  },
+  {
+    "key": "type:any:steel",
+    "label": "Tipo Acero",
+    "count": 65
+  },
+  {
+    "key": "type:any:ghost",
+    "label": "Tipo Fantasma",
+    "count": 65
+  },
+  {
+    "key": "type:any:fairy",
+    "label": "Tipo Hada",
+    "count": 64
+  },
+  {
+    "key": "egg-group:indeterminate",
+    "label": "Grupo huevo amorfo",
+    "count": 63
+  },
+  {
+    "key": "color:pink",
+    "label": "Color rosa",
+    "count": 60
+  },
+  {
+    "key": "type1:psychic",
+    "label": "Tipo principal Psíquico",
+    "count": 60
+  },
+  {
+    "key": "type1:electric",
+    "label": "Tipo principal Eléctrico",
+    "count": 59
+  },
+  {
+    "key": "type1:rock",
+    "label": "Tipo principal Roca",
+    "count": 58
+  },
+  {
+    "key": "color:black",
+    "label": "Color negro",
+    "count": 51
+  },
+  {
+    "key": "shape:ball",
+    "label": "Forma bola",
+    "count": 51
+  },
+  {
+    "key": "shape:arms",
+    "label": "Forma con brazos",
+    "count": 48
+  },
+  {
+    "key": "type:any:ice",
+    "label": "Tipo Hielo",
+    "count": 48
+  },
+  {
+    "key": "shape:fish",
+    "label": "Forma pez",
+    "count": 47
+  },
+  {
+    "key": "habitat:waters-edge",
+    "label": "Hábitat orilla",
+    "count": 47
+  },
+  {
+    "key": "shape:armor",
+    "label": "Forma armadura",
+    "count": 46
+  },
+  {
+    "key": "habitat:mountain",
+    "label": "Hábitat montaña",
+    "count": 45
+  },
+  {
+    "key": "type1:dark",
+    "label": "Tipo principal Siniestro",
+    "count": 45
+  },
+  {
+    "key": "type1:poison",
+    "label": "Tipo principal Veneno",
+    "count": 42
+  },
+  {
+    "key": "type2:psychic",
+    "label": "Tipo secundario Psíquico",
+    "count": 42
+  },
+  {
+    "key": "shape:blob",
+    "label": "Forma amorfa",
+    "count": 41
+  },
+  {
+    "key": "type2:poison",
+    "label": "Tipo secundario Veneno",
+    "count": 41
+  },
+  {
+    "key": "shape:squiggle",
+    "label": "Forma serpenteante",
+    "count": 40
+  },
+  {
+    "key": "habitat:sea",
+    "label": "Hábitat mar",
+    "count": 40
+  },
+  {
+    "key": "type1:fighting",
+    "label": "Tipo principal Lucha",
+    "count": 40
+  },
+  {
+    "key": "type1:ground",
+    "label": "Tipo principal Tierra",
+    "count": 40
+  },
+  {
+    "key": "egg-group:water3",
+    "label": "Grupo huevo agua 3",
+    "count": 37
+  },
+  {
+    "key": "habitat:urban",
+    "label": "Hábitat zona urbana",
+    "count": 37
+  },
+  {
+    "key": "type1:dragon",
+    "label": "Tipo principal Dragón",
+    "count": 37
+  },
+  {
+    "key": "type1:steel",
+    "label": "Tipo principal Acero",
+    "count": 36
+  },
+  {
+    "key": "type1:ghost",
+    "label": "Tipo principal Fantasma",
+    "count": 35
+  },
+  {
+    "key": "type2:fairy",
+    "label": "Tipo secundario Hada",
+    "count": 35
+  },
+  {
+    "key": "type2:ground",
+    "label": "Tipo secundario Tierra",
+    "count": 35
+  },
+  {
+    "key": "egg-group:water2",
+    "label": "Grupo huevo agua 2",
+    "count": 34
+  },
+  {
+    "key": "type2:dragon",
+    "label": "Tipo secundario Dragón",
+    "count": 33
+  },
+  {
+    "key": "type2:fighting",
+    "label": "Tipo secundario Lucha",
+    "count": 33
+  },
+  {
+    "key": "type1:ice",
+    "label": "Tipo principal Hielo",
+    "count": 31
+  },
+  {
+    "key": "type2:ghost",
+    "label": "Tipo secundario Fantasma",
+    "count": 30
+  },
+  {
+    "key": "habitat:cave",
+    "label": "Hábitat cueva",
+    "count": 29
+  },
+  {
+    "key": "type1:fairy",
+    "label": "Tipo principal Hada",
+    "count": 29
+  },
+  {
+    "key": "type2:steel",
+    "label": "Tipo secundario Acero",
+    "count": 29
+  },
+  {
+    "key": "shape:legs",
+    "label": "Forma con patas",
+    "count": 28
+  },
+  {
+    "key": "habitat:rough-terrain",
+    "label": "Hábitat terreno abrupto",
+    "count": 27
+  },
+  {
+    "key": "shape:tentacles",
+    "label": "Forma tentáculos",
+    "count": 24
+  },
+  {
+    "key": "type2:grass",
+    "label": "Tipo secundario Planta",
+    "count": 24
+  },
+  {
+    "key": "type2:dark",
+    "label": "Tipo secundario Siniestro",
+    "count": 24
+  },
+  {
+    "key": "mythical",
+    "label": "Míticos",
+    "count": 23
+  },
+  {
+    "key": "shape:bug-wings",
+    "label": "Forma alas de bicho",
+    "count": 22
+  },
+  {
+    "key": "shape:heads",
+    "label": "Forma varias cabezas",
+    "count": 20
+  },
+  {
+    "key": "type2:water",
+    "label": "Tipo secundario Agua",
+    "count": 20
+  },
+  {
+    "key": "baby",
+    "label": "Bebés",
+    "count": 19
+  },
+  {
+    "key": "type2:ice",
+    "label": "Tipo secundario Hielo",
+    "count": 17
+  },
+  {
+    "key": "type2:rock",
+    "label": "Tipo secundario Roca",
+    "count": 16
+  },
+  {
+    "key": "type2:fire",
+    "label": "Tipo secundario Fuego",
+    "count": 15
+  },
+  {
+    "key": "type2:normal",
+    "label": "Tipo secundario Normal",
+    "count": 13
+  },
+  {
+    "key": "habitat:rare",
+    "label": "Hábitat raro",
+    "count": 10
+  },
+  {
+    "key": "type2:electric",
+    "label": "Tipo secundario Eléctrico",
+    "count": 10
+  },
+  {
+    "key": "type1:flying",
+    "label": "Tipo principal Volador",
+    "count": 9
+  },
+  {
+    "key": "type2:bug",
+    "label": "Tipo secundario Bicho",
+    "count": 9
+  }
+]

@@ -1,0 +1,108 @@
+<app-page-header title="Conexiones">
+  <button type="button" header-actions class="headerIconButton textIcon" (click)="toggleHelp()" aria-label="Abrir ayuda">
+    <span aria-hidden="true">?</span>
+  </button>
+</app-page-header>
+
+<app-help-panel
+  [open]="helpOpen"
+  title="Cómo se juega"
+  description="Selecciona 4 Pokémon que compartan una característica común. Si aciertas, se agrupan arriba. Si fallas, verás cuántas coincidencias había. Tienes 4 fallos."
+  (closed)="closeHelp()"
+></app-help-panel>
+
+<main class="pageContent">
+  <div class="pageWrap">
+    <div class="containerQuiz">
+      <section class="boardShell">
+        <div class="boardTopBar">
+          <div class="attemptsRow" aria-label="Intentos restantes">
+            <span class="statusLabel">Intentos</span>
+            <div class="attemptDots">
+              <span
+                class="attemptDot"
+                *ngFor="let slot of attemptSlots"
+                [class.off]="!isAttemptAvailable(slot)"
+                aria-hidden="true"
+              ></span>
+            </div>
+          </div>
+
+          <span class="selectionChip">{{ selectedCount }}/4</span>
+
+          <button type="button" class="groupButton" [disabled]="!canSubmit" (click)="submitSelection()">
+            Agrupar
+          </button>
+        </div>
+
+        <section class="loadingState" *ngIf="loading">
+          <span class="loadingTitle">Preparando ronda...</span>
+          <p>Generando 4 grupos claros con datos reales del dataset local.</p>
+        </section>
+
+        <section class="errorState" *ngIf="!loading && loadError">
+          <span class="loadingTitle">No pudimos iniciar el juego</span>
+          <p>{{ loadError }}</p>
+          <button type="button" class="retryButton" (click)="startRound()">Reintentar</button>
+        </section>
+
+        <ng-container *ngIf="!loading && !loadError && round">
+          <div class="solvedRows" *ngIf="solvedGroups.length">
+            <article
+              class="solvedRow"
+              *ngFor="let group of solvedGroups; let i = index; trackBy: trackByGroup"
+              [ngClass]="getSolvedTone(i)"
+            >
+              <div class="solvedHeading">
+                <strong>{{ group.title }}</strong>
+                <span>{{ group.pokemon.length }} Pokémon</span>
+              </div>
+
+              <div class="miniTeam">
+                <article
+                  class="miniPokemon"
+                  *ngFor="let pokemon of group.pokemon; trackBy: trackByPokemon"
+                  [class.is-shiny]="isPokemonShiny(pokemon)"
+                >
+                  <div class="miniSpriteWrap">
+                    <img [src]="getSolvedPokemonSprite(pokemon)" [alt]="getPokemonLabel(pokemon)" loading="lazy" decoding="async" />
+                    <span class="shinyBadge" *ngIf="isPokemonShiny(pokemon)" aria-hidden="true">✦</span>
+                  </div>
+                  <span>{{ getPokemonLabel(pokemon) }}</span>
+                </article>
+              </div>
+            </article>
+          </div>
+
+          <div class="boardGrid" *ngIf="activeTiles.length">
+            <button
+              type="button"
+              class="tileCard"
+              *ngFor="let tile of activeTiles; trackBy: trackByTile"
+              [ngClass]="{
+                selected: isSelected(tile),
+                shake: isShaking(tile),
+                'is-shiny': tile.isShiny
+              }"
+              (click)="toggleTile(tile)"
+            >
+              <div class="tileSprite">
+                <img [src]="getTileDisplaySprite(tile)" [alt]="getPokemonLabel(tile.pokemon)" loading="lazy" decoding="async" />
+                <span class="shinyBadge" *ngIf="tile.isShiny" aria-hidden="true">✦</span>
+              </div>
+              <span>{{ getPokemonLabel(tile.pokemon) }}</span>
+            </button>
+          </div>
+        </ng-container>
+      </section>
+
+      <app-result-banner
+        [status]="resultStatus"
+        [title]="resultTitle"
+        [message]="resultMessage"
+        [nextLabel]="nextLabel"
+        (next)="startRound()"
+      ></app-result-banner>
+    </div>
+  </div>
+</main>

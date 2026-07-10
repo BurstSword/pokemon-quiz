@@ -1,0 +1,118 @@
+<app-page-header title="PokéQuiz Arena" [backLink]="null"></app-page-header>
+
+<main class="pageContent">
+  <div class="pageWrap">
+    <div class="containerQuiz">
+      <section class="heroCard">
+        <div class="brandRow">
+          <!-- <img class="heroLogo" [src]="logoPath" alt="PokéQuiz Arena" /> -->
+
+          <div class="heroCopy">
+            <span class="eyebrow">Arena de quiz Pokémon</span>
+            <h1>PokéQuiz Arena</h1>
+            <p>Elige un modo, ajusta el rango de generaciones y juega con el pool que prefieras.</p>
+            <div class="heroMeta">
+              <span class="heroSummary">5 modos de juego · 1 Pokédex</span>
+              <span class="heroSummary muted">Pool activo: {{ activePoolCount }} Pokémon</span>
+            </div>
+          </div>
+        </div>
+
+        <section class="generationCard" aria-label="Filtro de generaciones activas">
+          <div class="generationHeader">
+            <div>
+              <strong>Generaciones activas</strong>
+              <p>Todos los juegos usarán solo Pokémon de estas generaciones.</p>
+            </div>
+
+            <button type="button" class="generationAction" (click)="selectAllGenerations()">Todas</button>
+          </div>
+
+          <div class="generationLoading" *ngIf="!generationsReady">
+            <span class="loadingDot" aria-hidden="true"></span>
+            <span>Cargando generaciones…</span>
+          </div>
+
+          <div class="generationChips" *ngIf="generationsReady">
+            <button
+              type="button"
+              class="generationChip"
+              *ngFor="let generation of availableGenerations; trackBy: trackByGeneration"
+              [class.active]="isGenerationActive(generation)"
+              (click)="toggleGeneration(generation)"
+            >
+              Gen {{ generation }}
+            </button>
+          </div>
+
+          <div class="generationFooter" *ngIf="generationsReady">
+            <span>{{ activeGenerations.length }} generaciones activas</span>
+            <span>{{ activePoolCount }} Pokémon en el pool</span>
+          </div>
+
+          <p class="generationNotice" *ngIf="generationNotice">{{ generationNotice }}</p>
+        </section>
+      </section>
+
+      <section class="modes" aria-label="Modos principales">
+        <a
+          *ngFor="let item of routes; trackBy: trackByPath"
+          class="modeCard"
+          [routerLink]="['/', item.path]"
+        >
+          <span class="modeBadge" aria-hidden="true">
+            @switch (item.icon) {
+              @case ('shadow') {
+                <svg class="modeIcon" viewBox="0 0 24 24" role="presentation">
+                  <path fill="currentColor" d="M12 3C7.03 3 3 7.03 3 12c0 2.49 1.01 4.74 2.65 6.37A8.96 8.96 0 0 0 12 21c4.97 0 9-4.03 9-9S16.97 3 12 3Zm-1.1 14.2c-2.54-.41-4.49-2.59-4.49-5.2 0-2.9 2.35-5.25 5.25-5.25.7 0 1.37.14 1.98.39-1.6.8-2.71 2.45-2.71 4.36 0 1.91 1.11 3.56 2.71 4.36-.83.41-1.77.6-2.74.34Z"/>
+                </svg>
+              }
+              @case ('blur') {
+                <svg class="modeIcon" viewBox="0 0 24 24" role="presentation">
+                  <path d="M4 8.5h16M4 12h16M4 15.5h16" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" fill="none"/>
+                  <circle cx="8" cy="12" r="3" fill="currentColor" opacity=".55"/>
+                </svg>
+              }
+              @case ('colors') {
+                <svg class="modeIcon" viewBox="0 0 24 24" role="presentation">
+                  <circle cx="7" cy="12" r="3.1" fill="currentColor"/>
+                  <circle cx="12" cy="8" r="3.1" fill="currentColor" opacity=".82"/>
+                  <circle cx="17" cy="12" r="3.1" fill="currentColor" opacity=".66"/>
+                  <circle cx="12" cy="16" r="3.1" fill="currentColor" opacity=".48"/>
+                </svg>
+              }
+              @case ('clues') {
+                <svg class="modeIcon" viewBox="0 0 24 24" role="presentation">
+                  <circle cx="10.5" cy="10.5" r="5.5" stroke="currentColor" stroke-width="2.2" fill="none"/>
+                  <path d="m15 15 4 4" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
+                </svg>
+              }
+              @case ('connections') {
+                <svg class="modeIcon" viewBox="0 0 24 24" role="presentation">
+                  <circle cx="7" cy="7" r="2.2" fill="currentColor"/>
+                  <circle cx="17" cy="7" r="2.2" fill="currentColor"/>
+                  <circle cx="7" cy="17" r="2.2" fill="currentColor"/>
+                  <circle cx="17" cy="17" r="2.2" fill="currentColor"/>
+                  <path d="M9 7h6M7 9v6M17 9v6M9 17h6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+              }
+              @default {
+                <svg class="modeIcon" viewBox="0 0 24 24" role="presentation">
+                  <path d="M7 5.5h8.5A2.5 2.5 0 0 1 18 8v10.5l-4-2-4 2V8A2.5 2.5 0 0 0 7.5 5.5H7Z" fill="currentColor"/>
+                  <path d="M6 5.5h1.5A2.5 2.5 0 0 1 10 8v10.5l-4-2-4 2V8A2.5 2.5 0 0 1 4.5 5.5H6Z" fill="currentColor" opacity=".62"/>
+                </svg>
+              }
+            }
+          </span>
+
+          <div class="modeCopy">
+            <strong>{{ item.title }}</strong>
+            <p>{{ item.description }}</p>
+          </div>
+
+          <span class="modeArrow" aria-hidden="true">&rsaquo;</span>
+        </a>
+      </section>
+    </div>
+  </div>
+</main>

@@ -1,0 +1,172 @@
+<app-page-header title="Pok&eacute;dex"></app-page-header>
+
+<main class="pageContent">
+  <div class="pageWrap">
+    <section class="pokedexShell">
+      <section class="searchDeck">
+        <div class="searchIntro">
+          <span class="eyebrow">Consulta completa</span>
+          <h1>Busca cualquier Pok&eacute;mon del quiz</h1>
+          <p>La Pok&eacute;dex consulta toda la base, independientemente del filtro global de generaciones de los juegos.</p>
+        </div>
+
+        <div class="searchField">
+          <input
+            class="searchInput"
+            type="search"
+            [ngModel]="searchTerm"
+            (ngModelChange)="onSearchChange($event)"
+            (focus)="onSearchFocus()"
+            (blur)="onSearchBlur()"
+            (keydown)="onSearchKeydown($event)"
+            placeholder="Busca por nombre o n&uacute;mero (#025, Pikachu, 25...)"
+          />
+
+          <div class="suggestionsPanel" *ngIf="suggestionsOpen">
+            <button
+              type="button"
+              class="suggestionRow"
+              *ngFor="let pokemon of suggestions; trackBy: trackByPokemon"
+              (mousedown)="selectSuggestion(pokemon, $event)"
+            >
+              <img class="suggestionSprite" [src]="getSuggestionSprite(pokemon)" [alt]="getPokemonLabel(pokemon)" loading="lazy" decoding="async" />
+              <div class="suggestionCopy">
+                <strong>{{ getPokemonLabel(pokemon) }}</strong>
+                <span>#{{ getPokedexNumber(pokemon) }}</span>
+              </div>
+              <div class="suggestionTypes">
+                <img class="typeImage" [src]="getImageUrl(pokemon.Type1)" [alt]="pokemon.Type1" />
+                <img class="typeImage" *ngIf="pokemon.Type2" [src]="getImageUrl(pokemon.Type2)" [alt]="pokemon.Type2" />
+              </div>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <section class="displayPanel" *ngIf="selectedPokemon as pokemon">
+        <div class="deviceTop">
+          <div class="topLens"></div>
+          <div class="topLights">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+        </div>
+
+        <div class="screenPanel">
+          <div class="screenHeader">
+            <span class="screenCode">N.&ordm; {{ getPokedexNumber(pokemon) }}</span>
+            <span class="screenGeneration">Gen {{ pokemon.Generation }}</span>
+          </div>
+
+          <div class="artArea">
+            <img [src]="getPokemonImage(pokemon)" [alt]="getPokemonLabel(pokemon)" loading="lazy" decoding="async" />
+          </div>
+
+          <div class="identityRow">
+            <div>
+              <span class="identityEyebrow">Registro activo</span>
+              <h2>{{ getPokemonLabel(pokemon) }}</h2>
+            </div>
+
+            <div class="types">
+              <span class="typeBadge" [style.--type-accent]="getColor(pokemon.Type1)">
+                <img class="typeImage" [src]="getImageUrl(pokemon.Type1)" [alt]="pokemon.Type1" />
+                {{ getTypeLabel(pokemon.Type1) }}
+              </span>
+              <span class="typeBadge" *ngIf="pokemon.Type2" [style.--type-accent]="getColor(pokemon.Type2)">
+                <img class="typeImage" [src]="getImageUrl(pokemon.Type2)" [alt]="pokemon.Type2" />
+                {{ getTypeLabel(pokemon.Type2) }}
+              </span>
+            </div>
+          </div>
+
+          <p class="description">{{ getPokemonDescription(pokemon) }}</p>
+
+          <div class="factGrid">
+            <article class="factCard" *ngFor="let fact of getPokemonFacts(pokemon)">
+              <span>{{ fact.label }}</span>
+              <strong>{{ fact.value }}</strong>
+            </article>
+          </div>
+
+          <section class="statsPanel" *ngIf="getStatEntries(pokemon).length > 0">
+            <div class="sectionTitleRow">
+              <span class="sectionEyebrow">Estad&iacute;sticas</span>
+            </div>
+
+            <div class="statRows">
+              <article class="statRow" *ngFor="let stat of getStatEntries(pokemon); trackBy: trackByStat">
+                <span class="statLabel">{{ stat.label }}</span>
+                <div class="statBar">
+                  <span class="statFill" [style.width]="getStatWidth(stat.value)"></span>
+                </div>
+                <strong class="statValue">{{ stat.value }}</strong>
+              </article>
+            </div>
+          </section>
+
+          <section class="evolutionPanel" *ngIf="getEvolutionPokemons(pokemon).length > 0">
+            <div class="sectionTitleRow">
+              <span class="sectionEyebrow">L&iacute;nea evolutiva</span>
+            </div>
+
+            <div class="evolutionNodes">
+              <button
+                type="button"
+                class="evolutionNode"
+                *ngFor="let evolution of getEvolutionPokemons(pokemon); trackBy: trackByPokemon"
+                [class.active]="isSelectedEvolution(evolution)"
+                (click)="selectPokemon(evolution)"
+              >
+                <img [src]="getEvolutionSprite(evolution)" [alt]="getPokemonLabel(evolution)" loading="lazy" decoding="async" />
+                <span>#{{ getPokedexNumber(evolution) }}</span>
+                <strong>{{ getPokemonLabel(evolution) }}</strong>
+              </button>
+            </div>
+          </section>
+        </div>
+
+        <div class="deviceBase">
+          <span class="speaker"></span>
+          <span class="speaker"></span>
+          <span class="speaker"></span>
+        </div>
+      </section>
+
+      <section class="explorePanel">
+        <button type="button" class="exploreToggle" (click)="toggleExplore()">
+          <span>Explorar Pok&eacute;dex</span>
+          <span aria-hidden="true">{{ exploreOpen ? '\u2212' : '+' }}</span>
+        </button>
+
+        <div class="exploreContent" *ngIf="exploreOpen">
+          <div class="catalogMeta">
+            <span>{{ pokemons.length }} Pok&eacute;mon registrados</span>
+            <span>P&aacute;gina {{ currentPage + 1 }} / {{ maxPage + 1 }}</span>
+          </div>
+
+          <div class="exploreGrid">
+            <button
+              type="button"
+              class="exploreCard"
+              *ngFor="let pokemon of paginatedPokemons; trackBy: trackByPokemon"
+              [class.active]="pokemon.Number === selectedPokemon?.Number"
+              [style.--entry-accent]="getColor(pokemon.Type1)"
+              (click)="selectPokemon(pokemon)"
+            >
+              <span class="entryNumber">#{{ getPokedexNumber(pokemon) }}</span>
+              <img class="entrySprite" [src]="getSuggestionSprite(pokemon)" [alt]="getPokemonLabel(pokemon)" loading="lazy" decoding="async" />
+              <strong class="entryName">{{ getPokemonLabel(pokemon) }}</strong>
+            </button>
+          </div>
+
+          <div class="pagerRow">
+            <button type="button" class="pagerButton" [disabled]="currentPage === 0" (click)="previousPage()">Anterior</button>
+            <button type="button" class="pagerButton" [disabled]="currentPage === maxPage" (click)="nextPage()">Siguiente</button>
+          </div>
+        </div>
+      </section>
+    </section>
+  </div>
+</main>

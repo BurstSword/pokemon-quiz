@@ -1,0 +1,87 @@
+<app-page-header title="Quiz pistas">
+  <button type="button" header-actions class="headerIconButton textIcon" (click)="toggleHelp()" aria-label="Abrir ayuda">
+    <span aria-hidden="true">?</span>
+  </button>
+</app-page-header>
+
+<app-help-panel
+  [open]="helpOpen"
+  title="Cómo se juega"
+  description="Empieza con el número de Pokédex y pide más pistas solo si lo necesitas. Puedes intentar responder en cualquier momento."
+  (closed)="closeHelp()"
+></app-help-panel>
+
+<main class="pageContent">
+  <div class="pageWrap">
+    <div class="containerQuiz">
+      <section class="quizCard">
+        <div class="poolErrorState" *ngIf="poolErrorMessage">
+          <strong>No hay suficientes Pokémon activos</strong>
+          <span>{{ poolErrorMessage }}</span>
+        </div>
+
+        <ng-container *ngIf="!poolErrorMessage">
+        <div class="topBar">
+          <div class="titleBlock">
+            <span class="panelEyebrow">Quiz pistas</span>
+            <h2>Pista {{ revealedCluesCount }}/{{ clues.length }}</h2>
+          </div>
+
+          <button type="button" class="clueBtn" (click)="addClue()" [disabled]="!hasMoreClues">
+            {{ hasMoreClues ? 'Otra pista' : 'Sin mas pistas' }}
+          </button>
+        </div>
+
+        <div class="clueList">
+          <article class="clueRow" *ngFor="let clue of showingClues; let i = index; trackBy: trackByClue">
+            <span class="clueIndex">{{ i + 1 }}</span>
+            <p>{{ clue }}</p>
+          </article>
+        </div>
+
+        <div class="searchBlock">
+          <input
+            class="searchInput"
+            type="search"
+            [(ngModel)]="searchTerm"
+            (ngModelChange)="onSearch($event)"
+            placeholder="Escribe el nombre de un Pokémon"
+          />
+
+          <span class="searchMeta">Top 5</span>
+        </div>
+
+        <div class="emptyState" *ngIf="!hasSearchTerm">
+          Empieza a escribir para intentar adivinarlo ya.
+        </div>
+
+        <div class="emptyState" *ngIf="hasSearchTerm && visibleResults.length === 0">
+          No hay coincidencias.
+        </div>
+
+        <div class="resultsList" *ngIf="visibleResults.length > 0">
+          <button
+            type="button"
+            class="resultRow"
+            *ngFor="let item of visibleResults; trackBy: trackByPokemon"
+            [ngClass]="getResultCardClass(item)"
+            [disabled]="optionsLocked"
+            (click)="checkIfCorrect(item)"
+          >
+            <img [src]="item.Image" loading="lazy" decoding="async" width="72" height="72" [alt]="getPokemonLabel(item)" />
+            <span>{{ getPokemonLabel(item) }}</span>
+          </button>
+        </div>
+
+        <app-result-banner
+          [status]="resultStatus"
+          [title]="resultTitle"
+          [message]="resultMessage"
+          [answer]="revealedAnswer"
+          (next)="nextRound()"
+        ></app-result-banner>
+        </ng-container>
+      </section>
+    </div>
+  </div>
+</main>
