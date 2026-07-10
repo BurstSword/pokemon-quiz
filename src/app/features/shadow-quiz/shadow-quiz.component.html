@@ -6,7 +6,7 @@
 
 <app-help-panel
   [open]="helpOpen"
-  title="Cómo se juega"
+  title="Como se juega"
   description="Mira la silueta, activa una pista si la necesitas y responde una sola vez por ronda."
   (closed)="closeHelp()"
 >
@@ -25,7 +25,7 @@
   <div class="pageWrap">
     <div class="containerQuiz">
       <section class="poolErrorState" *ngIf="poolErrorMessage">
-        <strong>No hay suficientes Pokémon activos</strong>
+        <strong>No hay suficientes Pokemon activos</strong>
         <p>{{ poolErrorMessage }}</p>
       </section>
 
@@ -45,7 +45,7 @@
             class="animate-img"
             [ngClass]="{ blackImage: !visible }"
             [src]="displayImageSrc"
-            [alt]="getPokemonLabel()"
+            [alt]="getCurrentPokemonLabel()"
             loading="eager"
             decoding="async"
           />
@@ -65,7 +65,7 @@
       <div class="quizSection">
         <div class="quizIntro">
           <span class="panelEyebrow">Opciones</span>
-          <strong>{{ resultStatus ? 'Respuesta resuelta' : roundReady ? 'Elige el Pokémon correcto' : 'Preparando ronda' }}</strong>
+          <strong>{{ resultStatus ? 'Respuesta resuelta' : roundReady ? 'Elige el Pokemon correcto' : 'Preparando ronda' }}</strong>
         </div>
         <hr />
         <div class="heightCentered">

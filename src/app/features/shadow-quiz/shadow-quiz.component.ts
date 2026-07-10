@@ -64,13 +64,12 @@ export class ShadowQuizComponent extends QuizBaseComponent {
     this.roundReady = false;
   }
 
-  override getPokemonLabel(): string {
-    const pokemon = this.pokemon;
-    if (!pokemon) {
-      return 'Pokémon oculto';
+  getCurrentPokemonLabel(): string {
+    if (!this.pokemon) {
+      return 'Pokemon oculto';
     }
 
-    return pokemon.SpanishName || pokemon.DisplayName || pokemon.Name;
+    return this.getPokemonLabel(this.pokemon);
   }
 
   trackByIndex = (index: number): number => index;
