@@ -1,0 +1,62 @@
+{
+  "$schema": "./node_modules/@angular/service-worker/config/schema.json",
+  "index": "/index.html",
+  "assetGroups": [
+    {
+      "name": "app-shell",
+      "installMode": "prefetch",
+      "updateMode": "prefetch",
+      "resources": {
+        "files": [
+          "/index.html",
+          "/*.css",
+          "/*.js",
+          "/manifest.webmanifest"
+        ]
+      }
+    },
+    {
+      "name": "brand-and-ui-assets",
+      "installMode": "prefetch",
+      "updateMode": "prefetch",
+      "resources": {
+        "files": [
+          "/assets/brand/**",
+          "/assets/icon/**",
+          "/assets/icons/**",
+          "/assets/pokemontypes/**",
+          "/assets/shapes.svg",
+          "/assets/weights.txt"
+        ]
+      }
+    },
+    {
+      "name": "pokemon-data",
+      "installMode": "lazy",
+      "updateMode": "prefetch",
+      "resources": {
+        "files": [
+          "/assets/pokemon.json",
+          "/assets/pokemon.fixed.json",
+          "/assets/pokemon.enriched.json",
+          "/assets/pokemon.connection-tags.summary.json"
+        ]
+      }
+    }
+  ],
+  "dataGroups": [
+    {
+      "name": "remote-pokemon-images",
+      "urls": [
+        "https://raw.githubusercontent.com/PokeAPI/sprites/**",
+        "https://www.serebii.net/pokemon/art/**"
+      ],
+      "cacheConfig": {
+        "strategy": "performance",
+        "maxSize": 80,
+        "maxAge": "30d",
+        "timeout": "10s"
+      }
+    }
+  ]
+}

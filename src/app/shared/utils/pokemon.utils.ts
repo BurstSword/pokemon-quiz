@@ -43,3 +43,43 @@ export const sampleUnique = <T>(
 
   return result;
 };
+
+export const uniqueBy = <T, K>(items: T[], getKey: (item: T) => K): T[] => {
+  const seen = new Set<K>();
+  const result: T[] = [];
+
+  for (const item of items) {
+    const key = getKey(item);
+    if (seen.has(key)) {
+      continue;
+    }
+
+    seen.add(key);
+    result.push(item);
+  }
+
+  return result;
+};
+
+export const buildUniqueOptions = <T>(
+  correctItem: T,
+  items: T[],
+  getKey: (item: T) => number,
+  optionCount = 4,
+): T[] => {
+  const correctKey = getKey(correctItem);
+  const distractors = shuffleArray(
+    uniqueBy(
+      items.filter((item) => getKey(item) !== correctKey),
+      getKey,
+    ),
+  ).slice(0, Math.max(0, optionCount - 1));
+
+  const options = shuffleArray(uniqueBy([correctItem, ...distractors], getKey));
+
+  if (options.length !== optionCount) {
+    return [];
+  }
+
+  return options;
+};

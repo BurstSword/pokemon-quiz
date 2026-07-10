@@ -4,7 +4,7 @@ import { combineLatest } from 'rxjs';
 import { GenerationFilterService } from '../../core/services/generation-filter.service';
 import { PokemonService } from '../../core/services/pokemon.service';
 import { PokemonTypeService } from '../../core/services/pokemon-type.service';
-import { pickRandomItem, sampleUnique, shuffleArray } from '../utils/pokemon.utils';
+import { buildUniqueOptions, pickRandomItem, uniqueBy } from '../utils/pokemon.utils';
 
 @Directive()
 export abstract class QuizBaseComponent implements OnInit {
@@ -34,7 +34,10 @@ export abstract class QuizBaseComponent implements OnInit {
     combineLatest([pokemons$, this.generationFilterService.activeGenerations$]).subscribe(([pokemons]) => {
       this.allPokemons = [...pokemons];
       this.generationFilterService.initializeFromPokemonList(this.allPokemons);
-      this.pokemons = this.generationFilterService.getActivePokemonPool(this.allPokemons);
+      this.pokemons = uniqueBy(
+        this.generationFilterService.getActivePokemonPool(this.allPokemons),
+        (pokemon) => pokemon.Number,
+      );
 
       if (this.pokemons.length < this.minRequiredPokemon) {
         this.pokemon = undefined;
@@ -92,27 +95,30 @@ export abstract class QuizBaseComponent implements OnInit {
       return;
     }
 
-    const correct: OptionViewModel = {
-      Name: currentPokemon.Name,
-      Label: this.getPokemonLabel(currentPokemon),
-      Number: currentPokemon.Number,
-      Correct: true,
-      state: 'normal',
-    };
-    const wrongs = sampleUnique(
+    const optionPool = buildUniqueOptions(
+      currentPokemon,
       this.pokemons,
-      3,
-      (candidate) => candidate.Number === currentPokemon.Number,
+      (candidate) => candidate.Number,
+      4,
     );
-    const wrongOptions: OptionViewModel[] = wrongs.map((pokemon) => ({
+
+    if (optionPool.length !== 4) {
+      this.options = [];
+      this.optionsLocked = true;
+      this.poolErrorMessage = 'Activa m\u00e1s generaciones para jugar este modo.';
+      this.onPoolUnavailable();
+      return;
+    }
+
+    this.poolErrorMessage = '';
+    this.optionsLocked = false;
+    this.options = optionPool.map((pokemon) => ({
       Name: pokemon.Name,
       Label: this.getPokemonLabel(pokemon),
       Number: pokemon.Number,
-      Correct: false,
+      Correct: pokemon.Number === currentPokemon.Number,
       state: 'normal',
     }));
-
-    this.options = shuffleArray([correct, ...wrongOptions]);
   }
 
   resolveOption(option: OptionViewModel): void {
