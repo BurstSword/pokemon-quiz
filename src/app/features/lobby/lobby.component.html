@@ -68,9 +68,18 @@
 
         <div class="statsChips">
           <span class="statsChip">Partidas {{ totalGamesPlayed }}</span>
+          <span class="statsChip">Aciertos {{ totalCorrect }}</span>
+          <span class="statsChip">Fallos {{ totalWrong }}</span>
           <span class="statsChip">Racha {{ currentStreak }}</span>
           <span class="statsChip">Mejor racha {{ bestStreak }}</span>
           <span class="statsChip">Precision {{ accuracy }}%</span>
+        </div>
+
+        <div class="modeStatsList">
+          <div class="modeStatsRow" *ngFor="let item of statsRoutes; trackBy: trackByStatsPath">
+            <strong>{{ item.title }}</strong>
+            <span>{{ getModeSummary(item.path) }}</span>
+          </div>
         </div>
       </section>
 

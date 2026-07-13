@@ -31,7 +31,7 @@ export class ConnectionsComponent implements OnInit {
   resultStatus: 'correct' | 'incorrect' | null = null;
   resultTitle = '';
   resultMessage = '';
-  resultPoints: number | null = null;
+  resultSummaryText = '';
   resultStreakText = '';
   resultRecordText = '';
   readonly nextLabel = 'Nueva ronda';
@@ -102,7 +102,7 @@ export class ConnectionsComponent implements OnInit {
     this.resultStatus = null;
     this.resultTitle = '';
     this.resultMessage = '';
-    this.resultPoints = null;
+    this.resultSummaryText = '';
     this.resultStreakText = '';
     this.resultRecordText = '';
     this.roundStartedAt = Date.now();
@@ -336,17 +336,13 @@ export class ConnectionsComponent implements OnInit {
       perfectRound: won && remainingMistakes === 4,
     });
 
-    this.resultPoints = feedback.points;
-    this.resultStreakText = feedback.lostStreak
-      ? 'Racha perdida'
-      : feedback.currentModeStreak > 0
-        ? `Racha ${feedback.currentModeStreak}`
-        : '';
-    this.resultRecordText = feedback.isNewRecord
-      ? 'Nuevo record'
-      : feedback.modeStats.bestScore > 0
-        ? `Record ${feedback.modeStats.bestScore}`
-        : '';
+    this.resultSummaryText = won
+      ? `Tableros completados ${feedback.modeStats.completedBoards}`
+      : '';
+    this.resultStreakText = won
+      ? (feedback.currentModeStreak > 0 ? `Racha ${feedback.currentModeStreak}` : '')
+      : (feedback.lostStreak ? 'Racha perdida' : '');
+    this.resultRecordText = won && feedback.isNewBestStreak ? 'Nuevo record de racha' : '';
 
     if (!won && feedback.lostStreak) {
       this.resultMessage = `${this.resultMessage} Racha reiniciada.`;

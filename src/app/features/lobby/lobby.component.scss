@@ -244,6 +244,31 @@
   font-weight: 800;
 }
 
+.modeStatsList {
+  display: grid;
+  gap: 8px;
+}
+
+.modeStatsRow {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: rgba(15, 23, 42, 0.04);
+}
+
+.modeStatsRow strong,
+.modeStatsRow span {
+  margin: 0;
+}
+
+.modeStatsRow span {
+  color: #475569;
+  font-weight: 700;
+  text-align: right;
+}
+
 .modes {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -348,6 +373,14 @@
 
   .statsHeader {
     flex-direction: column;
+  }
+
+  .modeStatsRow {
+    flex-direction: column;
+  }
+
+  .modeStatsRow span {
+    text-align: left;
   }
 }
 

@@ -23,6 +23,8 @@ interface LobbyRoute {
   icon: 'shadow' | 'blur' | 'colors' | 'clues' | 'connections' | 'pokedex';
 }
 
+type StatsRoute = Exclude<RoutePath, 'pokedex'>;
+
 @Component({
   selector: 'app-lobby',
   standalone: true,
@@ -72,6 +74,13 @@ export class LobbyComponent implements OnInit {
   ];
 
   readonly logoPath = 'assets/brand/pokequiz-mark.svg';
+  readonly statsRoutes: ReadonlyArray<{ path: StatsRoute; title: string }> = [
+    { path: 'shadow-quiz', title: 'Sombra' },
+    { path: 'blur-quiz', title: 'Blur' },
+    { path: 'colors', title: 'Colores' },
+    { path: 'clues', title: 'Pistas' },
+    { path: 'connections', title: 'Conexiones' },
+  ];
   allPokemons: Pokemon[] = [];
   availableGenerations: number[] = [];
   activeGenerations: number[] = [];
@@ -125,7 +134,7 @@ export class LobbyComponent implements OnInit {
 
   get totalGamesPlayed(): number {
     this.gameStatsService.stats();
-    return this.gameStatsService.getStats().totalGamesPlayed;
+    return this.gameStatsService.getStats().totalPlayed;
   }
 
   get currentStreak(): number {
@@ -149,6 +158,24 @@ export class LobbyComponent implements OnInit {
     return Math.round((stats.totalCorrect / totalAnswers) * 100);
   }
 
+  get totalCorrect(): number {
+    this.gameStatsService.stats();
+    return this.gameStatsService.getStats().totalCorrect;
+  }
+
+  get totalWrong(): number {
+    this.gameStatsService.stats();
+    return this.gameStatsService.getStats().totalWrong;
+  }
+
+  getModeSummary(path: StatsRoute): string {
+    this.gameStatsService.stats();
+    const mode = this.mapRouteToMode(path);
+    const stats = this.gameStatsService.getModeStats(mode);
+
+    return `${stats.correct} aciertos · ${stats.wrong} fallos · record ${stats.bestStreak}`;
+  }
+
   resetStats(): void {
     if (typeof window !== 'undefined' && !window.confirm('Se borraran tus estadisticas locales. Quieres continuar?')) {
       return;
@@ -160,4 +187,13 @@ export class LobbyComponent implements OnInit {
 
   trackByPath = (_: number, route: LobbyRoute): string => route.path;
   trackByGeneration = (_: number, generation: number): number => generation;
+  trackByStatsPath = (_: number, route: { path: StatsRoute }): string => route.path;
+
+  private mapRouteToMode(path: StatsRoute) {
+    if (path === 'shadow-quiz') return 'shadow' as const;
+    if (path === 'blur-quiz') return 'blur' as const;
+    if (path === 'colors') return 'colors' as const;
+    if (path === 'clues') return 'clues' as const;
+    return 'connections' as const;
+  }
 }

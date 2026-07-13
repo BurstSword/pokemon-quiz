@@ -41,6 +41,10 @@
           </article>
         </div>
 
+        <div class="roundFeedback" *ngIf="roundFeedbackText">
+          {{ roundFeedbackText }}
+        </div>
+
         <div class="searchBlock">
           <input
             class="searchInput"
@@ -80,7 +84,7 @@
           [title]="resultTitle"
           [message]="resultMessage"
           [answer]="revealedAnswer"
-          [points]="resultPoints"
+          [summaryText]="resultSummaryText"
           [streakText]="resultStreakText"
           [recordText]="resultRecordText"
           (next)="nextRound()"

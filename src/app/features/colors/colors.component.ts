@@ -58,7 +58,7 @@ export class ColorsComponent implements OnInit {
   resultTitle = '';
   resultMessage = '';
   revealedAnswer = '';
-  resultPoints: number | null = null;
+  resultSummaryText = '';
   resultStreakText = '';
   resultRecordText = '';
   poolErrorMessage = '';
@@ -101,7 +101,7 @@ export class ColorsComponent implements OnInit {
         this.resultTitle = '';
         this.resultMessage = '';
         this.revealedAnswer = '';
-        this.resultPoints = null;
+        this.resultSummaryText = '';
         this.resultStreakText = '';
         this.resultRecordText = '';
         this.roundRecorded = false;
@@ -134,7 +134,7 @@ export class ColorsComponent implements OnInit {
     this.resultTitle = '';
     this.resultMessage = '';
     this.revealedAnswer = '';
-    this.resultPoints = null;
+    this.resultSummaryText = '';
     this.resultStreakText = '';
     this.resultRecordText = '';
     this.roundStartedAt = Date.now();
@@ -303,17 +303,13 @@ export class ColorsComponent implements OnInit {
       perfectRound: option.Correct && this.roundHintsUsed === 0,
     });
 
-    this.resultPoints = feedback.points;
-    this.resultStreakText = feedback.lostStreak
-      ? 'Racha perdida'
-      : feedback.currentModeStreak > 0
-        ? `Racha ${feedback.currentModeStreak}`
-        : '';
-    this.resultRecordText = feedback.isNewRecord
-      ? 'Nuevo record'
-      : feedback.modeStats.bestScore > 0
-        ? `Record ${feedback.modeStats.bestScore}`
-        : '';
+    this.resultSummaryText = option.Correct
+      ? `Aciertos ${feedback.modeStats.correct}`
+      : `Fallos ${feedback.modeStats.wrong}`;
+    this.resultStreakText = option.Correct
+      ? (feedback.currentModeStreak > 0 ? `Racha ${feedback.currentModeStreak}` : '')
+      : (feedback.lostStreak ? 'Racha perdida' : '');
+    this.resultRecordText = option.Correct && feedback.isNewBestStreak ? 'Nuevo record de racha' : '';
 
     if (!option.Correct && feedback.lostStreak) {
       this.resultMessage = `${this.resultMessage} Racha reiniciada.`;

@@ -1,34 +1,49 @@
 export type GameModeId = 'shadow' | 'blur' | 'colors' | 'clues' | 'connections';
 
+export type LastResult = 'correct' | 'wrong' | 'win' | 'loss' | null;
+
 export interface ModeStats {
   played: number;
-  wins: number;
-  losses: number;
   correct: number;
   wrong: number;
+  wins: number;
+  losses: number;
   currentStreak: number;
   bestStreak: number;
-  bestScore: number;
-  totalScore: number;
-  averageScore: number;
-  lastScore: number;
-  lastPlayedAt: string | null;
-  perfectRounds: number;
   hintsUsed: number;
-  fastestWinMs: number | null;
-  bestConnectionsRemainingMistakes: number | null;
-  bestCluesWithFewestHints: number | null;
+  lastResult: LastResult;
+  lastPlayedAt: string | null;
+  completedBoards: number;
+  failedBoards: number;
+  bestRemainingMistakes: number | null;
+  wrongAttempts: number;
+  solvedRounds: number;
+  failedRounds: number;
+  bestFewestHints: number | null;
+
+  // Legacy compatibility fields kept to avoid breaking old localStorage payloads.
+  bestScore?: number;
+  totalScore?: number;
+  averageScore?: number;
+  lastScore?: number;
+  perfectRounds?: number;
+  fastestWinMs?: number | null;
+  bestConnectionsRemainingMistakes?: number | null;
+  bestCluesWithFewestHints?: number | null;
 }
 
 export interface GameStats {
   version: 1;
-  totalGamesPlayed: number;
+  totalPlayed: number;
   totalCorrect: number;
   totalWrong: number;
   currentStreak: number;
   bestStreak: number;
   lastPlayedAt: string | null;
   modes: Record<GameModeId, ModeStats>;
+
+  // Legacy alias for old saved payloads.
+  totalGamesPlayed?: number;
 }
 
 export interface GameResult {
@@ -41,33 +56,17 @@ export interface GameResult {
   cluesUsed?: number;
   remainingMistakes?: number;
   perfectRound?: boolean;
+  wrongAttempts?: number;
 }
 
-export interface ScoreEvent {
-  mode: GameModeId;
-  won: boolean;
-  hintsUsed: number;
-  currentStreak: number;
-  durationMs?: number;
-  cluesUsed?: number;
-  remainingMistakes?: number;
-}
-
-export interface ScoreBreakdown {
-  points: number;
-  reason: string;
-}
-
-export interface ScoreFeedback {
-  points: number;
-  reason: string;
+export interface StatsFeedback {
   currentModeStreak: number;
   bestModeStreak: number;
   currentGlobalStreak: number;
   bestGlobalStreak: number;
   lostStreak: boolean;
-  isNewRecord: boolean;
   isNewBestStreak: boolean;
+  lastResult: LastResult;
   modeStats: ModeStats;
   globalStats: GameStats;
 }

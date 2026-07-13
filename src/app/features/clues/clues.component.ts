@@ -22,9 +22,9 @@ import { pickRandomItemExcluding, uniqueBy } from '../../shared/utils/pokemon.ut
 })
 export class CluesComponent implements OnInit {
   readonly modeId = 'clues' as const;
+
   pokemons: Pokemon[] = [];
   pokemon?: Pokemon;
-
   clues: string[] = [];
   showingClues: string[] = [];
   searchTerm = '';
@@ -35,14 +35,17 @@ export class CluesComponent implements OnInit {
   resultTitle = '';
   resultMessage = '';
   revealedAnswer = '';
-  resultPoints: number | null = null;
+  resultSummaryText = '';
   resultStreakText = '';
   resultRecordText = '';
+  roundFeedbackText = '';
   selectedPokemonNumber: number | null = null;
   poolErrorMessage = '';
+
   private preloadImg?: HTMLImageElement;
   private roundStartedAt = 0;
   private roundRecorded = false;
+  private wrongAttemptsThisRound = 0;
 
   constructor(
     private readonly pokemonService: PokemonService,
@@ -73,12 +76,14 @@ export class CluesComponent implements OnInit {
         this.resultTitle = '';
         this.resultMessage = '';
         this.revealedAnswer = '';
-        this.resultPoints = null;
+        this.resultSummaryText = '';
         this.resultStreakText = '';
         this.resultRecordText = '';
+        this.roundFeedbackText = '';
         this.selectedPokemonNumber = null;
         this.roundRecorded = false;
-        this.poolErrorMessage = 'Activa más generaciones para jugar a Quiz pistas.';
+        this.wrongAttemptsThisRound = 0;
+        this.poolErrorMessage = 'Activa mas generaciones para jugar a Quiz pistas.';
         this.cdr.markForCheck();
         return;
       }
@@ -115,19 +120,21 @@ export class CluesComponent implements OnInit {
 
     this.pokemon = pokemon;
     this.generateClues();
-    this.cleanSearch();
+    this.cleanSearch(false);
     this.helpOpen = false;
     this.optionsLocked = false;
     this.resultStatus = null;
     this.resultTitle = '';
     this.resultMessage = '';
     this.revealedAnswer = '';
-    this.resultPoints = null;
+    this.resultSummaryText = '';
     this.resultStreakText = '';
     this.resultRecordText = '';
+    this.roundFeedbackText = '';
     this.selectedPokemonNumber = null;
     this.roundStartedAt = Date.now();
     this.roundRecorded = false;
+    this.wrongAttemptsThisRound = 0;
 
     const preloadCandidate = pickRandomItemExcluding(
       this.pokemons,
@@ -179,15 +186,37 @@ export class CluesComponent implements OnInit {
     }
 
     const isCorrect = choice.Number === currentPokemon.Number;
+    if (isCorrect) {
+      this.optionsLocked = true;
+      this.selectedPokemonNumber = choice.Number;
+      this.resultStatus = 'correct';
+      this.resultTitle = 'Correcto!';
+      this.resultMessage = `Has identificado a ${this.getPokemonLabel(currentPokemon)} con ${this.revealedCluesCount} pista${this.revealedCluesCount === 1 ? '' : 's'}.`;
+      this.revealedAnswer = '';
+      this.roundFeedbackText = '';
+      this.finalizeRound(true);
+      this.cdr.markForCheck();
+      return;
+    }
+
+    this.wrongAttemptsThisRound += 1;
+    this.selectedPokemonNumber = null;
+    this.cleanSearch(false);
+
+    if (this.hasMoreClues) {
+      this.roundFeedbackText = 'Incorrecto, nueva pista desbloqueada.';
+      this.addClue();
+      this.cdr.markForCheck();
+      return;
+    }
+
     this.optionsLocked = true;
-    this.selectedPokemonNumber = choice.Number;
-    this.resultStatus = isCorrect ? 'correct' : 'incorrect';
-    this.resultTitle = isCorrect ? '¡Correcto!' : 'No era ese';
-    this.resultMessage = isCorrect
-      ? `Has identificado a ${this.getPokemonLabel(currentPokemon)} con ${this.revealedCluesCount} pista${this.revealedCluesCount === 1 ? '' : 's'}.`
-      : `Las pistas pertenecían a ${this.getPokemonLabel(currentPokemon)}.`;
-    this.revealedAnswer = isCorrect ? '' : this.getPokemonLabel(currentPokemon);
-    this.finalizeRound(isCorrect);
+    this.resultStatus = 'incorrect';
+    this.resultTitle = 'No era ese';
+    this.resultMessage = `Las pistas pertenecian a ${this.getPokemonLabel(currentPokemon)}.`;
+    this.revealedAnswer = this.getPokemonLabel(currentPokemon);
+    this.roundFeedbackText = '';
+    this.finalizeRound(false);
     this.cdr.markForCheck();
   }
 
@@ -227,8 +256,8 @@ export class CluesComponent implements OnInit {
     }
 
     const generatedClues: string[] = [];
-    generatedClues.push(`Número en la Pokédex: ${pokemon.Number}.`);
-    generatedClues.push(`Pertenece a la generación ${pokemon.Generation}.`);
+    generatedClues.push(`Numero en la Pokedex: ${pokemon.Number}.`);
+    generatedClues.push(`Pertenece a la generacion ${pokemon.Generation}.`);
     generatedClues.push(`Su tipo principal es ${this.translateType(pokemon.Type1)}.`);
     if (pokemon.Type2) {
       generatedClues.push(`Su tipo secundario es ${this.translateType(pokemon.Type2)}.`);
@@ -238,7 +267,7 @@ export class CluesComponent implements OnInit {
       generatedClues.push(`Su color base es ${this.translateColor(pokemon.Color)}.`);
     }
     if (pokemon.Habitat) {
-      generatedClues.push(`Suele asociarse al hábitat ${this.translateHabitat(pokemon.Habitat)}.`);
+      generatedClues.push(`Suele asociarse al habitat ${this.translateHabitat(pokemon.Habitat)}.`);
     }
     if (pokemon.Shape) {
       generatedClues.push(`Su forma se clasifica como ${this.translateShape(pokemon.Shape)}.`);
@@ -253,19 +282,19 @@ export class CluesComponent implements OnInit {
       generatedClues.push(`Pertenece al grupo huevo ${this.translateEggGroup(pokemon.EggGroups[0])}.`);
     }
     if (pokemon.EvolutionStage) {
-      generatedClues.push(`Está en la ${this.getEvolutionStageLabel(pokemon.EvolutionStage).toLowerCase()}.`);
+      generatedClues.push(`Esta en la ${this.getEvolutionStageLabel(pokemon.EvolutionStage).toLowerCase()}.`);
     }
     if (pokemon.IsFinalEvolution) {
-      generatedClues.push('Es una evolución final.');
+      generatedClues.push('Es una evolucion final.');
     }
     if (pokemon.IsBaby) {
-      generatedClues.push('Es un Pokémon bebé.');
+      generatedClues.push('Es un Pokemon bebe.');
     } else if (pokemon.IsMythical) {
-      generatedClues.push('Es un Pokémon mítico.');
+      generatedClues.push('Es un Pokemon mitico.');
     } else if (this.isLegendary(pokemon)) {
-      generatedClues.push('Es un Pokémon legendario.');
+      generatedClues.push('Es un Pokemon legendario.');
     } else {
-      generatedClues.push('No es un Pokémon legendario.');
+      generatedClues.push('No es un Pokemon legendario.');
     }
 
     const statHint = this.getStatHint(pokemon);
@@ -273,9 +302,9 @@ export class CluesComponent implements OnInit {
       generatedClues.push(statHint);
     }
 
-    const descriptionSource = pokemon.DescriptionEs || pokemon.Description || pokemon.DescriptionEn || 'No hay descripción disponible.';
+    const descriptionSource = pokemon.DescriptionEs || pokemon.Description || pokemon.DescriptionEn || 'No hay descripcion disponible.';
     const sanitizedDescription = this.sanitizeDescription(descriptionSource, pokemon);
-    generatedClues.push(`La Pokédex dice: ${sanitizedDescription}`);
+    generatedClues.push(`La Pokedex dice: ${sanitizedDescription}`);
     generatedClues.push(`Su nombre visible tiene ${this.getPokemonLabel(pokemon).length} caracteres.`);
 
     this.clues = generatedClues.slice(0, 10);
@@ -299,29 +328,28 @@ export class CluesComponent implements OnInit {
       cluesUsed,
       durationMs: this.roundStartedAt > 0 ? Date.now() - this.roundStartedAt : undefined,
       perfectRound: won && hintsUsed === 0,
+      wrongAttempts: this.wrongAttemptsThisRound,
     });
 
-    this.resultPoints = feedback.points;
-    this.resultStreakText = feedback.lostStreak
-      ? 'Racha perdida'
-      : feedback.currentModeStreak > 0
-        ? `Racha ${feedback.currentModeStreak}`
-        : '';
-    this.resultRecordText = feedback.isNewRecord
-      ? 'Nuevo record'
-      : feedback.modeStats.bestScore > 0
-        ? `Record ${feedback.modeStats.bestScore}`
-        : '';
+    this.resultSummaryText = won
+      ? `Aciertos ${feedback.modeStats.correct}`
+      : `Fallos ${feedback.modeStats.wrong}`;
+    this.resultStreakText = won
+      ? (feedback.currentModeStreak > 0 ? `Racha ${feedback.currentModeStreak}` : '')
+      : (feedback.lostStreak ? 'Racha perdida' : '');
+    this.resultRecordText = won && feedback.isNewBestStreak ? 'Nuevo record de racha' : '';
 
     if (!won && feedback.lostStreak) {
       this.resultMessage = `${this.resultMessage} Racha reiniciada.`;
     }
   }
 
-  private cleanSearch(): void {
+  private cleanSearch(markForCheck = true): void {
     this.searchTerm = '';
     this.searchResults = [];
-    this.cdr.markForCheck();
+    if (markForCheck) {
+      this.cdr.markForCheck();
+    }
   }
 
   private escapeRegExp(value: string): string {
@@ -355,16 +383,16 @@ export class CluesComponent implements OnInit {
       Water: 'Agua',
       Flying: 'Volador',
       Normal: 'Normal',
-      Electric: 'Eléctrico',
+      Electric: 'Electrico',
       Ground: 'Tierra',
       Fairy: 'Hada',
       Fighting: 'Lucha',
-      Psychic: 'Psíquico',
+      Psychic: 'Psiquico',
       Rock: 'Roca',
       Steel: 'Acero',
       Ice: 'Hielo',
       Ghost: 'Fantasma',
-      Dragon: 'Dragón',
+      Dragon: 'Dragon',
       Dark: 'Siniestro',
       Bug: 'Bicho',
     };
@@ -379,7 +407,7 @@ export class CluesComponent implements OnInit {
       blue: 'azul',
       yellow: 'amarillo',
       black: 'negro',
-      brown: 'marrón',
+      brown: 'marron',
       purple: 'morado',
       gray: 'gris',
       white: 'blanco',
@@ -391,7 +419,7 @@ export class CluesComponent implements OnInit {
 
   private translateShape(value: string): string {
     const map: Record<string, string> = {
-      quadruped: 'cuadrúpeda',
+      quadruped: 'cuadrupeda',
       upright: 'erguida',
       humanoid: 'humanoide',
       wings: 'con alas',
@@ -399,13 +427,13 @@ export class CluesComponent implements OnInit {
       ball: 'bola',
       blob: 'masa',
       armor: 'armadura',
-      tentacles: 'tentáculos',
+      tentacles: 'tentaculos',
       heads: 'varias cabezas',
       squiggle: 'serpenteante',
       arms: 'con brazos',
       legs: 'con patas',
       'bug-wings': 'alas de bicho',
-      bipedal: 'bípeda',
+      bipedal: 'bipeda',
     };
 
     return map[value] ?? value;
@@ -418,7 +446,7 @@ export class CluesComponent implements OnInit {
       'waters-edge': 'orilla',
       sea: 'mar',
       cave: 'cueva',
-      mountain: 'montaña',
+      mountain: 'montana',
       'rough-terrain': 'terreno abrupto',
       urban: 'zona urbana',
       rare: 'raro',
@@ -445,7 +473,7 @@ export class CluesComponent implements OnInit {
       mineral: 'mineral',
       indeterminate: 'amorfo',
       amorphous: 'amorfo',
-      dragon: 'dragón',
+      dragon: 'dragon',
       ditto: 'Ditto',
       'no-eggs': 'sin huevos',
       undiscovered: 'desconocido',
@@ -482,6 +510,6 @@ export class CluesComponent implements OnInit {
     }
 
     entries.sort((left, right) => right[1] - left[1]);
-    return `Su stat más alto es ${entries[0][0]}.`;
+    return `Su stat mas alto es ${entries[0][0]}.`;
   }
 }

@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Directive, NgZone, OnInit } from '@angular/core';
 import { combineLatest } from 'rxjs';
-import type { GameModeId, ScoreFeedback } from '../../core/models/game-stats.model';
+import type { GameModeId, StatsFeedback } from '../../core/models/game-stats.model';
 import type { OptionViewModel, Pokemon } from '../../core/models/pokemon.model';
 import { GameStatsService } from '../../core/services/game-stats.service';
 import { GenerationFilterService } from '../../core/services/generation-filter.service';
@@ -24,7 +24,7 @@ export abstract class QuizBaseComponent implements OnInit {
   revealedAnswer = '';
   poolErrorMessage = '';
   minRequiredPokemon = 4;
-  resultPoints: number | null = null;
+  resultSummaryText = '';
   resultStreakText = '';
   resultRecordText = '';
 
@@ -234,18 +234,19 @@ export abstract class QuizBaseComponent implements OnInit {
     this.roundHintsUsed += 1;
   }
 
-  protected applyScoreFeedback(feedback: ScoreFeedback): void {
-    this.resultPoints = feedback.points;
-    this.resultStreakText = feedback.lostStreak
-      ? 'Racha perdida'
-      : feedback.currentModeStreak > 0
-        ? `Racha ${feedback.currentModeStreak}`
-        : '';
-    this.resultRecordText = feedback.isNewRecord
-      ? 'Nuevo record'
-      : feedback.modeStats.bestScore > 0
-        ? `Record ${feedback.modeStats.bestScore}`
-        : '';
+  protected applyStatsFeedback(feedback: StatsFeedback): void {
+    const modeStats = feedback.modeStats;
+
+    if (feedback.lastResult === 'correct' || feedback.lastResult === 'win') {
+      this.resultSummaryText = `Aciertos ${modeStats.correct}`;
+      this.resultStreakText = feedback.currentModeStreak > 0 ? `Racha ${feedback.currentModeStreak}` : '';
+      this.resultRecordText = feedback.isNewBestStreak ? 'Nuevo record de racha' : '';
+      return;
+    }
+
+    this.resultSummaryText = `Fallos ${modeStats.wrong}`;
+    this.resultStreakText = feedback.lostStreak ? 'Racha perdida' : '';
+    this.resultRecordText = '';
   }
 
   protected abstract onAnswered(option: OptionViewModel): void;
@@ -270,7 +271,7 @@ export abstract class QuizBaseComponent implements OnInit {
       this.resultMessage = `${this.resultMessage} Racha reiniciada.`;
     }
 
-    this.applyScoreFeedback(feedback);
+    this.applyStatsFeedback(feedback);
   }
 
   private resetRoundState(): void {
@@ -279,7 +280,7 @@ export abstract class QuizBaseComponent implements OnInit {
     this.resultTitle = '';
     this.resultMessage = '';
     this.revealedAnswer = '';
-    this.resultPoints = null;
+    this.resultSummaryText = '';
     this.resultStreakText = '';
     this.resultRecordText = '';
     this.roundStartedAt = Date.now();

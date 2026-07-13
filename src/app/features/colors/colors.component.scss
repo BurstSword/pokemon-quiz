@@ -18,8 +18,9 @@
   min-height: 100%;
   padding: clamp(10px, 1.6vw, 16px);
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.985) 0%, rgba(248, 250, 252, 0.97) 100%);
-  display: flex;
-  justify-content: center;
+  display: grid;
+  gap: 12px;
+  align-content: start;
 }
 
 .quizCard {

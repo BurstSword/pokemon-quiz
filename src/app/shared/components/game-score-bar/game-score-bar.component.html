@@ -1,5 +1,6 @@
-<section class="scoreBar" aria-label="Puntuacion del modo">
-  <span class="scoreChip">Ultimo {{ modeStats.lastScore || 0 }}</span>
+<section class="scoreBar" aria-label="Estadisticas del modo">
+  <span class="scoreChip">Aciertos {{ modeStats.correct || 0 }}</span>
+  <span class="scoreChip">Fallos {{ modeStats.wrong || 0 }}</span>
   <span class="scoreChip">Racha {{ modeStats.currentStreak || 0 }}</span>
-  <span class="scoreChip">Record {{ modeStats.bestScore || 0 }}</span>
+  <span class="scoreChip">Record {{ modeStats.bestStreak || 0 }}</span>
 </section>
