@@ -14,6 +14,9 @@ export class ResultBannerComponent {
   @Input() title = '';
   @Input() message = '';
   @Input() answer = '';
+  @Input() points: number | null = null;
+  @Input() streakText = '';
+  @Input() recordText = '';
   @Input() nextLabel = 'Siguiente';
 
   @Output() next = new EventEmitter<void>();

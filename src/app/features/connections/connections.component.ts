@@ -3,22 +3,25 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@
 import type { ConnectionGroup, ConnectionRound, ConnectionTile } from '../../core/models/connections.model';
 import type { Pokemon } from '../../core/models/pokemon.model';
 import { combineLatest } from 'rxjs';
+import { GameStatsService } from '../../core/services/game-stats.service';
 import { GenerationFilterService } from '../../core/services/generation-filter.service';
 import { PokemonConnectionsService } from '../../core/services/pokemon-connections.service';
 import { PokemonService } from '../../core/services/pokemon.service';
 import { ToastService } from '../../core/services/toast.service';
+import { GameScoreBarComponent } from '../../shared/components/game-score-bar/game-score-bar.component';
 import { HelpPanelComponent } from '../../shared/components/help-panel/help-panel.component';
 import { PageHeaderComponent } from '../../shared/components/page-header/page-header.component';
 import { ResultBannerComponent } from '../../shared/components/result-banner/result-banner.component';
 @Component({
   selector: 'app-connections',
   standalone: true,
-  imports: [CommonModule, NgClass, PageHeaderComponent, HelpPanelComponent, ResultBannerComponent],
+  imports: [CommonModule, NgClass, PageHeaderComponent, HelpPanelComponent, ResultBannerComponent, GameScoreBarComponent],
   templateUrl: './connections.component.html',
   styleUrl: './connections.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ConnectionsComponent implements OnInit {
+  readonly modeId = 'connections' as const;
   readonly attemptSlots = [0, 1, 2, 3];
   pokemons: Pokemon[] = [];
   round?: ConnectionRound;
@@ -28,17 +31,23 @@ export class ConnectionsComponent implements OnInit {
   resultStatus: 'correct' | 'incorrect' | null = null;
   resultTitle = '';
   resultMessage = '';
+  resultPoints: number | null = null;
+  resultStreakText = '';
+  resultRecordText = '';
   readonly nextLabel = 'Nueva ronda';
 
   private readonly selectedIds = new Set<number>();
   private readonly shakingIds = new Set<number>();
   private shakeTimeout?: ReturnType<typeof setTimeout>;
+  private roundStartedAt = 0;
+  private roundRecorded = false;
 
   constructor(
     private readonly pokemonService: PokemonService,
     private readonly generationFilterService: GenerationFilterService,
     private readonly pokemonConnectionsService: PokemonConnectionsService,
     private readonly toastService: ToastService,
+    private readonly gameStatsService: GameStatsService,
     private readonly cdr: ChangeDetectorRef,
   ) {}
 
@@ -93,6 +102,11 @@ export class ConnectionsComponent implements OnInit {
     this.resultStatus = null;
     this.resultTitle = '';
     this.resultMessage = '';
+    this.resultPoints = null;
+    this.resultStreakText = '';
+    this.resultRecordText = '';
+    this.roundStartedAt = Date.now();
+    this.roundRecorded = false;
     this.selectedIds.clear();
     this.shakingIds.clear();
 
@@ -166,6 +180,7 @@ export class ConnectionsComponent implements OnInit {
         this.resultStatus = 'correct';
         this.resultTitle = 'Completado!';
         this.resultMessage = 'Has resuelto todas las conexiones.';
+        this.finalizeRound(true, this.round.attemptsLeft);
       }
 
       this.cdr.markForCheck();
@@ -183,6 +198,7 @@ export class ConnectionsComponent implements OnInit {
       this.resultStatus = 'incorrect';
       this.resultTitle = 'Fin de la ronda';
       this.resultMessage = 'Estas eran las agrupaciones correctas.';
+      this.finalizeRound(false, 0);
     } else {
       this.toastService.show(`${this.getOverlapMessage(overlap)} Te quedan ${attemptsLeft} intentos.`, 'danger', 1500);
     }
@@ -302,5 +318,38 @@ export class ConnectionsComponent implements OnInit {
       || pokemon.Image
       || pokemon.SerebiiImage
       || 'data:image/svg+xml;charset=UTF-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 80 80%22%3E%3Crect width=%2280%22 height=%2280%22 rx=%2218%22 fill=%22%23e2e8f0%22/%3E%3Ccircle cx=%2240%22 cy=%2228%22 r=%2212%22 fill=%22%2394a3b8%22/%3E%3Crect x=%2222%22 y=%2246%22 width=%2236%22 height=%2212%22 rx=%226%22 fill=%22%2394a3b8%22/%3E%3C/svg%3E';
+  }
+
+  private finalizeRound(won: boolean, remainingMistakes: number): void {
+    if (this.roundRecorded) {
+      return;
+    }
+
+    this.roundRecorded = true;
+    const feedback = this.gameStatsService.recordGameResult({
+      mode: this.modeId,
+      won,
+      correct: won ? 1 : 0,
+      wrong: won ? 0 : 1,
+      remainingMistakes,
+      durationMs: this.roundStartedAt > 0 ? Date.now() - this.roundStartedAt : undefined,
+      perfectRound: won && remainingMistakes === 4,
+    });
+
+    this.resultPoints = feedback.points;
+    this.resultStreakText = feedback.lostStreak
+      ? 'Racha perdida'
+      : feedback.currentModeStreak > 0
+        ? `Racha ${feedback.currentModeStreak}`
+        : '';
+    this.resultRecordText = feedback.isNewRecord
+      ? 'Nuevo record'
+      : feedback.modeStats.bestScore > 0
+        ? `Record ${feedback.modeStats.bestScore}`
+        : '';
+
+    if (!won && feedback.lostStreak) {
+      this.resultMessage = `${this.resultMessage} Racha reiniciada.`;
+    }
   }
 }

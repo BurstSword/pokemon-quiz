@@ -14,6 +14,8 @@
 <main class="pageContent">
   <div class="pageWrap">
     <div class="containerQuiz">
+      <app-game-score-bar mode="clues"></app-game-score-bar>
+
       <section class="quizCard">
         <div class="poolErrorState" *ngIf="poolErrorMessage">
           <strong>No hay suficientes Pokémon activos</strong>
@@ -78,6 +80,9 @@
           [title]="resultTitle"
           [message]="resultMessage"
           [answer]="revealedAnswer"
+          [points]="resultPoints"
+          [streakText]="resultStreakText"
+          [recordText]="resultRecordText"
           (next)="nextRound()"
         ></app-result-banner>
         </ng-container>

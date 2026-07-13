@@ -54,6 +54,26 @@
         </section>
       </section>
 
+      <section class="statsCard" aria-label="Progreso local">
+        <div class="statsHeader">
+          <div>
+            <strong>Progreso local</strong>
+            <p>Se guarda solo en este dispositivo.</p>
+          </div>
+
+          <button type="button" class="pq-button pq-button--ghost pq-button--compact" (click)="resetStats()">
+            Reiniciar estadisticas
+          </button>
+        </div>
+
+        <div class="statsChips">
+          <span class="statsChip">Partidas {{ totalGamesPlayed }}</span>
+          <span class="statsChip">Racha {{ currentStreak }}</span>
+          <span class="statsChip">Mejor racha {{ bestStreak }}</span>
+          <span class="statsChip">Precision {{ accuracy }}%</span>
+        </div>
+      </section>
+
       <section class="modes" aria-label="Modos principales">
         <a
           *ngFor="let item of routes; trackBy: trackByPath"

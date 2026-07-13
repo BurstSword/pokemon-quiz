@@ -10,12 +10,12 @@
   description="Observa la imagen borrosa, usa ayudas si quieres y elige una unica respuesta antes de pasar de ronda."
   (closed)="closeHelp()"
 >
-  <button type="button" class="helpAction" (click)="useHelpClarify()">
+  <button type="button" class="helpAction pq-button pq-button--secondary" (click)="useHelpClarify()">
     <img src="assets/icons/clues.svg" alt="" />
     Reducir el blur
   </button>
 
-  <button type="button" class="helpAction" (click)="useHelpDisableOptions()">
+  <button type="button" class="helpAction pq-button pq-button--danger" (click)="useHelpDisableOptions()">
     <img src="assets/icons/remove-options.svg" alt="" />
     Quitar dos opciones
   </button>
@@ -24,6 +24,8 @@
 <main class="pageContent">
   <div class="pageWrap">
     <div class="containerQuiz">
+      <app-game-score-bar mode="blur"></app-game-score-bar>
+
       <section class="poolErrorState" *ngIf="poolErrorMessage">
         <strong>No hay suficientes Pokémon activos</strong>
         <p>{{ poolErrorMessage }}</p>
@@ -78,7 +80,7 @@
                 <span class="circle">
                   <img class="iconPokeball" src="assets/icons/pokeball-1.svg" alt="" />
                 </span>
-                <span class="optionText">{{ item.Label || item.Name }}</span>
+                <span class="optionText">{{ getOptionLabel(item) }}</span>
               </span>
             </button>
           </div>
@@ -89,6 +91,9 @@
           [title]="resultTitle"
           [message]="resultMessage"
           [answer]="revealedAnswer"
+          [points]="resultPoints"
+          [streakText]="resultStreakText"
+          [recordText]="resultRecordText"
           (next)="nextRound()"
         ></app-result-banner>
       </section>

@@ -52,6 +52,109 @@ button:disabled {
   cursor: not-allowed;
 }
 
+.pq-button,
+.helpPrimaryAction,
+.helpSecondaryAction,
+.assistButton,
+.helpAction {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 46px;
+  padding: 0.78rem 1rem;
+  border: 1px solid transparent;
+  border-radius: 16px;
+  background: #eef2f7;
+  color: #111827;
+  font-weight: 800;
+  line-height: 1.1;
+  text-align: center;
+  text-decoration: none;
+  box-shadow: 0 10px 22px rgba(15, 23, 42, 0.08);
+  transition:
+    transform 0.16s ease,
+    box-shadow 0.16s ease,
+    border-color 0.16s ease,
+    background-color 0.16s ease,
+    color 0.16s ease,
+    opacity 0.16s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.pq-button:hover,
+.helpPrimaryAction:hover,
+.helpSecondaryAction:hover,
+.assistButton:hover,
+.helpAction:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 14px 24px rgba(15, 23, 42, 0.12);
+}
+
+.pq-button:active,
+.helpPrimaryAction:active,
+.helpSecondaryAction:active,
+.assistButton:active,
+.helpAction:active {
+  transform: translateY(0);
+  box-shadow: 0 8px 16px rgba(15, 23, 42, 0.1);
+}
+
+.pq-button:focus-visible,
+.helpPrimaryAction:focus-visible,
+.helpSecondaryAction:focus-visible,
+.assistButton:focus-visible,
+.helpAction:focus-visible {
+  outline: 3px solid rgba(191, 34, 34, 0.2);
+  outline-offset: 2px;
+}
+
+.pq-button:disabled,
+.helpPrimaryAction:disabled,
+.helpSecondaryAction:disabled,
+.assistButton:disabled,
+.helpAction:disabled {
+  opacity: 0.58;
+  box-shadow: none;
+}
+
+.pq-button--primary,
+.helpPrimaryAction {
+  background: linear-gradient(135deg, #b91c1c 0%, #ef4444 100%);
+  color: #fff;
+}
+
+.pq-button--secondary,
+.helpSecondaryAction,
+.helpAction {
+  background: rgba(15, 23, 42, 0.06);
+  border-color: rgba(148, 163, 184, 0.24);
+  color: #111827;
+}
+
+.pq-button--ghost {
+  background: rgba(255, 255, 255, 0.74);
+  border-color: rgba(191, 34, 34, 0.16);
+  color: #991b1b;
+}
+
+.pq-button--danger {
+  background: rgba(191, 34, 34, 0.08);
+  border-color: rgba(191, 34, 34, 0.18);
+  color: #991b1b;
+}
+
+.pq-button--compact {
+  min-height: 40px;
+  padding: 0.62rem 0.9rem;
+  font-size: 0.92rem;
+}
+
+.pq-button--pill,
+.assistButton {
+  border-radius: 999px;
+}
+
 a {
   color: inherit;
 }
@@ -107,6 +210,13 @@ a {
 .headerIconButton.textIcon {
   font-size: 1rem;
   line-height: 1;
+}
+
+.headerIconButton.textActionButton {
+  width: auto;
+  min-width: 40px;
+  padding-inline: 14px;
+  font-size: 0.88rem;
 }
 
 .srOnly {

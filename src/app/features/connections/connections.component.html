@@ -14,6 +14,8 @@
 <main class="pageContent">
   <div class="pageWrap">
     <div class="containerQuiz">
+      <app-game-score-bar mode="connections"></app-game-score-bar>
+
       <section class="boardShell">
         <div class="boardTopBar">
           <div class="attemptsRow" aria-label="Intentos restantes">
@@ -100,6 +102,9 @@
         [status]="resultStatus"
         [title]="resultTitle"
         [message]="resultMessage"
+        [points]="resultPoints"
+        [streakText]="resultStreakText"
+        [recordText]="resultRecordText"
         [nextLabel]="nextLabel"
         (next)="startRound()"
       ></app-result-banner>

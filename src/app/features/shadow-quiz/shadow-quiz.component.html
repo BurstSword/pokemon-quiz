@@ -1,29 +1,48 @@
 <app-page-header title="Quiz sombra">
-  <button type="button" header-actions class="headerIconButton textIcon" (click)="toggleHelp()" aria-label="Abrir ayuda">
-    <span aria-hidden="true">?</span>
+  <button
+    type="button"
+    header-actions
+    class="headerIconButton textActionButton"
+    (click)="openHelp()"
+    aria-label="Ver ayuda del juego"
+  >
+    Ayuda
   </button>
 </app-page-header>
 
 <app-help-panel
   [open]="helpOpen"
-  title="Como se juega"
-  description="Mira la silueta, activa una pista si la necesitas y responde una sola vez por ronda."
+  eyebrow="Como jugar"
+  title="Quiz sombra"
+  [description]="helpContent.howTo"
   (closed)="closeHelp()"
 >
-  <button type="button" class="helpButton" (click)="useHelpDisableOptions()" [disabled]="!roundReady || optionsLocked">
-    <img src="assets/icons/remove-options.svg" alt="" />
-    Quitar dos opciones
-  </button>
+  <div class="helpSection">
+    <strong>Pistas de ronda</strong>
+    <p>{{ helpContent.hintSummary }}</p>
+    <span class="helpNote">{{ helpContent.hintPenalty }}</span>
+  </div>
 
-  <button type="button" class="helpButton" (click)="useHelpToggleTypes()" [disabled]="!roundReady || optionsLocked">
-    <img src="assets/icons/clues.svg" alt="" />
-    Mostrar u ocultar tipos
+  <button type="button" class="helpPrimaryAction pq-button pq-button--primary" (click)="acknowledgeHelp()">
+    {{ onboardingPending ? 'Entendido' : 'Cerrar ayuda' }}
   </button>
 </app-help-panel>
 
 <main class="pageContent">
   <div class="pageWrap">
     <div class="containerQuiz">
+      <app-game-score-bar mode="shadow"></app-game-score-bar>
+
+      <section class="assistRow" *ngIf="!poolErrorMessage">
+        <button type="button" class="assistButton pq-button pq-button--ghost pq-button--compact pq-button--pill" (click)="openHelp()">Como jugar</button>
+        <button type="button" class="assistButton pq-button pq-button--secondary pq-button--compact pq-button--pill" (click)="useHelpToggleTypes()" [disabled]="!roundReady || optionsLocked">
+          Pista: tipos
+        </button>
+        <button type="button" class="assistButton pq-button pq-button--danger pq-button--compact pq-button--pill" (click)="useHelpDisableOptions()" [disabled]="!roundReady || optionsLocked">
+          Quitar 2
+        </button>
+      </section>
+
       <section class="poolErrorState" *ngIf="poolErrorMessage">
         <strong>No hay suficientes Pokemon activos</strong>
         <p>{{ poolErrorMessage }}</p>
@@ -90,7 +109,7 @@
                 <span class="circle">
                   <img class="iconPokeball" src="assets/icons/pokeball-1.svg" alt="" />
                 </span>
-                <span class="optionText">{{ item.Label || item.Name }}</span>
+                <span class="optionText">{{ getOptionLabel(item) }}</span>
               </span>
             </button>
           </div>
@@ -101,6 +120,9 @@
           [title]="resultTitle"
           [message]="resultMessage"
           [answer]="revealedAnswer"
+          [points]="resultPoints"
+          [streakText]="resultStreakText"
+          [recordText]="resultRecordText"
           (next)="nextRound()"
         ></app-result-banner>
       </div>

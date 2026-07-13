@@ -84,6 +84,24 @@
   line-height: 1.5;
 }
 
+.resultMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.metaPill {
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+  padding: 0.32rem 0.72rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.84);
+  color: #0f172a;
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
 .answer strong {
   color: #111827;
 }

@@ -87,6 +87,55 @@
   gap: 10px;
 }
 
+.helpBody :where(p, strong, span) {
+  margin: 0;
+}
+
+.helpBody :where(.helpSection) {
+  display: grid;
+  gap: 6px;
+  padding: 12px;
+  border-radius: 18px;
+  background: rgba(15, 23, 42, 0.05);
+}
+
+.helpBody :where(.helpSection strong) {
+  color: #111827;
+}
+
+.helpBody :where(.helpSection p) {
+  color: #334155;
+  line-height: 1.45;
+}
+
+.helpBody :where(.helpNote) {
+  color: #64748b;
+  font-size: 0.86rem;
+  font-weight: 700;
+}
+
+.helpBody :where(.helpPrimaryAction, .helpSecondaryAction) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 48px;
+  padding: 0.8rem 1rem;
+  border: none;
+  border-radius: 16px;
+  font-weight: 800;
+}
+
+.helpBody :where(.helpPrimaryAction) {
+  background: linear-gradient(180deg, #111827, #334155);
+  color: #fff;
+}
+
+.helpBody :where(.helpSecondaryAction) {
+  background: rgba(15, 23, 42, 0.06);
+  color: #111827;
+}
+
 @media (max-width: 520px) {
   .helpPanel {
     top: auto;

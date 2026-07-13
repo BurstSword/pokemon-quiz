@@ -43,6 +43,17 @@
   margin: 0;
 }
 
+.assistRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+
+.assistButton {
+  flex: 0 0 auto;
+}
+
 .imageSection {
   flex: 1 1 auto;
   display: flex;
@@ -299,6 +310,10 @@
 }
 
 @media (max-width: 640px) {
+  .assistRow {
+    gap: 8px;
+  }
+
   .quizIntro {
     flex-direction: column;
     align-items: flex-start;
@@ -316,6 +331,11 @@
 @media (max-width: 360px) {
   .containerQuiz {
     padding-inline: 12px;
+  }
+
+  .assistButton {
+    width: 100%;
+    justify-content: center;
   }
 
   .quizSection {

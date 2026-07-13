@@ -1,6 +1,8 @@
 import { ChangeDetectorRef, Directive, NgZone, OnInit } from '@angular/core';
-import type { OptionViewModel, Pokemon } from '../../core/models/pokemon.model';
 import { combineLatest } from 'rxjs';
+import type { GameModeId, ScoreFeedback } from '../../core/models/game-stats.model';
+import type { OptionViewModel, Pokemon } from '../../core/models/pokemon.model';
+import { GameStatsService } from '../../core/services/game-stats.service';
 import { GenerationFilterService } from '../../core/services/generation-filter.service';
 import { PokemonService } from '../../core/services/pokemon.service';
 import { PokemonTypeService } from '../../core/services/pokemon-type.service';
@@ -8,6 +10,8 @@ import { buildUniqueOptions, pickRandomItem, uniqueBy } from '../utils/pokemon.u
 
 @Directive()
 export abstract class QuizBaseComponent implements OnInit {
+  protected abstract readonly modeId: GameModeId;
+
   allPokemons: Pokemon[] = [];
   pokemons: Pokemon[] = [];
   pokemon?: Pokemon;
@@ -20,11 +24,19 @@ export abstract class QuizBaseComponent implements OnInit {
   revealedAnswer = '';
   poolErrorMessage = '';
   minRequiredPokemon = 4;
+  resultPoints: number | null = null;
+  resultStreakText = '';
+  resultRecordText = '';
+
+  private roundStartedAt = 0;
+  private roundHintsUsed = 0;
+  private roundRecorded = false;
 
   constructor(
     protected pokemonService: PokemonService,
     protected pokemonTypeService: PokemonTypeService,
     protected generationFilterService: GenerationFilterService,
+    protected gameStatsService: GameStatsService,
     protected cdr: ChangeDetectorRef,
     protected zone: NgZone,
   ) {}
@@ -40,15 +52,11 @@ export abstract class QuizBaseComponent implements OnInit {
       );
 
       if (this.pokemons.length < this.minRequiredPokemon) {
+        this.resetRoundState();
         this.pokemon = undefined;
         this.options = [];
-        this.pokemonTypes = false;
         this.optionsLocked = true;
-        this.resultStatus = null;
-        this.resultTitle = '';
-        this.resultMessage = '';
-        this.revealedAnswer = '';
-        this.poolErrorMessage = 'Activa más generaciones para jugar este modo.';
+        this.poolErrorMessage = 'Activa mas generaciones para jugar este modo.';
         this.onPoolUnavailable();
         this.cdr.markForCheck();
         return;
@@ -73,12 +81,8 @@ export abstract class QuizBaseComponent implements OnInit {
     }
 
     this.pokemon = { ...picked };
-    this.pokemonTypes = false;
     this.optionsLocked = false;
-    this.resultStatus = null;
-    this.resultTitle = '';
-    this.resultMessage = '';
-    this.revealedAnswer = '';
+    this.resetRoundState();
 
     this.onPokemonSelected();
     this.generateOptions();
@@ -86,6 +90,7 @@ export abstract class QuizBaseComponent implements OnInit {
   }
 
   protected onPokemonSelected(): void {}
+
   protected onPoolUnavailable(): void {}
 
   protected generateOptions(): void {
@@ -105,16 +110,15 @@ export abstract class QuizBaseComponent implements OnInit {
     if (optionPool.length !== 4) {
       this.options = [];
       this.optionsLocked = true;
-      this.poolErrorMessage = 'Activa m\u00e1s generaciones para jugar este modo.';
+      this.poolErrorMessage = 'Activa mas generaciones para jugar este modo.';
       this.onPoolUnavailable();
       return;
     }
 
     this.poolErrorMessage = '';
-    this.optionsLocked = false;
     this.options = optionPool.map((pokemon) => ({
       Name: pokemon.Name,
-      Label: this.getPokemonLabel(pokemon),
+      Label: this.getPokemonLabelByNumber(pokemon.Number) || this.getPokemonLabel(pokemon),
       Number: pokemon.Number,
       Correct: pokemon.Number === currentPokemon.Number,
       state: 'normal',
@@ -129,7 +133,7 @@ export abstract class QuizBaseComponent implements OnInit {
     this.optionsLocked = true;
     this.onAnswered(option);
     this.resultStatus = option.Correct ? 'correct' : 'incorrect';
-    this.resultTitle = option.Correct ? '¡Correcto!' : 'No era ese';
+    this.resultTitle = option.Correct ? 'Correcto!' : 'No era ese';
     this.resultMessage = option.Correct
       ? this.getCorrectMessage(this.pokemon)
       : this.getIncorrectMessage(this.pokemon);
@@ -147,6 +151,7 @@ export abstract class QuizBaseComponent implements OnInit {
       return item;
     });
 
+    this.finalizeRound(option);
     this.cdr.markForCheck();
   }
 
@@ -159,6 +164,7 @@ export abstract class QuizBaseComponent implements OnInit {
       return;
     }
 
+    this.registerHintUse();
     let remaining = 2;
     this.options = this.options.map((item) => {
       if (!item.Correct && item.state === 'normal' && remaining > 0) {
@@ -173,6 +179,7 @@ export abstract class QuizBaseComponent implements OnInit {
   }
 
   togglePokemonTypes(): void {
+    this.registerHintUse();
     this.pokemonTypes = !this.pokemonTypes;
     this.cdr.markForCheck();
   }
@@ -190,10 +197,29 @@ export abstract class QuizBaseComponent implements OnInit {
     };
   }
 
-  trackByOption = (_: number, option: OptionViewModel): number | string => option.Number ?? option.Name;
+  trackByOption = (index: number, option: OptionViewModel): string =>
+    `${option.Number ?? option.Name}-${index}`;
+
+  getOptionLabel(option: OptionViewModel): string {
+    return this.getPokemonLabelByNumber(option.Number) || option.Label || option.Name;
+  }
 
   protected getPokemonLabel(pokemon: Pokemon): string {
     return pokemon.SpanishName || pokemon.DisplayName || pokemon.Name;
+  }
+
+  protected getPokemonByNumber(number: number | undefined): Pokemon | undefined {
+    if (typeof number !== 'number') {
+      return undefined;
+    }
+
+    return this.allPokemons.find((pokemon) => pokemon.Number === number)
+      || this.pokemons.find((pokemon) => pokemon.Number === number);
+  }
+
+  protected getPokemonLabelByNumber(number: number | undefined): string {
+    const pokemon = this.getPokemonByNumber(number);
+    return pokemon ? this.getPokemonLabel(pokemon) : '';
   }
 
   protected getCorrectMessage(pokemon: Pokemon): string {
@@ -204,5 +230,60 @@ export abstract class QuizBaseComponent implements OnInit {
     return `La respuesta correcta era ${this.getPokemonLabel(pokemon)}.`;
   }
 
+  protected registerHintUse(): void {
+    this.roundHintsUsed += 1;
+  }
+
+  protected applyScoreFeedback(feedback: ScoreFeedback): void {
+    this.resultPoints = feedback.points;
+    this.resultStreakText = feedback.lostStreak
+      ? 'Racha perdida'
+      : feedback.currentModeStreak > 0
+        ? `Racha ${feedback.currentModeStreak}`
+        : '';
+    this.resultRecordText = feedback.isNewRecord
+      ? 'Nuevo record'
+      : feedback.modeStats.bestScore > 0
+        ? `Record ${feedback.modeStats.bestScore}`
+        : '';
+  }
+
   protected abstract onAnswered(option: OptionViewModel): void;
+
+  private finalizeRound(option: OptionViewModel): void {
+    if (this.roundRecorded || !this.pokemon) {
+      return;
+    }
+
+    this.roundRecorded = true;
+    const feedback = this.gameStatsService.recordGameResult({
+      mode: this.modeId,
+      won: option.Correct,
+      correct: option.Correct ? 1 : 0,
+      wrong: option.Correct ? 0 : 1,
+      hintsUsed: this.roundHintsUsed,
+      durationMs: this.roundStartedAt > 0 ? Date.now() - this.roundStartedAt : undefined,
+      perfectRound: option.Correct && this.roundHintsUsed === 0,
+    });
+
+    if (!option.Correct && feedback.lostStreak) {
+      this.resultMessage = `${this.resultMessage} Racha reiniciada.`;
+    }
+
+    this.applyScoreFeedback(feedback);
+  }
+
+  private resetRoundState(): void {
+    this.pokemonTypes = false;
+    this.resultStatus = null;
+    this.resultTitle = '';
+    this.resultMessage = '';
+    this.revealedAnswer = '';
+    this.resultPoints = null;
+    this.resultStreakText = '';
+    this.resultRecordText = '';
+    this.roundStartedAt = Date.now();
+    this.roundHintsUsed = 0;
+    this.roundRecorded = false;
+  }
 }

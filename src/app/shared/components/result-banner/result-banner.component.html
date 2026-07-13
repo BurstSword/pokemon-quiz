@@ -6,6 +6,19 @@
       @if (message) {
         <p>{{ message }}</p>
       }
+      @if (points !== null || streakText || recordText) {
+        <div class="resultMeta">
+          @if (points !== null) {
+            <span class="metaPill">+{{ points }} puntos</span>
+          }
+          @if (streakText) {
+            <span class="metaPill">{{ streakText }}</span>
+          }
+          @if (recordText) {
+            <span class="metaPill">{{ recordText }}</span>
+          }
+        </div>
+      }
       @if (answer) {
         <p class="answer">Era <strong>{{ answer }}</strong></p>
       }

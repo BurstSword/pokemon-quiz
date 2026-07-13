@@ -11,6 +11,7 @@ export class HelpPanelComponent {
   @Input() open = false;
   @Input() title = 'Como se juega';
   @Input() description = '';
+  @Input() eyebrow = 'Como se juega';
 
   @Output() closed = new EventEmitter<void>();
 }

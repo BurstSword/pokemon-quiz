@@ -3,6 +3,7 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@
 import { RouterLink } from '@angular/router';
 import { combineLatest } from 'rxjs';
 import type { Pokemon } from '../../core/models/pokemon.model';
+import { GameStatsService } from '../../core/services/game-stats.service';
 import { GenerationFilterService } from '../../core/services/generation-filter.service';
 import { PokemonService } from '../../core/services/pokemon.service';
 import { PageHeaderComponent } from '../../shared/components/page-header/page-header.component';
@@ -81,6 +82,7 @@ export class LobbyComponent implements OnInit {
   constructor(
     private readonly pokemonService: PokemonService,
     private readonly generationFilterService: GenerationFilterService,
+    private readonly gameStatsService: GameStatsService,
     private readonly cdr: ChangeDetectorRef,
   ) {}
 
@@ -119,6 +121,41 @@ export class LobbyComponent implements OnInit {
 
   isGenerationActive(generation: number): boolean {
     return this.activeGenerations.includes(generation);
+  }
+
+  get totalGamesPlayed(): number {
+    this.gameStatsService.stats();
+    return this.gameStatsService.getStats().totalGamesPlayed;
+  }
+
+  get currentStreak(): number {
+    this.gameStatsService.stats();
+    return this.gameStatsService.getCurrentStreak();
+  }
+
+  get bestStreak(): number {
+    this.gameStatsService.stats();
+    return this.gameStatsService.getGlobalBestStreak();
+  }
+
+  get accuracy(): number {
+    this.gameStatsService.stats();
+    const stats = this.gameStatsService.getStats();
+    const totalAnswers = stats.totalCorrect + stats.totalWrong;
+    if (totalAnswers === 0) {
+      return 0;
+    }
+
+    return Math.round((stats.totalCorrect / totalAnswers) * 100);
+  }
+
+  resetStats(): void {
+    if (typeof window !== 'undefined' && !window.confirm('Se borraran tus estadisticas locales. Quieres continuar?')) {
+      return;
+    }
+
+    this.gameStatsService.resetStats();
+    this.cdr.markForCheck();
   }
 
   trackByPath = (_: number, route: LobbyRoute): string => route.path;

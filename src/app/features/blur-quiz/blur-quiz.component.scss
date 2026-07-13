@@ -243,23 +243,14 @@
 }
 
 .helpAction {
-  display: flex;
-  align-items: center;
-  gap: 12px;
   width: 100%;
-  min-height: 54px;
-  padding: 0.85rem 1rem;
-  border: none;
-  border-radius: 18px;
-  background: rgba(15, 23, 42, 0.05);
-  color: #111827;
-  font-weight: 700;
   text-align: left;
 }
 
 .helpAction img {
   width: 20px;
   height: 20px;
+  flex: 0 0 auto;
 }
 
 @keyframes shake {

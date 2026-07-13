@@ -3,22 +3,25 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@
 import { FormsModule } from '@angular/forms';
 import { combineLatest } from 'rxjs';
 import type { Pokemon } from '../../core/models/pokemon.model';
+import { GameStatsService } from '../../core/services/game-stats.service';
 import { GenerationFilterService } from '../../core/services/generation-filter.service';
 import { PokemonService } from '../../core/services/pokemon.service';
+import { GameScoreBarComponent } from '../../shared/components/game-score-bar/game-score-bar.component';
 import { HelpPanelComponent } from '../../shared/components/help-panel/help-panel.component';
 import { PageHeaderComponent } from '../../shared/components/page-header/page-header.component';
 import { ResultBannerComponent } from '../../shared/components/result-banner/result-banner.component';
-import { pickRandomItemExcluding } from '../../shared/utils/pokemon.utils';
+import { pickRandomItemExcluding, uniqueBy } from '../../shared/utils/pokemon.utils';
 
 @Component({
   selector: 'app-clues',
   standalone: true,
-  imports: [CommonModule, FormsModule, PageHeaderComponent, HelpPanelComponent, ResultBannerComponent],
+  imports: [CommonModule, FormsModule, PageHeaderComponent, HelpPanelComponent, ResultBannerComponent, GameScoreBarComponent],
   templateUrl: './clues.component.html',
   styleUrl: './clues.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CluesComponent implements OnInit {
+  readonly modeId = 'clues' as const;
   pokemons: Pokemon[] = [];
   pokemon?: Pokemon;
 
@@ -32,13 +35,19 @@ export class CluesComponent implements OnInit {
   resultTitle = '';
   resultMessage = '';
   revealedAnswer = '';
+  resultPoints: number | null = null;
+  resultStreakText = '';
+  resultRecordText = '';
   selectedPokemonNumber: number | null = null;
   poolErrorMessage = '';
   private preloadImg?: HTMLImageElement;
+  private roundStartedAt = 0;
+  private roundRecorded = false;
 
   constructor(
     private readonly pokemonService: PokemonService,
     private readonly generationFilterService: GenerationFilterService,
+    private readonly gameStatsService: GameStatsService,
     private readonly cdr: ChangeDetectorRef,
   ) {}
 
@@ -48,7 +57,10 @@ export class CluesComponent implements OnInit {
       this.generationFilterService.activeGenerations$,
     ]).subscribe(([pokemons]) => {
       this.generationFilterService.initializeFromPokemonList(pokemons);
-      this.pokemons = this.generationFilterService.getActivePokemonPool(pokemons);
+      this.pokemons = uniqueBy(
+        this.generationFilterService.getActivePokemonPool(pokemons),
+        (pokemon) => pokemon.Number,
+      );
 
       if (this.pokemons.length < 4) {
         this.pokemon = undefined;
@@ -61,7 +73,11 @@ export class CluesComponent implements OnInit {
         this.resultTitle = '';
         this.resultMessage = '';
         this.revealedAnswer = '';
+        this.resultPoints = null;
+        this.resultStreakText = '';
+        this.resultRecordText = '';
         this.selectedPokemonNumber = null;
+        this.roundRecorded = false;
         this.poolErrorMessage = 'Activa más generaciones para jugar a Quiz pistas.';
         this.cdr.markForCheck();
         return;
@@ -106,7 +122,12 @@ export class CluesComponent implements OnInit {
     this.resultTitle = '';
     this.resultMessage = '';
     this.revealedAnswer = '';
+    this.resultPoints = null;
+    this.resultStreakText = '';
+    this.resultRecordText = '';
     this.selectedPokemonNumber = null;
+    this.roundStartedAt = Date.now();
+    this.roundRecorded = false;
 
     const preloadCandidate = pickRandomItemExcluding(
       this.pokemons,
@@ -166,6 +187,7 @@ export class CluesComponent implements OnInit {
       ? `Has identificado a ${this.getPokemonLabel(currentPokemon)} con ${this.revealedCluesCount} pista${this.revealedCluesCount === 1 ? '' : 's'}.`
       : `Las pistas pertenecían a ${this.getPokemonLabel(currentPokemon)}.`;
     this.revealedAnswer = isCorrect ? '' : this.getPokemonLabel(currentPokemon);
+    this.finalizeRound(isCorrect);
     this.cdr.markForCheck();
   }
 
@@ -258,6 +280,42 @@ export class CluesComponent implements OnInit {
 
     this.clues = generatedClues.slice(0, 10);
     this.showingClues = [generatedClues[0] ?? ''];
+  }
+
+  private finalizeRound(won: boolean): void {
+    if (this.roundRecorded) {
+      return;
+    }
+
+    this.roundRecorded = true;
+    const cluesUsed = Math.max(1, this.revealedCluesCount);
+    const hintsUsed = Math.max(0, cluesUsed - 1);
+    const feedback = this.gameStatsService.recordGameResult({
+      mode: this.modeId,
+      won,
+      correct: won ? 1 : 0,
+      wrong: won ? 0 : 1,
+      hintsUsed,
+      cluesUsed,
+      durationMs: this.roundStartedAt > 0 ? Date.now() - this.roundStartedAt : undefined,
+      perfectRound: won && hintsUsed === 0,
+    });
+
+    this.resultPoints = feedback.points;
+    this.resultStreakText = feedback.lostStreak
+      ? 'Racha perdida'
+      : feedback.currentModeStreak > 0
+        ? `Racha ${feedback.currentModeStreak}`
+        : '';
+    this.resultRecordText = feedback.isNewRecord
+      ? 'Nuevo record'
+      : feedback.modeStats.bestScore > 0
+        ? `Record ${feedback.modeStats.bestScore}`
+        : '';
+
+    if (!won && feedback.lostStreak) {
+      this.resultMessage = `${this.resultMessage} Racha reiniciada.`;
+    }
   }
 
   private cleanSearch(): void {

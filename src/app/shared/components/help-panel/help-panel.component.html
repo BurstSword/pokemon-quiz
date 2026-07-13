@@ -3,7 +3,7 @@
     <aside class="helpPanel" role="dialog" aria-modal="true" [attr.aria-label]="title" (click)="$event.stopPropagation()">
       <header class="helpHeader">
         <div class="helpCopy">
-          <span class="eyebrow">Como se juega</span>
+          <span class="eyebrow">{{ eyebrow }}</span>
           <h2>{{ title }}</h2>
           @if (description) {
             <p>{{ description }}</p>
