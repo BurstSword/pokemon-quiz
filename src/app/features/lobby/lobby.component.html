@@ -1,19 +1,20 @@
-<app-page-header title="PokéQuiz Arena" [backLink]="null"></app-page-header>
+<app-page-header title="Pok&eacute;Quiz Arena" [backLink]="null"></app-page-header>
 
 <main class="pageContent">
   <div class="pageWrap">
     <div class="containerQuiz">
       <section class="heroCard">
         <div class="brandRow">
-          <!-- <img class="heroLogo" [src]="logoPath" alt="PokéQuiz Arena" /> -->
+          <img class="heroLogo" [src]="logoPath" alt="Pok&eacute;Quiz Arena" />
 
           <div class="heroCopy">
-            <span class="eyebrow">Arena de quiz Pokémon</span>
-            <h1>PokéQuiz Arena</h1>
+            <span class="eyebrow">Arena de quiz Pok&eacute;mon</span>
+            <h1>Pok&eacute;Quiz Arena</h1>
             <p>Elige un modo, ajusta el rango de generaciones y juega con el pool que prefieras.</p>
+
             <div class="heroMeta">
-              <span class="heroSummary">5 modos de juego · 1 Pokédex</span>
-              <span class="heroSummary muted">Pool activo: {{ activePoolCount }} Pokémon</span>
+              <span class="heroSummary">5 modos de juego &middot; 1 Pok&eacute;dex</span>
+              <span class="heroSummary muted">Pool activo: {{ activePoolCount }} Pok&eacute;mon</span>
             </div>
           </div>
         </div>
@@ -22,7 +23,7 @@
           <div class="generationHeader">
             <div>
               <strong>Generaciones activas</strong>
-              <p>Todos los juegos usarán solo Pokémon de estas generaciones.</p>
+              <p>Todos los juegos usar&aacute;n solo Pok&eacute;mon de estas generaciones.</p>
             </div>
 
             <button type="button" class="generationAction" (click)="selectAllGenerations()">Todas</button>
@@ -30,7 +31,7 @@
 
           <div class="generationLoading" *ngIf="!generationsReady">
             <span class="loadingDot" aria-hidden="true"></span>
-            <span>Cargando generaciones…</span>
+            <span>Cargando generaciones...</span>
           </div>
 
           <div class="generationChips" *ngIf="generationsReady">
@@ -47,7 +48,7 @@
 
           <div class="generationFooter" *ngIf="generationsReady">
             <span>{{ activeGenerations.length }} generaciones activas</span>
-            <span>{{ activePoolCount }} Pokémon en el pool</span>
+            <span>{{ activePoolCount }} Pok&eacute;mon en el pool</span>
           </div>
 
           <p class="generationNotice" *ngIf="generationNotice">{{ generationNotice }}</p>

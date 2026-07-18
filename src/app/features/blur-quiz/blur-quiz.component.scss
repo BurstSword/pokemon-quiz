@@ -2,36 +2,35 @@
   display: block;
 }
 
-.pageContent {
-  min-height: calc(100dvh - var(--app-header-height));
-  background: var(--poke-gradient);
-}
-
 .pageWrap {
-  display: flex;
   justify-content: center;
   min-height: 100%;
+  padding: clamp(10px, 1.8vw, 18px);
 }
 
 .containerQuiz {
   flex: 1;
   width: 100%;
-  max-width: 860px;
+  max-width: 900px;
   min-height: 100%;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.985) 0%, rgba(248, 250, 252, 0.97) 100%);
+  padding: clamp(12px, 1.8vw, 18px);
+  border-radius: 30px;
+  background:
+    radial-gradient(circle at top right, rgba(255, 255, 255, 0.2), transparent 18%),
+    linear-gradient(180deg, rgba(255, 250, 247, 0.985) 0%, rgba(242, 237, 232, 0.98) 100%);
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  padding: clamp(10px, 1.8vw, 16px);
+  gap: 12px;
+  box-shadow: var(--shadow-raised);
 }
 
 .poolErrorState {
   display: grid;
   gap: 6px;
   padding: 16px;
-  border-radius: 22px;
-  background: rgba(15, 23, 42, 0.06);
-  color: #334155;
+  border-radius: 24px;
+  background: rgba(23, 34, 51, 0.06);
+  color: var(--pq-ink);
   text-align: center;
 }
 
@@ -44,21 +43,27 @@
   flex: 1 1 auto;
   display: grid;
   place-items: center;
-  min-height: 170px;
+  min-height: 190px;
   max-height: 40vh;
+  padding: 16px;
+  border-radius: 30px;
+  background:
+    radial-gradient(circle at 28% 20%, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.34) 56%, rgba(255, 255, 255, 0.12) 100%),
+    linear-gradient(145deg, rgba(23, 34, 51, 0.08), rgba(240, 108, 103, 0.12));
+  border: 1px solid rgba(255, 255, 255, 0.74);
+  box-shadow: var(--shadow-soft);
 }
 
 .imageFrame {
-  width: min(100%, 228px);
+  width: min(100%, 260px);
   aspect-ratio: 1 / 1;
   display: grid;
   place-items: center;
   border-radius: 28px;
   background:
-    radial-gradient(circle at 28% 20%, rgba(255, 255, 255, 0.92), rgba(255, 255, 255, 0.4) 54%, rgba(255, 255, 255, 0.18) 100%),
-    linear-gradient(135deg, rgba(15, 23, 42, 0.06), rgba(255, 124, 124, 0.18));
-  border: 1px solid rgba(255, 255, 255, 0.68);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.55), 0 18px 35px rgba(15, 23, 42, 0.12);
+    radial-gradient(circle at top, rgba(255, 255, 255, 0.58), rgba(255, 255, 255, 0.12) 60%, rgba(255, 255, 255, 0.04) 100%),
+    rgba(255, 255, 255, 0.16);
+  border: 1px solid rgba(255, 255, 255, 0.56);
 }
 
 #pokemon-image-blur {
@@ -73,24 +78,24 @@
 }
 
 .blurred0 {
-  filter: blur(30px) grayscale(100%) drop-shadow(0 14px 24px rgba(15, 23, 42, 0.25));
+  filter: blur(30px) grayscale(100%) drop-shadow(0 14px 24px rgba(23, 34, 51, 0.25));
   transform: scale(0.96);
 }
 
 .blurred1 {
-  filter: blur(20px) grayscale(80%) drop-shadow(0 14px 24px rgba(15, 23, 42, 0.25));
+  filter: blur(20px) grayscale(80%) drop-shadow(0 14px 24px rgba(23, 34, 51, 0.25));
 }
 
 .blurred2 {
-  filter: blur(15px) grayscale(60%) drop-shadow(0 14px 24px rgba(15, 23, 42, 0.25));
+  filter: blur(15px) grayscale(60%) drop-shadow(0 14px 24px rgba(23, 34, 51, 0.25));
 }
 
 .blurred3 {
-  filter: blur(10px) grayscale(40%) drop-shadow(0 14px 24px rgba(15, 23, 42, 0.25));
+  filter: blur(10px) grayscale(40%) drop-shadow(0 14px 24px rgba(23, 34, 51, 0.25));
 }
 
 .blurred4 {
-  filter: blur(5px) grayscale(20%) drop-shadow(0 14px 24px rgba(15, 23, 42, 0.25));
+  filter: blur(5px) grayscale(20%) drop-shadow(0 14px 24px rgba(23, 34, 51, 0.25));
 }
 
 .statusBar {
@@ -98,10 +103,12 @@
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  padding: 10px 12px;
-  border-radius: 22px;
-  background: rgba(15, 23, 42, 0.04);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.82);
+  padding: 12px 14px;
+  border-radius: 24px;
+  background:
+    linear-gradient(180deg, rgba(255, 252, 250, 0.96), rgba(239, 233, 227, 0.98));
+  border: 1px solid rgba(255, 255, 255, 0.76);
+  box-shadow: var(--shadow-soft);
 }
 
 .statusCopy {
@@ -115,16 +122,17 @@
   width: fit-content;
   padding: 0.28rem 0.72rem;
   border-radius: 999px;
-  background: rgba(191, 34, 34, 0.1);
-  color: #991b1b;
-  font-size: 0.74rem;
-  font-weight: 800;
+  background: rgba(199, 56, 55, 0.1);
+  color: var(--pq-red-dark);
+  font-size: 0.72rem;
+  font-weight: 900;
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
 .statusCopy strong {
-  color: #111827;
+  color: var(--pq-ink-strong);
+  font-variant-numeric: tabular-nums;
 }
 
 .progressDots {
@@ -136,11 +144,12 @@
   width: 10px;
   height: 10px;
   border-radius: 999px;
-  background: rgba(148, 163, 184, 0.35);
+  background: rgba(129, 140, 160, 0.34);
 }
 
 .progressDots span.active {
   background: var(--poke-gradient);
+  box-shadow: 0 0 0 5px rgba(199, 56, 55, 0.12);
 }
 
 .typeRow {
@@ -152,14 +161,18 @@
 .typeImage {
   width: 32px;
   height: 32px;
-  filter: drop-shadow(0 4px 8px rgba(15, 23, 42, 0.22));
+  filter: drop-shadow(0 5px 10px rgba(23, 34, 51, 0.22));
 }
 
 .quizSection {
   width: 100%;
-  padding: 12px;
-  border-radius: 24px;
-  background: rgba(15, 23, 42, 0.04);
+  padding: 14px;
+  border-radius: 28px;
+  background:
+    radial-gradient(circle at top right, rgba(240, 108, 103, 0.12), transparent 22%),
+    linear-gradient(180deg, rgba(255, 252, 250, 0.96) 0%, rgba(239, 233, 227, 0.98) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.76);
+  box-shadow: var(--shadow-soft);
   display: grid;
   gap: 14px;
 }
@@ -177,38 +190,41 @@
   width: 100%;
   max-width: 560px;
   margin: 0 auto;
-  min-height: 54px;
-  padding: 0.72rem 0.9rem;
-  border: none;
-  border-radius: 18px;
-  box-shadow: 0 10px 22px rgba(15, 23, 42, 0.08);
-  color: #111827;
+  min-height: 58px;
+  padding: 0.76rem 0.95rem;
+  border: 1px solid rgba(129, 140, 160, 0.16);
+  border-radius: 20px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.94), rgba(244, 240, 236, 0.96));
+  box-shadow: var(--shadow-soft);
+  color: var(--pq-ink-strong);
+  transition: transform 0.16s ease, box-shadow 0.16s ease, border-color 0.16s ease;
 }
 
 .buttons:hover {
-  box-shadow: 0 16px 28px rgba(15, 23, 42, 0.12);
+  transform: translateY(-1px);
+  box-shadow: 0 20px 30px rgba(var(--pq-shadow-rgb), 0.12);
 }
 
 .normalOption {
-  background: #f3f4f6 !important;
+  background: linear-gradient(180deg, #fffefe 0%, #f1ece7 100%) !important;
 }
 
 .correctOption {
-  background: linear-gradient(120deg, #10b981 0%, #34d399 100%);
-  box-shadow: 0 18px 28px rgba(16, 185, 129, 0.28);
+  background: linear-gradient(120deg, #18a178 0%, #36c89d 100%);
   color: #fff;
+  box-shadow: var(--shadow-success);
 }
 
 .incorrectOption {
-  background: linear-gradient(120deg, #fb7185 0%, #dc2626 100%);
-  animation: shake 0.82s cubic-bezier(.36, .07, .19, .97) both;
+  background: linear-gradient(180deg, #ef5c72 0%, #bf2740 100%);
   color: #fff;
+  box-shadow: var(--shadow-danger);
 }
 
-.disabledOptions {
-  pointer-events: none;
-  filter: grayscale(90%);
-  opacity: 0.65;
+.disabledOption {
+  opacity: 0.5;
+  filter: grayscale(0.2);
+  box-shadow: none;
 }
 
 .optionContent {
@@ -221,8 +237,8 @@
 .optionText {
   flex: 1;
   text-align: left;
-  font-weight: 800;
-  letter-spacing: 0.2px;
+  font-weight: 900;
+  letter-spacing: 0.01em;
 }
 
 .circle {
@@ -234,30 +250,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 8px 18px rgba(239, 68, 68, 0.35);
+  box-shadow: 0 10px 18px rgba(var(--pq-shadow-red-rgb), 0.28);
 }
 
 .iconPokeball {
   width: 22px;
   height: 22px;
-}
-
-.helpAction {
-  width: 100%;
-  text-align: left;
-}
-
-.helpAction img {
-  width: 20px;
-  height: 20px;
-  flex: 0 0 auto;
-}
-
-@keyframes shake {
-  10%, 90% { transform: translate3d(-1px, 0, 0); }
-  20%, 80% { transform: translate3d(2px, 0, 0); }
-  30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
-  40%, 60% { transform: translate3d(4px, 0, 0); }
 }
 
 @media (max-width: 720px) {
@@ -267,29 +265,28 @@
   }
 }
 
+@media (max-width: 640px) {
+  .pageWrap {
+    padding: 0;
+  }
+
+  .containerQuiz {
+    border-radius: 24px 24px 0 0;
+    padding: 14px 12px;
+  }
+
+  .typeRow {
+    justify-content: center;
+  }
+}
+
 @media (max-width: 520px) {
   .imageSection {
-    min-height: 150px;
+    min-height: 160px;
     max-height: 32vh;
   }
 
   .buttons {
     font-size: 0.95rem;
-  }
-}
-
-@media (max-width: 380px) {
-  .quizSection {
-    padding: 12px;
-  }
-
-  .optionContent {
-    gap: 10px;
-  }
-
-  .circle {
-    width: 34px;
-    height: 34px;
-    min-width: 34px;
   }
 }
